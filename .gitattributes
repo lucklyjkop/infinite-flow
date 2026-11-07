@@ -1,0 +1,21 @@
+* text=auto
+/.gitattributes text eol=lf
+/.gitignore text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.sh text eol=lf
+*.png binary
+*.webp binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.mp4 binary
+# Keep archived prompts/metadata byte-for-byte consistent with their SHA-256 index.
+art-source/** -text

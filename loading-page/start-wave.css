@@ -1,0 +1,36 @@
+#start-wave {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.world[data-state="starting"] #start-wave { visibility: visible; }
+.world[data-state="starting"]:not(.wave-live-fade) .scene > .world-art { visibility: hidden; }
+.world[data-state="start-ended"] .scene,
+.world[data-state="start-ended"] .title-screen,
+.world[data-state="start-ended"] #petals,
+.world[data-state="start-ended"] .rain-layer { visibility: hidden; }
+
+/* Opacity on children leaves the title entrance animation and its layout intact. */
+.world[data-state="starting"] .title-composition,
+.world[data-state="starting"] .menu-keyboard-hint {
+  opacity: 0;
+  transition: opacity 190ms ease-out;
+}
+.world.title-active[data-state="starting"] #petals,
+.world.is-running[data-state="starting"] .rain-layer {
+  opacity: 0;
+  transition: opacity 320ms ease-out;
+}
+.world[data-state="starting"] .mist,
+.world[data-state="starting"] .world-glow {
+  opacity: 0;
+  transition: opacity 500ms ease-out;
+}
+.world.wave-live-fade .scene {
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}

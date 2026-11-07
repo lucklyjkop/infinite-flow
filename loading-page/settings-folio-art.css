@@ -1,0 +1,92 @@
+/* Registered screen and portrait are separate generated layers. */
+.folio-screen, .folio-branch, .folio-dice, .folio-thread {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.folio-screen {
+  transform-origin: 20% 90%;
+  opacity: 0;
+  transform: perspective(1100px) rotateY(-10deg) translateX(2%);
+  transition: opacity .42s ease-out, transform .72s cubic-bezier(.2,.7,.15,1);
+}
+.folio-screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+.folio-screen .folio-portrait {
+  opacity: 0;
+  transition: opacity .84s .2s ease-out;
+}
+.folio-branch img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.folio-branch {
+  opacity: 0;
+  transition: clip-path .86s cubic-bezier(.2,.6,.2,1), transform .9s ease-out, opacity .24s ease-out;
+}
+.folio-branch.branch-lower {
+  transform-origin: 0 100%;
+  transform: scale(.9) rotate(-4deg);
+  clip-path: circle(0% at 0 100%);
+}
+.folio-branch.branch-upper {
+  transform-origin: 100% 0;
+  transform: scale(.92) rotate(4deg);
+  clip-path: circle(0% at 100% 0);
+  transition-delay: .08s;
+}
+.folio-dice {
+  perspective: 600px;
+  opacity: 0;
+}
+.folio-dice canvas, .folio-dice .folio-die-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.folio-dice::before {
+  content: "";
+  position: absolute;
+  left: 17%;
+  right: 13%;
+  top: 84%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #120406b3, #1b09060a 66%, transparent 74%);
+  transform: scale(var(--die-shadow-scale, 1));
+  opacity: var(--die-shadow-opacity, 1);
+}
+.folio-thread { overflow: visible; }
+.folio-thread svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.folio-thread path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.folio-thread .thread-under { stroke: #5c101b; stroke-width: 2.8; }
+.folio-thread .thread-light { stroke: #dc4856; stroke-width: 1.15; }
+[data-folio-art="visible"] .folio-screen { opacity: 1; transform: none; }
+[data-folio-art="visible"] .folio-screen .folio-portrait { opacity: 1; }
+[data-folio-art="visible"] .folio-branch { opacity: 1; transform: none; clip-path: circle(145% at 0 100%); }
+[data-folio-art="visible"] .folio-branch.branch-upper { clip-path: circle(145% at 100% 0); }
+[data-folio-art="closing"] .folio-screen { transition-duration: .36s, .46s; transition-delay: .09s; }
+[data-folio-art="closing"] .folio-screen .folio-portrait { transition: opacity .26s ease-in; }
+[data-folio-art="closing"] .folio-branch { transition-duration: .4s, .4s, .24s; transition-delay: 0s; }
+[data-folio-art="hidden"] :is(.folio-screen, .folio-branch) { transition: none; }
+[data-folio-still] :is(.folio-screen, .folio-portrait, .folio-branch) { transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  :is(.folio-screen, .folio-portrait, .folio-branch) { transition: none !important; }
+}

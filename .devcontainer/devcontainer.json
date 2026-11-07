@@ -1,0 +1,15 @@
+{
+  "name": "无限流 · 云端开发",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "forwardPorts": [4173],
+  "portsAttributes": {
+    "4173": { "label": "无限流游戏预览", "onAutoForward": "openPreview" }
+  },
+  "postStartCommand": "nohup python loading-page/serve.py --host 0.0.0.0 > /tmp/infinite-flow-preview.log 2>&1 &",
+  "customizations": {
+    "vscode": { "settings": { "files.encoding": "utf8" } }
+  }
+}

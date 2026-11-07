@@ -1,0 +1,43 @@
+{
+  "method": "OpenAI built-in Image generation",
+  "requestedQuality": "highest",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "transparent_background": true,
+  "prompt": "Use case: ui-mockup, production-ready transparent game UI sprite atlas. Make ONE precisely registered sprite sheet for the three interaction states of the SAME main-menu button, with no lettering. Highest available final-art fidelity. The entire image is game UI texture artwork, not a screen mockup.\nWide 3:2 canvas. Show exactly THREE long, slim horizontal button ribbons stacked in THREE evenly spaced rows on genuine alpha transparency. All three have the same approximately 6:1 shape, same width, baseline, x alignment and badge position. Outer silhouette is a contemporary Chinese ink-brush swash on dark silk, fairly straight top and bottom, a clean silk ribbon shape near the left, with an elegant dry-brushed taper dissolving to nothing at the far right. Narrow asymmetrical edges; no closed rectangular frame. Tight detail legible at 285x50. The LEFT END (at 8% across each ribbon) is the spot for a distinct SMALL state badge. Middle from x=18% to 77% is flat, dark, completely empty, ready for a separate baked calligraphy label. Each ribbon is entirely separate, no contact, no floating elements outside its row and generous alpha gutters. \nFirst / top row SELECTED: deep vermilion, dried-cherry to black lacquer pigment, a few hairline coral-red silk filaments picking up light horizontally along the taper; at the LEFT END one exquisite recognizable OPEN FIVE-PETAL sakura blossom seen face-on, natural asymmetrical NOTCHED petals cut into rose-red lacquer, realistic tactile painted highlights in pale blush, a tiny warm center. A small scarlet pigment sweep behind this blossom. Selected treatment visibly brighter than the other two, still restrained, dark behind lettering.\nSecond / middle row IDLE/AVAILABLE: same profile, quieter oxblood-to-charcoal ink, fine muted dusty-rose pigment along edge; the LEFT badge is a SINGLE folded dark-crimson sakura petal with a small cleft tapering on a short angled stem, comparatively subtle, distinguishable from the open flower. Restrained, readable layered ink, with ample empty central field.\nThird / bottom row LOCKED: same design language, dry charcoal with a very slight warmed plum undertone, faded edges. Badge at LEFT is a small, CLEAR CLOSED PADLOCK, round arch over a solid shield-shaped body, forged from oxidized silver and plum lacquer, readable even scaled down. No flower in this row. Keep lock lighter than backing, subdued and dignified.\nMaterial: hand-printed mineral pigments, fibrous ink grain, irregular lacquer relief, matte velvety highlights. Prestige Chinese dark-fantasy action RPG, subtle and bespoke. Prohibit words, glyphs, typography, hearts, pastel candy pink, gold frames, neon, white outline, sparkles, mockup labels, scene, person, additional symbols or extra rows. No canvas texture between ribbons, no checkerboard, no drop shadows on any background. True transparent PNG.",
+  "source": "sakura-menu-atlas.png",
+  "atlasSize": [
+    1536,
+    1024
+  ],
+  "exports": {
+    "selected": {
+      "file": "sakura-selected.webp",
+      "crop": [
+        8,
+        125,
+        1520,
+        357
+      ]
+    },
+    "idle": {
+      "file": "sakura-idle.webp",
+      "crop": [
+        8,
+        407,
+        1520,
+        639
+      ]
+    },
+    "locked": {
+      "file": "sakura-locked.webp",
+      "crop": [
+        8,
+        688,
+        1520,
+        920
+      ]
+    }
+  },
+  "encoding": "Each state is cropped on matching 1512 × 232 bounds, then downsampled to 945 × 145 for high-density display; generated alpha retained."
+}

@@ -1,0 +1,84 @@
+# 无限流 · 加载与标题页面
+
+游戏入口原型。通过下方 Python HTTP 服务预览，无需安装前端依赖；请勿直接双击 HTML，音效与部分渲染资源需要 HTTP 加载。云端和换电脑开发说明见[仓库首页](../README.md)。
+
+开场中央先透出原画，墨雾沿不规则的柔边向四周散开，约 2.45 秒后散尽。墨雾透明度分段预烘焙，浏览器只合成两层贴图。减少动态模式使用约 200 毫秒的淡入。十一簇樱枝从四边分批蔓入，竖屏采用单独的枝条位置。画面下方的五片暗胭脂绢扇带有暗金绣边和樱花镂空。第一片绕扇心轻摆一次，余下四片随进度在 23%、50%、74% 和 98% 展开。
+
+加载到 100% 时，折扇碎散，樱枝同时从不同的枝端或枝根开始焚化。火线沿着木质分叉推进，灰屑随之飘起，约 1.53 秒后进入标题页，依次显出题字、花枝和菜单。减少动态模式使用静态枝条和约 160 毫秒的淡出。枝条源稿和提示词见 `../art-source/imagegen/loading-boughs.json`，折扇见 `../art-source/imagegen/folding-fan-brocade.*`。
+
+标题菜单为「开始游戏 / 继续游戏 / 系统设置 / 退出游戏」。支持鼠标、触摸、方向键、Enter 与 Esc。系统设置可调整亮度、动态效果、画面适配，点击「保存设置」后保存在本机。系统减少动态偏好优先于动态开关。没有有效存档时「继续游戏」禁用。退出确认后进入静止退出画面，可返回标题；普通浏览器网页不会尝试关闭浏览器窗口。
+
+环境动态：暗红色薄花瓣有三种不对称轮廓，随风飘落，翻到侧面时收窄为细线。桌面 38 片、手机 22 片。雨幕分背景雨丝与菜单前的近景雨滴；近景雨滴的轨迹与每个按钮的实际上沿相交后生成弹跳水珠、水纹和短暂水光。四个按钮（包括暂无存档的继续按钮）都有碰撞面，按屏幕布局更新。弹窗打开时暂停隐藏菜单上的碰撞；关闭动态、退出或页面隐藏时停止动画，减少动态偏好下不播放雨幕。所有 Canvas 均不拦截点击。
+
+空间视差使用本地打包的 [DepthFlow Web](https://github.com/K024/depth-flow) SLIDE 渲染器。原图拆成透明人物和补全铜环的底图，放在 `assets/spatial-photo/`。鼠标移动时，长发和肩膀一起掠过圆环，发束之间透出后景。指针离开后平滑回正并显示原图。WebGL 不可用或直接打开本地文件时，Canvas 2D 使用相同的两个图层。关闭动态或启用系统减少动态偏好后显示静态原图。
+
+`rain.js` 为无依赖 Canvas 粒子模块，限制远景雨滴 260、近景雨滴 20、溅射水珠 180、水纹 24 的最大数量。雨滴使用运动线段与按钮上沿求交。`glass-rain.js` 单独绘制贴屏水珠，依据同一张原画的缩略图模拟局部折射。水珠短暂停留、下滑并留下逐渐淡去的细痕。镜头水珠随开场雨幕显现，弹窗、开始游戏过场和减少动态模式下停止。可通过 `InfiniteWeather.getState()` 查看远雨、花瓣和贴屏水珠的运行状态。
+
+「无限流」行书题字与下方的细樱花枝由内置 Image 生图分别生成，源稿和提示词见 `../art-source/imagegen/sakura-title.json`。四项菜单的书法字来自 `../art-source/imagegen/title-ui-atlas-v2.png`。按钮底纹来自樱花红三态图集 `../art-source/imagegen/sakura-menu-atlas.png`。选中时显示盛开的樱花，待选时显示单瓣，没有有效存档时显示暗银锁。按钮提示词和裁切范围记录在 `../art-source/imagegen/sakura-menu-atlas.json`。
+
+独立透明 UI 贴图导出到 `assets/menu-ui/`：
+
+- `sakura-calligraphy.webp`：标题页的「无限流」行书题字。
+- `sakura-selected.webp`、`sakura-idle.webp`、`sakura-locked.webp`：带状态标记的三款透明按钮底纹，各为 945 × 145。
+- `sakura-branch.webp`：题字下方横向舒展的樱花枝。
+- `label-new.png`、`label-continue.png`、`label-settings.png`、`label-exit.png`：四项菜单文字。
+
+加载页和标题页的唯一背景是用户指定的 `../art-source/imagegen/nai-v5-user-style-v3-fixed.4k.png`，采用用户提供的画师串与 NAI V5 Full。原图 1920 × 1088，经 NAI 专用放大工具到 3840 × 2176，再上下各裁 8 像素成为 3840 × 2160；网页始终使用同尺寸 WebP 副本 `assets/hongzhuang-nai-v3-4k.webp`。花瓣由 Canvas 绘制，不需要额外图片。适配横屏、手机竖屏、减少动态偏好及页面隐藏状态。
+
+提示词里的数字结尾标签需保留关闭符前的空格，例如 `2::artist:bm94199 ::`。该空格被删除时，NAI 会将末尾 `94199::` 解析为权重，导致本次彩噪故障。已经用同一种子与同参数进行单变量复验并修正。
+
+## 本地服务
+
+在本目录运行以下命令。服务固定使用本项目的素材目录，并允许浏览器复用连接。
+
+```powershell
+python serve.py
+```
+
+完整流程：http://127.0.0.1:4173/ 。直接预览标题：http://127.0.0.1:4173/?screen=title 。
+
+## 接入实际游戏
+
+默认演示的进度从 0% 走到 100% 用时 4.2 秒。背景解码后启动开场；接入游戏资源下载器后，由外部进度决定扇片出现的时机。调用：
+
+```js
+window.InfiniteLoading.useExternalProgress();
+window.InfiniteLoading.updateProgress(35); // 0—100，来自实际资源加载
+window.addEventListener('infinite:ready', () => { /* 所有资源准备完成 */ });
+```
+
+标题页已接入加载完成事件。点击「开始游戏」时，当前空间照片化为立方体，单个波峰由中心向四周推进；每块方块只抬起、回落一次，随后碎开消散，约 2.6 秒后画面收暗。WebGL 与 2D 回退使用相同的单峰节奏。原型随后提示「首个世界尚未开放。」，关闭提示可回到标题。「继续游戏」使用已有存档的入口。接入玩法时可在点击事件内接管，并按需等待内置过场：
+
+```js
+window.addEventListener('infinite:startgame', async event => {
+  event.preventDefault();
+  const { mode, save } = event.detail; // new | continue
+  if (mode === 'new' && !await event.detail.playTransition()) return;
+  window.InfiniteTitle.hide();
+  // 游戏在此创建新旅程或读取 save。
+});
+// 存档必须具有非空 id，其余字段由游戏定义。
+window.InfiniteTitle.setSave({ id: 'journey-001', title: '第一重世界', timestamp: Date.now() });
+// 游戏返回主菜单时：
+window.InfiniteTitle.returnToTitle();
+```
+
+`InfiniteTitle.clearSave()` 清除本机存档；`InfiniteLoading.replay()` 重播完整加载。不要仅为启用继续按钮而创建虚假存档。正式游戏应校验自身存档格式。
+
+`assets/menu-ui/manifest.json` 记录原书法图集的源图哈希、裁切区域和尺寸。标题与菜单有语义文字供辅助工具读取，按钮的交互区域覆盖整行。
+
+系统设置使用 `assets/settings-folio/` 的纸艺贴图与独立屏风、人物、梅枝、骰子图层。`settings-folio.js` 管理四类设置及草稿，点击「保存设置」写入本机，返回撤回未保存的预览。模型页当前提供本地配置检查，密钥仅保存在当前浏览器会话。`infinite:settings` 派发预览值，`infinite:settingssaved` 派发已保存值，均不包含密钥。总音量、环境音、界面音效及掷骰音效均已接入实际混音。环境音默认 25%，当前不包含背景音乐。
+
+`settings-paper-select.js` 将原生字段增强为纸艺下拉，保留真实表单值、键盘交互及全屏请求。`settings-folio-art.js` 的独立时间轴负责梅枝、屏风人物、红线和骰子进退场。原始图集、提示词和切图记录保存在 `../art-source/imagegen/settings-folio/`。
+
+设置返回标题时，`settings-folio-transition.css` 配合控制器从当前姿态收拢纸页，880 ms 内直接显露背后的标题画面，完全透明后关闭 modal。`title-return.js/.css` 接收 `infinite:settingsreturnstart/end/cancel`，以局部笔画遮罩让现有樱花枝、书法标题与菜单接续出现，约 1420 ms 完成。结束或中断会释放动画并还原原图；减少动态、切后台及连续 Esc 有即时收尾。左侧选中书签为内置生图生成的 `navigation-selected.webp`，源图与提示词保存在 `../art-source/imagegen/settings-folio/navigation-selected.png` 和 `navigation-manifest.json`。
+
+`game-audio.js` 使用一套 AudioContext 混合 17 个本地音效，当前不包含 BGM。首次真实鼠标／触摸／键盘操作后解锁声音；雨声柔和循环，环境音默认 25%，设置打开时轻微压低，退出或开始游戏时淡出。标题的实际选中项变化播放纸签轻擦与轻弦共鸣，同一项内移动、禁用项或程序默认选中不重复响。开始、设置、退出等实际点击另外触发纸面轻触音，在切换界面状态之前播放。枝条生长、焚化、书法显现、纸页开合及骰子触地按实际动画节点触发，取消动画会停止对应声音。按钮、分类、下拉、开关和滑杆使用不同音色，滑杆限频，整体最多 12 个短声部。切后台停止短声并暂停音频，返回恢复环境音，不补播旧反馈。
+
+`assets/audio/SOURCES.md` 和 `manifest.json` 保存 CC0 录音及剪辑信息，源录音见 `../audio-source/`，跨平台制作脚本为 `../scripts/build-game-audio.py`。旧版本未标记的默认环境音 60% 在载入时迁移到 25%；其他自定义音量保留。新保存的配置带默认版本标记，用户随后主动设为 60% 也会保留。
+
+## 验证
+
+从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频清单、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。GitHub Actions 会在 push 和 Pull Request 中运行同一检查。
+
+修改交互或动画后还应实测：完整加载到标题、鼠标和键盘选中/点击、设置保存与放弃草稿、关闭转场、开始游戏单次波浪、前后台切换、窄屏布局及系统减少动态偏好。音频需要真实操作解锁；无存档时继续按钮保持禁用。该自动检查不代替这些视觉和听感验证。

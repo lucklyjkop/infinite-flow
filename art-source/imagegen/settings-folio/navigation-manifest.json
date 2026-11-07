@@ -1,0 +1,11 @@
+{
+  "entry": "OpenAI built-in Image generation",
+  "requestedQuality": "highest",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "transparent_background": true,
+  "prompt": "Use case: production game UI sprite, transparent cutout. The supplied screenshot is the exact VISUAL STYLE REFERENCE for the black-linen navigation and crimson-bound casebook. Generate ONE single horizontal selected-navigation BOOKMARK LABEL for the left black book cover of this refined Chinese supernatural RPG settings UI. The art must be TEXT-FREE so real Chinese type can be overlaid. Approximate 4.3:1 width to height. A slender physical slip of very dark muted CINNABAR and oxblood dyed mulberry paper with subtle fine long fibres, slightly irregular hand-cut silhouette, shallow folded right end that can slip under a red book spine, gentle paper edge thickness and only the narrowest softly transparent contact shadow. Flat matte, quiet elegant red and plum tones readable over ink-black linen. Left end has a small understated ivory WOODBLOCK PLUM BLOSSOM mark, exactly one, occupying only the leftmost 12 percent, with a delicate dark ink petal outline and handprinted texture, no golden ornament and no round raised badge. Left edge should have a small natural irregular notch suggesting a casebook index tab. Large quiet blank label surface across middle 75 percent, subtly translucent pigmented paper, keep upper-left pale soft illumination. Overall gracefully understated artisan artwork, no rigid rectangular outline, no glossy effects, no embossed gold, no frame, no sparkling lights, no huge flower, no string. Fully isolated true transparent PNG with compact transparent margins around its entire silhouette, absolutely no background or board. NO words, text, numbers, glyphs, symbols besides small plum print. One asset only, no UI mockup, no extra props. Highest available fidelity.",
+  "source": "navigation-selected.png",
+  "runtime": "navigation-selected.webp",
+  "processing": "Crop transparent margins, preserve generated alpha, WebP quality 94."
+}

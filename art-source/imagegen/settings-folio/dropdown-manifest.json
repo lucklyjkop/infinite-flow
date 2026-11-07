@@ -1,0 +1,16 @@
+{
+  "entry": "OpenAI built-in Image generation",
+  "requestedQuality": "highest",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "transparent_background": true,
+  "prompt": "Use case: production game UI sprite sheet. Create four fully transparent, TEXT-FREE game UI art cutouts on one image, following the provided Chinese casebook settings page material reference. All are custom paper-engineered controls, light muted celadon/ivory Xuan paper and cinnabar woodblock pigment, beautiful restrained handmade game art. Layout precisely: TOP half of image is ONE wider-than-tall blank expanded dropdown MENU PANEL, about 2.1:1 ratio. Pale celadon off-white mulberry paper, very slightly hand-cut edges, very shallow two-sheet thickness and narrow semitransparent soft contact shadow; one tiny turned lower right corner. Uniform pale writing area, generous blank center, fine long natural fiber, no outlines or frame, not a button shape. MIDDLE quarter is ONE separate long, VERY SUBTLE low-contrast selected-option PAPER STRIP, 6:1 ratio, quiet rose-ivory sheet with a thin cinnabar ink accent at far left and tiny engraved half-moon stamp, mostly blank center for dark text. BOTTOM row two separate tiny dark graphite woodcut chevrons, V DOWN at left and inverted V UP at right, each only the actual soft ink strokes on transparent background, no box, no token, no button face. Keep generous transparent gaps between the four assets, no overlapping. Tiny soft natural contact shadows only for paper, true transparent alpha all outside. Upper-left diffuse light. IMPORTANT NO black rectangle behind paper or shadows, no opaque grey background, no text, no numbers, no labels, no faux letters, no blue highlight, no shiny metal. Match the pale green folded-paper input slips in reference screenshot. Highest available fidelity.",
+  "source": "dropdown-atlas.png",
+  "runtime": [
+    "dropdown-panel.webp",
+    "dropdown-active.webp",
+    "chevron-down.webp",
+    "chevron-up.webp"
+  ],
+  "postprocess": "Crop the four separated sprites, trim alpha margins, preserve original alpha, export WebP quality 94."
+}

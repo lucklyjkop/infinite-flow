@@ -1,0 +1,34 @@
+{
+  "source": "OpenAI built-in image generation",
+  "model": null,
+  "quality_setting": null,
+  "requested_quality": "highest",
+  "note": "The built-in tool did not disclose a model ID or quality setting.",
+  "transparent_background": true,
+  "reference": "../../loading-page/assets/loading-ui/fan-leaf.webp",
+  "output": "folding-fan-brocade.png",
+  "source_sha256": "329f3054164813cf46157c93cfcd325f54057614800d1f765882a2fcc6d9c67b",
+  "prompt": "folding-fan-brocade.prompt.txt",
+  "size": [
+    1735,
+    907
+  ],
+  "production_texture": "../../loading-page/assets/loading-ui/fan-brocade.webp",
+  "production_size": [
+    672,
+    351
+  ],
+  "blades": 5,
+  "registration": "../../loading-page/assets/loading-ui/fan-brocade-slices.js",
+  "hub": [
+    0.459444,
+    0.970694
+  ],
+  "angles_degrees": [
+    -146.15,
+    -112.04,
+    -77.95,
+    -41.64,
+    -8.53
+  ]
+}

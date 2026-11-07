@@ -1,0 +1,27 @@
+{
+  "generation": "OpenAI built-in Image",
+  "requestedQuality": "highest",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "transparent_background": true,
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "runtimeSize": [
+    1440,
+    480
+  ],
+  "variants": {
+    "a": {
+      "source": "loading-bough-a.png",
+      "runtime": "bough-a.webp",
+      "prompt": "Use case: stylized-concept. Create a polished, isolated transparent VFX sprite for a dark Chinese fantasy game. Highest available final art quality. ONE connected mature slender flowering Japanese cherry bough, fully visible, horizontal, ratio of inked silhouette around 3:1. The base of the woody limb enters from the extreme LEFT around half height; its continuous trunk extends sinuously across to tapered twigs at the RIGHT. Several irregular forked twigs at different depths, graceful like real sakura tree ramification, with clear negative spaces and openings. Rendered as refined cinematic game art under soft silvery moonlight, warm chestnut-charcoal bark with a thin dull bronze rim, small five-petal sakura blossoms with visible notches and a few stamens. Predominantly dusty rouge, dried carmine, a few subdued shell-pink flower faces. Couple buds. Greatest clarity in the dark bark and petal contours; understated colors, entirely matte. No leaves, no detached petals, no background, no vignette, no shadow on a surface, no frame, no border, no text or lettering, no container. True transparency outside and between twigs. Comfortably fit all of the natural endpoints. Not a garland, no severed branches apart. Wide landscape canvas. This bough is a beautiful angular windswept LOW RISING form: dark knotted bark starts solid at the very left, a subtle dip, then climbs slightly to the right in two long asymmetric sweeping limbs. Four or five fine side branches extend upwards in jagged brush-like gestures, some down. Three scattered small sprays of blossoms, buds toward outer tips. Clearly visible even as a silhouette. The wood spans most of the width, include plenty of fine tips. Restrained moonlit appearance, no pastel-white foliage masses."
+    },
+    "b": {
+      "source": "loading-bough-b.png",
+      "runtime": "bough-b.webp",
+      "prompt": "Use case: stylized-concept. Create a polished, isolated transparent VFX sprite for a dark Chinese fantasy game. Highest available final art quality. ONE connected mature slender flowering Japanese cherry bough, fully visible, horizontal, ratio of inked silhouette around 3:1. The base of the woody limb enters from the extreme LEFT around half height; its continuous trunk extends sinuously across to tapered twigs at the RIGHT. Several irregular forked twigs at different depths, graceful like real sakura tree ramification, with clear negative spaces and openings. Rendered as refined cinematic game art under soft silvery moonlight, warm chestnut-charcoal bark with a thin dull bronze rim, small five-petal sakura blossoms with visible notches and a few stamens. Predominantly dusty rouge, dried carmine, a few subdued shell-pink flower faces. Couple buds. Greatest clarity in the dark bark and petal contours; understated colors, entirely matte. No leaves, no detached petals, no background, no vignette, no shadow on a surface, no frame, no border, no text or lettering, no container. True transparency outside and between twigs. Comfortably fit all of the natural endpoints. Not a garland, no severed branches apart. Wide landscape canvas. This bough is a light elegant PENDANT form: begins at the left, a short upward bend, then cascades gently downward toward the right. A long trailing central limb with a delicate lattice of 5–7 separate drooping smaller offshoots. A distinctly more floral cluster than a bare branch but lots of open spaces between sprays: distribute small groups of single crimson and dust-rose sakura blossoms along the stems. Central silhouette must be legible, avoid a thick sawn-off stump or giant flowers. Like a miniature real cherry tree branch suspended in air."
+    }
+  }
+}

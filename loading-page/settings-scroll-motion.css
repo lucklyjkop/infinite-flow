@@ -1,0 +1,77 @@
+/* The registered artwork is at its final open size. The shafts travel over
+   the silk; clipping the stationary leaf keeps its weave and lettering intact. */
+#settings-dialog .shop-model {
+  --scroll-time: 595ms;
+  --scroll-lead: 65ms;
+  --scroll-ease: cubic-bezier(.33,.06,.17,.99);
+  --scroll-left-roll: translateX(var(--scroll-travel-left, 41.5cqw)) rotateY(-9deg) scaleX(1.09);
+  --scroll-right-roll: translateX(calc(-1 * var(--scroll-travel-right, 41.5cqw))) rotateY(9deg) scaleX(1.09);
+}
+#settings-dialog[data-phase="closing"] .shop-model {
+  --scroll-time: 300ms;
+  --scroll-lead: 0ms;
+  --scroll-ease: cubic-bezier(.49,.02,.7,.92);
+}
+.scroll-leaf, .scroll-rod { position: absolute; pointer-events: none; user-select: none; }
+.scroll-leaf {
+  z-index: 0;
+  clip-path: inset(0 0%);
+  transition: clip-path var(--scroll-time) var(--scroll-ease) var(--scroll-lead);
+}
+.scroll-rod {
+  z-index: 2;
+  transform-origin: center;
+  transform: translateX(0) rotateY(0deg) scaleX(1);
+  transition: transform var(--scroll-time) var(--scroll-ease) var(--scroll-lead);
+}
+#settings-dialog .shop-model > #settings-form {
+  z-index: 1;
+  opacity: 1;
+  clip-path: inset(-5px -5px);
+  transition: clip-path var(--scroll-time) var(--scroll-ease) var(--scroll-lead),
+              opacity 220ms ease-out 150ms;
+}
+#settings-dialog .shop-model > .shop-close {
+  z-index: 3;
+  opacity: 1;
+  transition: opacity 145ms ease-out 400ms;
+}
+
+#settings-dialog[data-phase] .shop-counter {
+  animation: none;
+  opacity: 1;
+  transition: opacity 100ms ease-out;
+}
+#settings-dialog[data-phase="closing"] .shop-counter {
+  opacity: 0;
+  transition: opacity 66ms ease-in 255ms;
+}
+#settings-dialog[data-phase="closing"] .scroll-leaf { clip-path: inset(0 50%); }
+#settings-dialog[data-phase="closing"] .rod-left { transform: var(--scroll-left-roll); }
+#settings-dialog[data-phase="closing"] .rod-right { transform: var(--scroll-right-roll); }
+#settings-dialog[data-phase="closing"] .shop-model > #settings-form {
+  opacity: 0;
+  clip-path: inset(-5px 50%);
+  transition: clip-path var(--scroll-time) var(--scroll-ease), opacity 120ms ease-in;
+}
+#settings-dialog[data-phase="closing"] .shop-model > .shop-close {
+  opacity: 0;
+  transition: opacity 85ms ease-in;
+}
+
+/* Native transitions start from the actual pose on an interrupted entrance,
+   so a quick Escape draws the shafts together without jumping to full width. */
+@starting-style {
+  #settings-dialog[data-phase="opening"] .shop-counter { opacity: 0; }
+  #settings-dialog[data-phase="opening"] .scroll-leaf { clip-path: inset(0 50%); }
+  #settings-dialog[data-phase="opening"] .rod-left { transform: var(--scroll-left-roll); }
+  #settings-dialog[data-phase="opening"] .rod-right { transform: var(--scroll-right-roll); }
+  #settings-dialog[data-phase="opening"] .shop-model > #settings-form { opacity: 0; clip-path: inset(-5px 50%); }
+  #settings-dialog[data-phase="opening"] .shop-model > .shop-close { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #settings-dialog :is(.shop-counter, .scroll-leaf, .scroll-rod, #settings-form, .shop-close) { transition: none !important; }
+}
+body:has(#world.motion-off) #settings-dialog :is(.shop-counter, .scroll-leaf, .scroll-rod, #settings-form, .shop-close) {
+  transition: none !important;
+}

@@ -1,0 +1,30 @@
+{
+  "model": "gpt-image-2.6-sunburst",
+  "size": "3840x2160",
+  "quality": "max",
+  "output_format": "png",
+  "background": "transparent",
+  "stream": true,
+  "endpoint": "https://api.openai.com/v1/images/edits",
+  "clientRequestId": "1772a1d4-862c-47d1-9f63-1d0f17e63454",
+  "serverRequestId": "req_d897f37657e24ccca216668ee7f644a2",
+  "created": 1793847024,
+  "usage": {
+    "input_tokens": 1828,
+    "input_tokens_details": {
+      "image_tokens": 1508,
+      "text_tokens": 320
+    },
+    "output_tokens": 13600,
+    "output_tokens_details": {
+      "image_tokens": 13600,
+      "text_tokens": 0
+    },
+    "total_tokens": 15428
+  },
+  "actualSize": [
+    3840,
+    2160
+  ],
+  "output": "art-source/imagegen/title-ui-atlas-v2.png"
+}

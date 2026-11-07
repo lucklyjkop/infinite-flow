@@ -1,0 +1,26 @@
+# Historical exports, machine-specific tools and separate experiments.
+/output/
+/design/
+/live2d/
+/loading-motion/
+/motion-studio/
+/月月空间启动器/
+
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.log
+.DS_Store
+Thumbs.db
+.cache/
+test-results/
+playwright-report/
+.vscode/*.local.json

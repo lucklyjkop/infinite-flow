@@ -1,0 +1,149 @@
+{
+  "source": "art-source/imagegen/title-ui-atlas-v2.png",
+  "sourcePathBase": "repository root",
+  "sourceSha256": "9f7cd183532f9aa90806c91ed618aec5bd7c05085e1e7f06c4df8b9453c03723",
+  "model": "gpt-image-2.6-sunburst",
+  "quality": "max",
+  "sourceSize": [
+    3840,
+    2160
+  ],
+  "operation": "Crop atlas cells and trim transparent gutters only; no repainting or resampling.",
+  "assets": {
+    "title-logo": {
+      "file": "title-logo.png",
+      "size": [
+        2007,
+        571
+      ],
+      "sourceBox": [
+        98,
+        139,
+        2105,
+        710
+      ],
+      "transparentFraction": 0.301,
+      "bytes": 1733902
+    },
+    "button-selected": {
+      "file": "button-selected.png",
+      "size": [
+        1882,
+        291
+      ],
+      "sourceBox": [
+        82,
+        825,
+        1964,
+        1116
+      ],
+      "transparentFraction": 0.097,
+      "bytes": 756926
+    },
+    "button-idle": {
+      "file": "button-idle.png",
+      "size": [
+        1841,
+        229
+      ],
+      "sourceBox": [
+        99,
+        1250,
+        1940,
+        1479
+      ],
+      "transparentFraction": 0.046,
+      "bytes": 548497
+    },
+    "divider": {
+      "file": "divider.png",
+      "size": [
+        1806,
+        119
+      ],
+      "sourceBox": [
+        122,
+        1589,
+        1928,
+        1708
+      ],
+      "transparentFraction": 0.376,
+      "bytes": 219478
+    },
+    "cursor": {
+      "file": "cursor.png",
+      "size": [
+        251,
+        269
+      ],
+      "sourceBox": [
+        904,
+        1796,
+        1155,
+        2065
+      ],
+      "transparentFraction": 0.501,
+      "bytes": 94587
+    },
+    "label-new": {
+      "file": "label-new.png",
+      "size": [
+        1273,
+        339
+      ],
+      "sourceBox": [
+        2453,
+        209,
+        3726,
+        548
+      ],
+      "transparentFraction": 0.372,
+      "bytes": 675948
+    },
+    "label-continue": {
+      "file": "label-continue.png",
+      "size": [
+        1270,
+        344
+      ],
+      "sourceBox": [
+        2455,
+        703,
+        3725,
+        1047
+      ],
+      "transparentFraction": 0.277,
+      "bytes": 745542
+    },
+    "label-settings": {
+      "file": "label-settings.png",
+      "size": [
+        1256,
+        333
+      ],
+      "sourceBox": [
+        2470,
+        1204,
+        3726,
+        1537
+      ],
+      "transparentFraction": 0.331,
+      "bytes": 701143
+    },
+    "label-exit": {
+      "file": "label-exit.png",
+      "size": [
+        1282,
+        333
+      ],
+      "sourceBox": [
+        2443,
+        1718,
+        3725,
+        2051
+      ],
+      "transparentFraction": 0.359,
+      "bytes": 688603
+    }
+  }
+}

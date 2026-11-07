@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="无限流，穿越万界的起点。">
+  <title>无限流</title>
+  <link rel="preload" as="image" href="assets/hongzhuang-nai-v3-4k.webp">
+  <link rel="preload" as="image" href="assets/menu-ui/sakura-selected.webp">
+  <link rel="preload" as="image" href="assets/menu-ui/sakura-idle.webp">
+  <link rel="preload" as="image" href="assets/menu-ui/sakura-locked.webp">
+  <link rel="preload" as="image" href="assets/settings-folio/navigation-selected.webp">
+  <link rel="stylesheet" href="styles.css?v=ink-plates">
+  <link rel="stylesheet" href="title-menu.css?v=glass-rain">
+  <link rel="stylesheet" href="title-return.css?v=twig-growth">
+  <link rel="stylesheet" href="fan-loading.css?v=brocade-light">
+  <link rel="stylesheet" href="start-wave.css">
+  <link rel="stylesheet" href="settings-folio.css?v=audio-mix">
+  <link rel="stylesheet" href="settings-folio-art.css?v=paper">
+  <link rel="stylesheet" href="settings-folio-transition.css?v=return">
+  <link rel="icon" href="data:,">
+  <script defer src="game-audio.js?v=title-click-no-bgm"></script>
+  <script defer src="petals.js"></script>
+  <script defer src="rain.js"></script>
+  <script defer src="glass-rain.js"></script>
+  <script defer src="vendor/depth-flow/slide.min.js?v=native-textures"></script>
+  <script defer src="spatial-project.js?v=native-textures"></script>
+  <script defer src="spatial-flat.js"></script>
+  <script defer src="spatial-photo.js?v=native-textures"></script>
+  <script defer src="assets/loading-ui/fan-brocade-slices.js"></script>
+  <script defer src="loading-fan.js?v=brocade-light"></script>
+  <script defer src="assets/loading-ui/bough-fields.js"></script>
+  <script defer src="loading-boughs.js?v=foley"></script>
+  <script defer src="ink-reveal.js?v=plates"></script>
+  <script defer src="start-wave-capture.js"></script>
+  <script defer src="start-wave-gl.js?v=single-crest"></script>
+  <script defer src="start-wave-2d.js?v=single-crest"></script>
+  <script defer src="start-wave.js"></script>
+  <script defer src="main.js?v=foley"></script>
+  <script defer src="settings-folio-art.js?v=foley"></script>
+  <script defer src="settings-paper-select.js?v=paper-select"></script>
+  <script defer src="settings-folio.js?v=ambience-25"></script>
+  <script defer src="title-menu.js?v=title-click"></script>
+  <script defer src="title-return.js?v=foley"></script>
+</head>
+<body>
+  <main class="world" id="world" data-state="boot" aria-label="无限流">
+    <div class="scene" aria-hidden="true">
+      <img id="world-art" class="world-art" src="assets/hongzhuang-nai-v3-4k.webp" alt="" draggable="false" fetchpriority="high" decoding="async">
+      <canvas id="spatial-art" class="world-art spatial-surface" aria-hidden="true"></canvas>
+      <canvas id="spatial-layers" class="world-art spatial-surface" aria-hidden="true"></canvas>
+      <canvas id="start-wave" aria-hidden="true"></canvas>
+      <div class="scene-shade"></div>
+      <div class="world-glow"></div>
+      <div class="mist mist-back"></div>
+      <div class="mist mist-front"></div>
+    </div>
+    <canvas id="loading-boughs" aria-hidden="true"></canvas>
+    <canvas id="petals" aria-hidden="true"></canvas>
+    <canvas id="rain" class="rain-layer" aria-hidden="true"></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="reveal" aria-hidden="true">
+      <div id="ink-reveal">
+        <picture>
+          <source media="(orientation: portrait)" srcset="assets/loading-ui/ink-tall.webp">
+          <img src="assets/loading-ui/ink-wide.webp" alt="" draggable="false" decoding="async">
+        </picture>
+      </div>
+    </div>
+
+    <div class="boot-message" id="boot-message" role="status" hidden>
+      <span id="boot-text"></span>
+      <button id="retry" type="button">重新加载</button>
+    </div>
+
+    <div class="world-marker interface" aria-hidden="true"><span>壹</span><i></i><span>命运交汇之境</span></div>
+
+    <section class="loading interface fan-loading" id="loading" aria-label="资源加载">
+      <div id="progress" role="progressbar" aria-label="资源加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <canvas id="loading-fan" aria-hidden="true"></canvas>
+      </div>
+      <div class="fan-reading">
+        <span id="status-text" role="status">正在定位世界坐标</span>
+        <span class="fan-percent" aria-hidden="true"><span id="progress-number">0</span><small>%</small></span>
+      </div>
+    </section>
+    <section class="title-screen" id="title-screen" aria-labelledby="menu-title" hidden>
+      <div class="title-composition">
+        <h1 id="menu-title"><span class="sr-only">无限流</span><img src="assets/menu-ui/sakura-calligraphy.webp" width="1600" height="443" alt="" draggable="false" decoding="async"></h1>
+        <div class="menu-divider" aria-hidden="true"><img src="assets/menu-ui/sakura-branch.webp" width="1200" height="105" alt="" draggable="false" decoding="async"></div>
+        <nav class="title-menu" id="title-menu" aria-label="主菜单">
+          <button type="button" data-menu-action="new"><span class="sr-only">开始游戏</span><img src="assets/menu-ui/label-new.png" alt="" draggable="false" decoding="async"></button>
+          <button type="button" data-menu-action="continue" disabled title="暂无存档"><span class="sr-only">继续游戏</span><img src="assets/menu-ui/label-continue.png" alt="" draggable="false" decoding="async"></button>
+          <button type="button" data-menu-action="settings"><span class="sr-only">系统设置</span><img src="assets/menu-ui/label-settings.png" alt="" draggable="false" decoding="async"></button>
+          <button type="button" data-menu-action="exit"><span class="sr-only">退出游戏</span><img src="assets/menu-ui/label-exit.png" alt="" draggable="false" decoding="async"></button>
+        </nav>
+      </div>
+      <p class="menu-keyboard-hint"><span>↑ ↓</span> 选择<span class="hint-separator">/</span><span>ENTER</span> 确认</p>
+    </section>
+
+    <section class="exit-screen" id="exit-screen" aria-label="已退出游戏" hidden>
+      <p>无限流</p>
+      <button id="return-title" type="button">返回标题</button>
+    </section>
+    <canvas id="rain-impact" class="rain-layer" aria-hidden="true"></canvas>
+    <canvas id="glass-rain" class="rain-layer" aria-hidden="true"></canvas>
+  </main>
+  <dialog class="menu-dialog settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+    <div class="settings-stage">
+      <div class="folio-room" aria-hidden="true"></div>
+      <div class="folio-screen" aria-hidden="true"></div>
+      <div class="folio-thread" aria-hidden="true"></div>
+      <div class="folio-dice" aria-hidden="true"></div>
+      <aside class="folio-navigation">
+        <button class="folio-back" type="button" data-close-dialog><span aria-hidden="true">←</span> 返回</button>
+        <h2 id="settings-title">系统设置</h2>
+        <div class="folio-tabs" role="tablist" aria-labelledby="settings-title" aria-orientation="vertical">
+          <button id="tab-model" type="button" role="tab" aria-controls="panel-model" aria-selected="false" tabindex="-1">模型接口</button>
+          <button id="tab-preferences" type="button" role="tab" aria-controls="panel-preferences" aria-selected="true">跑团偏好</button>
+          <button id="tab-display" type="button" role="tab" aria-controls="panel-display" aria-selected="false" tabindex="-1">画面</button>
+          <button id="tab-audio" type="button" role="tab" aria-controls="panel-audio" aria-selected="false" tabindex="-1">声音</button>
+        </div>
+      </aside>
+      <div class="folio-paper">
+        <form id="settings-form" autocomplete="off">
+          <div class="folio-pages">
+            <section id="panel-model" class="folio-panel" role="tabpanel" aria-labelledby="tab-model" hidden>
+              <h3>模型接口</h3>
+              <div class="folio-fields">
+                <div class="folio-row"><label for="model-protocol">接口协议</label><div class="paper-field select-field"><select id="model-protocol"><option value="openai">OpenAI 兼容</option><option value="anthropic">Anthropic</option></select></div></div>
+                <div class="folio-row"><label for="model-base-url">接口地址</label><div class="paper-field"><input id="model-base-url" type="url" placeholder="https://api.example.com/v1" spellcheck="false" autocapitalize="none"></div></div>
+                <div class="folio-row"><label for="model-api-key">API 密钥</label><div class="paper-field key-field"><input id="model-api-key" type="password" placeholder="输入 API 密钥" autocomplete="off" spellcheck="false" aria-describedby="model-key-help"><button id="toggle-api-key" type="button" aria-label="显示密钥" aria-pressed="false"><span class="key-eye" aria-hidden="true"></span></button></div></div>
+                <div class="folio-row"><label for="model-name">模型 ID</label><div class="paper-field"><input id="model-name" type="text" placeholder="输入模型 ID" spellcheck="false" autocapitalize="none"></div></div>
+              </div>
+              <p class="folio-help" id="model-key-help">密钥保存在当前浏览器会话</p>
+              <div class="model-check"><button id="test-model-config" class="folio-ticket ticket-secondary" type="button">检查配置</button><output id="model-config-status" role="status">尚未检查</output></div>
+            </section>
+            <section id="panel-preferences" class="folio-panel" role="tabpanel" aria-labelledby="tab-preferences">
+              <h3>跑团偏好</h3>
+              <div class="folio-fields">
+                <div class="folio-row"><span id="details-label">检定明细</span><div class="paper-segments" role="radiogroup" aria-labelledby="details-label"><label><input type="radio" name="dice-details" value="expanded" checked><span>展开</span></label><label><input type="radio" name="dice-details" value="collapsed"><span>收起</span></label></div></div>
+                <div class="folio-row"><label for="dice-motion">掷骰动画</label><label class="paper-toggle"><input id="dice-motion" type="checkbox" checked><span aria-hidden="true"></span></label></div>
+                <div class="folio-row"><span id="narrative-size-label">叙事字号</span><div class="paper-segments" role="radiogroup" aria-labelledby="narrative-size-label"><label><input type="radio" name="narrative-size" value="small"><span>小</span></label><label><input type="radio" name="narrative-size" value="medium" checked><span>中</span></label><label><input type="radio" name="narrative-size" value="large"><span>大</span></label></div></div>
+              </div>
+              <div id="record-preview" class="record-preview" data-size="medium">
+                <p class="record-caption">记录预览</p>
+                <p class="record-narrative">门后传来第二声叩响。</p>
+                <p id="record-details"><img src="assets/settings-folio/dice-record.webp" alt="" draggable="false"><span>2d6 → 4 + 3 = 7</span></p>
+              </div>
+            </section>
+            <section id="panel-display" class="folio-panel" role="tabpanel" aria-labelledby="tab-display" hidden>
+              <h3>画面</h3>
+              <div class="folio-fields">
+                <div class="folio-row"><label for="display-mode">显示模式</label><div class="paper-field select-field"><select id="display-mode"><option value="window">窗口</option><option value="fullscreen">全屏</option></select></div></div>
+                <div class="folio-row"><label for="setting-display">画面适配</label><div class="paper-field select-field"><select id="setting-display"><option value="cover">铺满屏幕</option><option value="contain">完整画面</option></select></div></div>
+                <div class="folio-row"><label for="setting-motion">动态效果</label><label class="paper-toggle"><input id="setting-motion" type="checkbox" checked><span aria-hidden="true"></span></label></div>
+                <div class="folio-row range-row"><label for="setting-brightness">亮度</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="setting-brightness" type="range" min="70" max="120" step="1" value="100"><output id="brightness-value" for="setting-brightness">100%</output></div></div>
+              </div>
+              <div class="calibration" aria-label="由暗至亮的灰度校准"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </section>
+            <section id="panel-audio" class="folio-panel" role="tabpanel" aria-labelledby="tab-audio" hidden>
+              <h3>声音</h3>
+              <div class="folio-fields">
+                <div class="folio-row range-row"><label for="volume-master">总音量</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="volume-master" type="range" min="0" max="100" step="1" value="80"><output for="volume-master">80%</output></div></div>
+                <div class="folio-row range-row"><label for="volume-ambience">环境音</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="volume-ambience" type="range" min="0" max="100" step="1" value="25"><output for="volume-ambience">25%</output></div></div>
+                <div class="folio-row range-row"><label for="volume-effects">界面音效</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="volume-effects" type="range" min="0" max="100" step="1" value="70"><output for="volume-effects">70%</output></div></div>
+                <div class="folio-row range-row"><label for="volume-dice">掷骰音效</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="volume-dice" type="range" min="0" max="100" step="1" value="100"><output for="volume-dice">100%</output></div></div>
+              </div>
+              <button id="preview-dice" class="preview-dice" type="button"><img src="assets/settings-folio/play-token.webp" alt="" draggable="false">试听掷骰</button>
+            </section>
+          </div>
+          <footer class="folio-actions">
+            <button id="reset-settings" class="folio-ticket ticket-secondary" type="button">恢复默认</button>
+            <button id="save-settings" class="folio-ticket ticket-primary" type="button">保存设置</button>
+          </footer>
+          <output id="settings-status" class="folio-status" role="status" aria-live="polite"></output>
+        </form>
+      </div>
+      <div class="folio-branch branch-lower" aria-hidden="true"></div>
+      <div class="folio-branch branch-upper" aria-hidden="true"></div>
+    </div>
+  </dialog>
+  <dialog class="menu-dialog compact-dialog" id="exit-dialog" aria-labelledby="exit-title">
+    <h2 id="exit-title">退出游戏</h2><p>是否离开此界？</p>
+    <div class="dialog-actions"><button class="quiet-button" type="button" data-close-dialog autofocus>返回</button><button id="confirm-exit" class="primary-button" type="button">退出</button></div>
+  </dialog>
+  <dialog class="menu-dialog compact-dialog" id="notice-dialog" aria-labelledby="notice-message">
+    <p id="notice-message"></p><div class="dialog-actions"><button class="primary-button" type="button" data-close-dialog autofocus>返回</button></div>
+  </dialog>
+  <noscript><div class="noscript">请启用 JavaScript 以播放入场动画。</div></noscript>
+</body>
+</html>

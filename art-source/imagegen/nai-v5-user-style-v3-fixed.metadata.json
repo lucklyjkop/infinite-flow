@@ -1,0 +1,25 @@
+{
+  "model": "nai-diffusion-5-full",
+  "seed": 123005558,
+  "steps": 23,
+  "sampler": "k_euler_ancestral",
+  "scale": 7,
+  "noise_schedule": "karras",
+  "nativeSize": [
+    1920,
+    1088
+  ],
+  "nativeOutput": "art-source/imagegen/nai-v5-user-style-v3-fixed.native.png",
+  "artistMix": "User artist chain; only restored required space after bm94199; same seed and other parameters as v2",
+  "upscaleMethod": "NovelAI dedicated upscale 2x",
+  "upscaledSize": [
+    3840,
+    2176
+  ],
+  "finalSize": [
+    3840,
+    2160
+  ],
+  "cropTop": 8,
+  "output": "art-source/imagegen/nai-v5-user-style-v3-fixed.4k.png"
+}

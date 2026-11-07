@@ -1,0 +1,213 @@
+{
+  "entry": "OpenAI built-in Image generation",
+  "requestedQuality": "highest available fidelity",
+  "reportedModel": "not disclosed",
+  "reportedQuality": "not disclosed",
+  "transparent_background": true,
+  "reference": "art-source/imagegen/settings-folio/reference-controls.png",
+  "prompts": {
+    "p1": "Use case: game production sprite atlas, new transparent UI assets that match the supplied scene reference. Create an orthographic top-down sheet of SIX physically hand-made paper control components. Everything has the same warm ivory/celadon mulberry paper fibers, hand-torn edges, sophisticated ink hatching and vermilion mineral-pigment printing as the reference's controls. Fine side light from upper left and very narrow soft alpha-only contact shadows. Canvas square, FOUR widely spaced rows with all silhouettes separated. ROW 1 one blank inactive segmented choice ticket, horizontal 4.7:1 parallelogram with diagonal ends, faded celadon cream paper, tiny hatch lines only in rightmost 9%, gently curled bottom cut edge, central surface completely empty. ROW 2 exactly the same shape and size active choice ticket, deep dry cinnabar red blockprint on cream rag paper with irregular ivory deckle edge and a small ivory half-moon woodblock symbol at the far left (within 12%); keep remaining face empty. ROW 3 two separated sprites: LEFT a simple horizontal toggle trough 3:1 ratio, narrow rounded rectangular recessed slot made from softly bevelled celadon paper, empty centre; RIGHT a single matching round vermilion lacquer disc with small perfectly legible ivory five-petal plum stamp, shallow 3D button, no slot attached. ROW 4 two separated sprites: LEFT one small plain very slender vertical scarlet brushprinted navigation active mark, height to width ratio 12:1; RIGHT one little warm-ivory cut-paper five-lobed plum-shaped token with clearly legible ink black right-pointing triangular PLAY symbol in the centre. Each object fully in frame, generous empty transparent gap around it, no overlap. ABSOLUTELY NO letters, digits, words, labels, writing or watermark. Do not reproduce the screen scene, main sheet, character or the existing action tickets. Only the six individual controls, actual alpha transparent background, no checkerboard, no plate, no backdrop. Highest available fidelity. Authentic mature Chinese illustrated videogame UI asset sprites with tactile exquisite materials, not flat vector web components.",
+    "p2": "Use case: production transparent game UI sprite sheet. Match the supplied exquisite Chinese dark-fantasy folio settings reference's physically woven red silk cord controls, translucent red glass bead slider, and archival paper record card. Canvas landscape 3:2, generous clear transparent gutters. Exactly FIVE separate objects arranged FOUR rows. ROW 1 a perfectly straight taut HORIZONTAL narrow twisted scarlet silk slider cord, long ratio 45:1, entirely red with two tiny antique-brass eyelet hoops at the ends, delicate downward soft alpha-only contact shadow. No bead on the line. ROW 2 a corresponding identical perfectly horizontal HORIZONTAL long inactive IVORY taupe silk cord with same small brass eyelets, same length and perspective; no bead. ROW 3 two side-by-side individual objects, LEFT a polished 3D translucent dark ruby-glass faceted round slider bead, not jewelry, no hole, no setting, no numbers, luminous deep red with 7 subtle angled facets and restrained upper-left white highlight, very short contact shadow on alpha. RIGHT a tiny hand-engraved black dice-outline icon of a six-sided die in isometric view, white interior, authentic delicate blockprinted ink lines, transparent outside. ROW 4 one wide 3:1 ratio archival note card of almost-white warm-ivory kozo paper, irregular dry-cut edge, just two tiny folded paper corner tabs holding the TOP left and TOP right, subtle bottom paper curl and narrow contact shadow, 3 fine distinct vertical graphite-ink rules in its LEFTMOST 4% only. Rest of card is entirely blank for typesetting. No paper mark or image in the centre. Make note card occupy about 80% of image width and 25% height. Every object fully in frame with wide transparent gap around. NO writing, digits, letters, labels, content text, words, headings, watermark. No background, no scene, no presentation board or checkerboard. Actual transparent PNG with high-quality alpha. Finest material detail and soft coherent top-left lighting; production-ready illustrated game controls. Highest available fidelity."
+  },
+  "originals": {
+    "action-secondary": {
+      "source": "imported/imported-1.png",
+      "archive": "无字控件PNG.zip",
+      "dimensions": [
+        1347,
+        297
+      ],
+      "providedByUser": true
+    },
+    "field": {
+      "source": "imported/imported-2.png",
+      "archive": "无字控件PNG.zip",
+      "dimensions": [
+        1442,
+        200
+      ],
+      "providedByUser": true
+    },
+    "action-primary": {
+      "source": "imported/imported-3.png",
+      "archive": "无字控件PNG.zip",
+      "dimensions": [
+        1348,
+        331
+      ],
+      "providedByUser": true
+    }
+  },
+  "slices": {
+    "segmented-idle": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        20,
+        103,
+        1233,
+        307
+      ],
+      "nativePixels": [
+        1213,
+        204
+      ],
+      "runtime": "loading-page/assets/settings-folio/segmented-idle.webp",
+      "fileSha256": "a5269f686d6231be2654ec6531b3909ac8cefed9e678690fba13eddee9a0827f"
+    },
+    "segmented-selected": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        20,
+        385,
+        1233,
+        595
+      ],
+      "nativePixels": [
+        1213,
+        210
+      ],
+      "runtime": "loading-page/assets/settings-folio/segmented-selected.webp",
+      "fileSha256": "cb0bb989c7000625c56ff2afadc3fadd9488c3c483e1420cabcf26da7a314bd0"
+    },
+    "slot": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        100,
+        684,
+        803,
+        865
+      ],
+      "nativePixels": [
+        703,
+        181
+      ],
+      "runtime": "loading-page/assets/settings-folio/slot.webp",
+      "fileSha256": "c95421b34e5e96cae183dc515377c83faf1cf4026f8922586279d8e2dc1d58f0"
+    },
+    "toggle-plum": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        897,
+        665,
+        1113,
+        884
+      ],
+      "nativePixels": [
+        216,
+        219
+      ],
+      "runtime": "loading-page/assets/settings-folio/toggle-plum.webp",
+      "fileSha256": "697caa0a3f28e42a8e1cd3f912855775cbaab0cab0fdf2ad7591bc5f8f2a10bf"
+    },
+    "nav-mark": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        350,
+        960,
+        405,
+        1202
+      ],
+      "nativePixels": [
+        55,
+        242
+      ],
+      "runtime": "loading-page/assets/settings-folio/nav-mark.webp",
+      "fileSha256": "76200a6f935417e23aa0e34748947755e863dd9056f3f045ed3e512e074052bd"
+    },
+    "play-token": {
+      "source": "controls-atlas.png",
+      "bounds": [
+        666,
+        954,
+        930,
+        1206
+      ],
+      "nativePixels": [
+        264,
+        252
+      ],
+      "runtime": "loading-page/assets/settings-folio/play-token.webp",
+      "fileSha256": "36333113de96160c5f37bac860431fea1f716f3a81b00d7be0e073c8917a468a"
+    },
+    "cord-active": {
+      "source": "sliders-atlas.png",
+      "bounds": [
+        62,
+        74,
+        1476,
+        137
+      ],
+      "nativePixels": [
+        1414,
+        63
+      ],
+      "runtime": "loading-page/assets/settings-folio/cord-active.webp",
+      "fileSha256": "5aa3e50669d65b9bfc94f1d9f3d3733071650983f3697f94d88a25a4e1bf0416"
+    },
+    "cord-inactive": {
+      "source": "sliders-atlas.png",
+      "bounds": [
+        62,
+        224,
+        1476,
+        286
+      ],
+      "nativePixels": [
+        1414,
+        62
+      ],
+      "runtime": "loading-page/assets/settings-folio/cord-inactive.webp",
+      "fileSha256": "60411caf56b5958bd81effd6c23e1553b54067931c545e7352665bff4581d4a4"
+    },
+    "ruby-knob": {
+      "source": "sliders-atlas.png",
+      "bounds": [
+        394,
+        348,
+        607,
+        558
+      ],
+      "nativePixels": [
+        213,
+        210
+      ],
+      "runtime": "loading-page/assets/settings-folio/ruby-knob.webp",
+      "fileSha256": "41c5d9e8fa2a74636fc15b0df4d7a1567a8feba42ec7864c143d9dffc1f37746"
+    },
+    "dice-record": {
+      "source": "sliders-atlas.png",
+      "bounds": [
+        937,
+        360,
+        1110,
+        550
+      ],
+      "nativePixels": [
+        173,
+        190
+      ],
+      "runtime": "loading-page/assets/settings-folio/dice-record.webp",
+      "fileSha256": "3b5049aa89acd68063e7f9887d6490957f76f035ee0dcb26d158ca6288bdd430"
+    },
+    "record-note": {
+      "source": "sliders-atlas.png",
+      "bounds": [
+        79,
+        605,
+        1459,
+        965
+      ],
+      "nativePixels": [
+        1380,
+        360
+      ],
+      "runtime": "loading-page/assets/settings-folio/record-note.webp",
+      "fileSha256": "cbe9ec4f047216d883362d5ef011701f42e602b3f641031586e9cc51750afc13"
+    }
+  },
+  "export": {
+    "format": "WebP",
+    "quality": 95,
+    "alpha": "preserved"
+  }
+}

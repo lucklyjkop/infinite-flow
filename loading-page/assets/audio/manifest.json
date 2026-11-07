@@ -1,0 +1,248 @@
+{
+  "format": "Ogg Opus, 48 kHz stereo",
+  "processing": "Edited CC0 recorded foley; original selection resonance. Source links in SOURCES.md.",
+  "assets": [
+    {
+      "name": "rain-loop",
+      "file": "rain-loop.ogg",
+      "source": [
+        "Ylmir/rain/1.ogg"
+      ],
+      "design": "Window rain; softened low/high ends; 1.4-second equal-power loop join.",
+      "loop": true,
+      "duration": 25.6,
+      "bytes": 325845,
+      "peakDbfs": -5.85,
+      "rmsDbfs": -20.06,
+      "boundaryStep": 0.01239
+    },
+    {
+      "name": "fire-burn",
+      "file": "fire-burn.ogg",
+      "source": [
+        "AntumDeluge/fire-1_0.ogg"
+      ],
+      "design": "Short fireplace ignition/crackle, rounded onset and long ember tail.",
+      "loop": false,
+      "duration": 1.55,
+      "bytes": 13371,
+      "peakDbfs": -3.91,
+      "rmsDbfs": -21.04,
+      "boundaryStep": 0.0
+    },
+    {
+      "name": "menu-open",
+      "file": "menu-open.ogg",
+      "source": [
+        "Voltiment555/BookFlip2.wav"
+      ],
+      "design": "One soft paper unfolding movement, low-passed with rounded release.",
+      "loop": false,
+      "duration": 0.6256,
+      "bytes": 5325,
+      "peakDbfs": -4.12,
+      "rmsDbfs": -20.59,
+      "boundaryStep": 3.1e-05
+    },
+    {
+      "name": "menu-close",
+      "file": "menu-close.ogg",
+      "source": [
+        "Voltiment555/BookFlip4.wav"
+      ],
+      "design": "Separate slower paper fold with a soft closing contact.",
+      "loop": false,
+      "duration": 0.71319,
+      "bytes": 5958,
+      "peakDbfs": -4.22,
+      "rmsDbfs": -20.39,
+      "boundaryStep": 0.000122
+    },
+    {
+      "name": "branch-grow",
+      "file": "branch-grow.ogg",
+      "source": [
+        "Voltiment555/BookFlip6.wav"
+      ],
+      "design": "Low, fine fibre rustle shaped into an organic growth swell.",
+      "loop": false,
+      "duration": 0.86,
+      "bytes": 7145,
+      "peakDbfs": -4.56,
+      "rmsDbfs": -19.23,
+      "boundaryStep": 0.0
+    },
+    {
+      "name": "brush-write",
+      "file": "brush-write.ogg",
+      "source": [
+        "JennaW_ksc/537718 writing"
+      ],
+      "design": "Pencil-on-paper texture, softened into a dry brush stroke; source excerpt 32.5s.",
+      "loop": false,
+      "duration": 1.08,
+      "bytes": 8601,
+      "peakDbfs": -3.85,
+      "rmsDbfs": -23.29,
+      "boundaryStep": 0.000153
+    },
+    {
+      "name": "dice-land",
+      "file": "dice-land.ogg",
+      "source": [
+        "Wuzzy/Holzwürfel_auf_Holztisch_2.flac"
+      ],
+      "design": "One wooden-die contact; animation schedules actual diminishing bounces.",
+      "loop": false,
+      "duration": 0.15,
+      "bytes": 1996,
+      "peakDbfs": -3.08,
+      "rmsDbfs": -19.43,
+      "boundaryStep": 0.009125
+    },
+    {
+      "name": "ui-tap",
+      "file": "ui-tap.ogg",
+      "source": [
+        "Wuzzy/dice",
+        "Voltiment555/BookFlip10.wav"
+      ],
+      "design": "Muted paper-backed touch, short warm contact.",
+      "loop": false,
+      "duration": 0.19,
+      "bytes": 2024,
+      "peakDbfs": -7.41,
+      "rmsDbfs": -23.14,
+      "boundaryStep": 0.001678
+    },
+    {
+      "name": "ui-tab",
+      "file": "ui-tab.ogg",
+      "source": [
+        "Voltiment555/BookFlip10.wav"
+      ],
+      "design": "Light paper index sliding, softer and longer than a button.",
+      "loop": false,
+      "duration": 0.17273,
+      "bytes": 2099,
+      "peakDbfs": -6.97,
+      "rmsDbfs": -22.66,
+      "boundaryStep": 3.1e-05
+    },
+    {
+      "name": "ui-toggle-on",
+      "file": "ui-toggle-on.ogg",
+      "source": [
+        "Wuzzy/dice"
+      ],
+      "design": "Two small upward contacts for engaging the plum toggle.",
+      "loop": false,
+      "duration": 0.18,
+      "bytes": 2165,
+      "peakDbfs": -5.77,
+      "rmsDbfs": -21.44,
+      "boundaryStep": 0.002747
+    },
+    {
+      "name": "ui-toggle-off",
+      "file": "ui-toggle-off.ogg",
+      "source": [
+        "Wuzzy/dice"
+      ],
+      "design": "Lower, softer settling contacts for releasing the toggle.",
+      "loop": false,
+      "duration": 0.2,
+      "bytes": 2476,
+      "peakDbfs": -6.7,
+      "rmsDbfs": -21.95,
+      "boundaryStep": 0.008148
+    },
+    {
+      "name": "ui-slider",
+      "file": "ui-slider.ogg",
+      "source": [
+        "JennaW_ksc/writing"
+      ],
+      "design": "Quiet fibre rub for occasional slider value steps, no tonal beep.",
+      "loop": false,
+      "duration": 0.095,
+      "bytes": 1565,
+      "peakDbfs": -11.87,
+      "rmsDbfs": -22.92,
+      "boundaryStep": 0.000214
+    },
+    {
+      "name": "ui-select-open",
+      "file": "ui-select-open.ogg",
+      "source": [
+        "Voltiment555/BookFlip12.wav"
+      ],
+      "design": "Small paper slip unfolding, shortened to a dropdown.",
+      "loop": false,
+      "duration": 0.47971,
+      "bytes": 4633,
+      "peakDbfs": -5.9,
+      "rmsDbfs": -23.21,
+      "boundaryStep": 3.1e-05
+    },
+    {
+      "name": "ui-select",
+      "file": "ui-select.ogg",
+      "source": [
+        "Voltiment555/BookFlip10.wav",
+        "Wuzzy/dice"
+      ],
+      "design": "Paper slip settling with a restrained selection contact.",
+      "loop": false,
+      "duration": 0.21,
+      "bytes": 2282,
+      "peakDbfs": -6.67,
+      "rmsDbfs": -22.91,
+      "boundaryStep": 0.0
+    },
+    {
+      "name": "ui-save",
+      "file": "ui-save.ogg",
+      "source": [
+        "Wuzzy/dice",
+        "Voltiment555/BookFlip10.wav"
+      ],
+      "design": "Low paper-stamp confirmation with a soft fibre tail.",
+      "loop": false,
+      "duration": 0.34,
+      "bytes": 3734,
+      "peakDbfs": -4.74,
+      "rmsDbfs": -21.03,
+      "boundaryStep": 0.002075
+    },
+    {
+      "name": "ui-back",
+      "file": "ui-back.ogg",
+      "source": [
+        "Voltiment555/BookFlip10.wav"
+      ],
+      "design": "Soft retreating paper movement.",
+      "loop": false,
+      "duration": 0.25677,
+      "bytes": 2448,
+      "peakDbfs": -6.95,
+      "rmsDbfs": -22.73,
+      "boundaryStep": 0.0
+    },
+    {
+      "name": "ui-focus",
+      "file": "ui-focus.ogg",
+      "source": [
+        "Voltiment555/BookFlip10.wav",
+        "Original plucked harmonic layer"
+      ],
+      "design": "Paper index brush with a faint warm string resonance; distinct from button activation.",
+      "loop": false,
+      "duration": 0.32,
+      "bytes": 3930,
+      "peakDbfs": -9.24,
+      "rmsDbfs": -23.99,
+      "boundaryStep": 0.0
+    }
+  ]
+}

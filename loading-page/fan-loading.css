@@ -1,0 +1,91 @@
+.fan-loading {
+  --fan-width: clamp(130px, 11.5vw, 322px);
+  width: var(--fan-width);
+  left: 47%;
+  top: 85.6%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.is-running .fan-loading {
+  animation-name: fan-hud-appear;
+  animation-delay: 0s;
+  animation-duration: .16s;
+}
+
+@keyframes fan-hud-appear { from { opacity: 0; } to { opacity: 1; } }
+
+.fan-loading #progress {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1280 / 669;
+}
+
+/* The middle of the canvas is the face. The margin gives flying pieces room. */
+#loading-fan {
+  position: absolute;
+  left: -60%;
+  top: -70%;
+  width: 220%;
+  height: 240%;
+  filter: drop-shadow(0 4px 8px #070609a6);
+}
+
+.fan-reading {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin: 5px 0 0;
+  color: #d4bea0;
+  text-shadow: 0 1px 5px #110d0b;
+}
+
+.fan-reading #status-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fan-percent {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .16em;
+  color: #e6c9b7;
+  font: 400 clamp(17px, 1.25vw, 25px)/1 Georgia, "Times New Roman", serif;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.fan-percent small {
+  font-size: .49em;
+  color: #b8947f;
+}
+
+.world[data-state=ready] .fan-percent {
+  opacity: 0;
+  transition: opacity .25s ease .22s;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .fan-loading {
+    --fan-width: clamp(145px, 43vw, 202px);
+    top: min(85.6%, calc(100% - env(safe-area-inset-bottom) - 70px));
+  }
+}
+
+@media (orientation: landscape) and (max-height: 580px) {
+  .fan-loading {
+    --fan-width: clamp(104px, min(13vw, 30vh), 154px);
+    top: 83.5%;
+  }
+  .fan-reading { margin-top: 2px; }
+  .fan-percent { font-size: 16px; }
+}

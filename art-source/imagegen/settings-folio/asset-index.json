@@ -1,0 +1,203 @@
+{
+  "generation": "OpenAI built-in Image generation; three supplied transparent control assets reused",
+  "model": "Not disclosed by the built-in tool",
+  "quality": "Highest fidelity requested; actual parameter not disclosed",
+  "assets": [
+    {
+      "file": "action-primary.webp",
+      "width": 1348,
+      "height": 331,
+      "mode": "RGBA",
+      "bytes": 237552
+    },
+    {
+      "file": "action-secondary.webp",
+      "width": 1347,
+      "height": 297,
+      "mode": "RGBA",
+      "bytes": 208630
+    },
+    {
+      "file": "blank-screen.webp",
+      "width": 1050,
+      "height": 1400,
+      "mode": "RGBA",
+      "bytes": 160604
+    },
+    {
+      "file": "chevron-down.webp",
+      "width": 56,
+      "height": 28,
+      "mode": "RGBA",
+      "bytes": 1354
+    },
+    {
+      "file": "chevron-up.webp",
+      "width": 56,
+      "height": 27,
+      "mode": "RGBA",
+      "bytes": 1230
+    },
+    {
+      "file": "cord-active.webp",
+      "width": 1414,
+      "height": 63,
+      "mode": "RGBA",
+      "bytes": 33130
+    },
+    {
+      "file": "cord-inactive.webp",
+      "width": 1414,
+      "height": 62,
+      "mode": "RGBA",
+      "bytes": 31792
+    },
+    {
+      "file": "dice-record.webp",
+      "width": 173,
+      "height": 190,
+      "mode": "RGBA",
+      "bytes": 15186
+    },
+    {
+      "file": "dice-roll.webp",
+      "width": 2304,
+      "height": 384,
+      "mode": "RGBA",
+      "bytes": 226004
+    },
+    {
+      "file": "die-ruby.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGBA",
+      "bytes": 42366
+    },
+    {
+      "file": "dropdown-active.webp",
+      "width": 1100,
+      "height": 98,
+      "mode": "RGBA",
+      "bytes": 36434
+    },
+    {
+      "file": "dropdown-panel.webp",
+      "width": 1100,
+      "height": 334,
+      "mode": "RGBA",
+      "bytes": 76370
+    },
+    {
+      "file": "field.webp",
+      "width": 1442,
+      "height": 200,
+      "mode": "RGBA",
+      "bytes": 120898
+    },
+    {
+      "file": "folio-cover.webp",
+      "width": 493,
+      "height": 1500,
+      "mode": "RGBA",
+      "bytes": 39582
+    },
+    {
+      "file": "folio-page.webp",
+      "width": 1143,
+      "height": 1233,
+      "mode": "RGBA",
+      "bytes": 305400
+    },
+    {
+      "file": "folio-room.webp",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "bytes": 98208
+    },
+    {
+      "file": "nav-mark.webp",
+      "width": 55,
+      "height": 242,
+      "mode": "RGBA",
+      "bytes": 9866
+    },
+    {
+      "file": "navigation-selected.webp",
+      "width": 1200,
+      "height": 214,
+      "mode": "RGBA",
+      "bytes": 99510
+    },
+    {
+      "file": "play-token.webp",
+      "width": 264,
+      "height": 252,
+      "mode": "RGBA",
+      "bytes": 29376
+    },
+    {
+      "file": "plum-bottom-left.webp",
+      "width": 900,
+      "height": 357,
+      "mode": "RGBA",
+      "bytes": 68100
+    },
+    {
+      "file": "plum-top-right.webp",
+      "width": 900,
+      "height": 309,
+      "mode": "RGBA",
+      "bytes": 54112
+    },
+    {
+      "file": "record-note.webp",
+      "width": 1380,
+      "height": 360,
+      "mode": "RGBA",
+      "bytes": 161298
+    },
+    {
+      "file": "ruby-knob.webp",
+      "width": 213,
+      "height": 210,
+      "mode": "RGBA",
+      "bytes": 15678
+    },
+    {
+      "file": "screen-figure.webp",
+      "width": 1050,
+      "height": 1400,
+      "mode": "RGBA",
+      "bytes": 289234
+    },
+    {
+      "file": "segmented-idle.webp",
+      "width": 1213,
+      "height": 204,
+      "mode": "RGBA",
+      "bytes": 116418
+    },
+    {
+      "file": "segmented-selected.webp",
+      "width": 1213,
+      "height": 210,
+      "mode": "RGBA",
+      "bytes": 143402
+    },
+    {
+      "file": "slot.webp",
+      "width": 703,
+      "height": 181,
+      "mode": "RGBA",
+      "bytes": 54636
+    },
+    {
+      "file": "toggle-plum.webp",
+      "width": 216,
+      "height": 219,
+      "mode": "RGBA",
+      "bytes": 24944
+    }
+  ]
+}

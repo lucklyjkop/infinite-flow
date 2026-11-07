@@ -1,0 +1,25 @@
+/* The dialog itself carries the room; an opaque native backdrop would hide the
+   live title throughout the return fade and expose it in a single black cut. */
+#settings-dialog::backdrop { background: transparent; backdrop-filter: none; }
+
+/* WAAPI owns the interrupted opening pose and the retained transparent end pose. */
+#settings-dialog[data-phase="closing"],
+#settings-dialog[data-phase="closing"] :is(.folio-paper, .folio-navigation) {
+  animation: none;
+}
+#settings-dialog[data-phase="closing"] { will-change: opacity; }
+#settings-dialog[data-phase="closing"] :is(.folio-paper, .folio-navigation) {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* The plum tips withdraw before the cover finishes folding. No full-frame blur
+   or filter is added to the already animated live title beneath the folio. */
+#settings-dialog[data-phase="closing"] .folio-screen {
+  transition-duration: .44s, .6s;
+  transition-delay: .03s;
+}
+#settings-dialog[data-phase="closing"] .folio-branch {
+  transition-duration: .52s, .56s, .42s;
+  transition-delay: 0s;
+}

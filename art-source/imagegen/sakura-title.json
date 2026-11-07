@@ -1,0 +1,41 @@
+{
+  "generation": "OpenAI built-in Image",
+  "requestedQuality": "highest",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "transparent_background": true,
+  "assets": {
+    "title": {
+      "source": "sakura-calligraphy.png",
+      "runtime": "sakura-calligraphy.webp",
+      "sourceSize": [
+        2171,
+        724
+      ],
+      "crop": [
+        40,
+        104,
+        2165,
+        692
+      ],
+      "exportWidth": 1600,
+      "prompt": "Production lettering asset for the dark Chinese fantasy game title screen. Highest available final fidelity. Create a custom hand-lettered logotype of EXACTLY the three SIMPLIFIED Chinese characters “无限流”, read left to right, on a genuinely TRANSPARENT background. “无” left, “限” with 阝 at left in the middle, “流” with 氵 at left on the right. Single horizontal line, total inked logotype width approximately 3.1 times its height. Show the whole signature with comfortable clear margins in a wide canvas. Big, legible characters, with subtle differences in vertical placement; the overall weight is elegant and poised. Chinese xingshu running-script by a master calligrapher: slender entries, bold pressure changes, sharp lifted tips, one brisk elegant trailing sweep from 流 extending low to the right. Deliberately semi-cursive and readable even at game-menu size; natural rhythmic space between the three characters, no merging of radicals, no wandering hairline flourishes. Brush opaque and luminous warm moon-ivory with restrained pale shell-rose touching a few lower brush edges, rare carmine strands of dry ink within the stroke ends, quiet fibrous feibai cutouts. It should visibly harmonize with oxblood sakura lacquer and antique gold embroidery on a black background. Sophisticated, flat fine-art calligraphy with strength in the actual brush construction; do not bevel, inflate, outline or cast shadows. Nothing whatsoever outside the three characters. No fourth glyph, no little seal or stamp, no english, no blossom, no branch, no petals, no underlining, no backing paper, no black field, no signature, no surrounding decoration. Real transparent PNG, no simulated checkerboard or gradients behind the strokes."
+    },
+    "branch": {
+      "source": "sakura-branch.png",
+      "runtime": "sakura-branch.webp",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "crop": [
+        10,
+        235,
+        2164,
+        424
+      ],
+      "exportWidth": 1200,
+      "prompt": "One finished game UI ornament sprite on an actual transparent background, highest available fidelity: a SINGLE long, very fine horizontal CHERRY BLOSSOM TWIG to serve as the delicate divider below Chinese calligraphy in a dark fantasy title menu. Side view like a refined Chinese gongbi botanical album painting. Crop-free, the single complete connected twig floats all by itself across the canvas from left to right. Its overall inked silhouette has an extremely horizontal 10:1 to 11:1 proportion, pliable and almost level, with a very slight organic dip then rise, not a diagonal arch. Bark is thin, elegant dusky burgundy-brown and antique copper with a restrained pale rosewood highlight along one edge so the stem can be seen on a charcoal screen. Stem thicker on the left tapering away to the far right as fine points. At roughly a third from the left, two tiny well-defined open FIVE-PETALED Japanese sakura blossoms in muted crimson and antique shell pink, small golden stamens, natural notches in petals. A few wine-red buds on very short slender offshoots, one of them at two-thirds. Most of its length is exposed finely drawn wood, tiny bud tips — lots of visual breathing room. Tiny accents legible when the entire twig is displayed 260 px wide. Hand painted mineral pigment, warm watercolor layered on fine ink, understated, beautiful as an antique hairpin yet plainly a real flowering woody twig. Keep all tips, no detached petals, no leaves, no bouquet, no shadow, no closed shapes, no geometric line, no frame, no words or seals, no ribbon, no scene. Wide landscape canvas, generous transparent margin. Do not paint any solid-color, patterned, smoky, or checkerboard background."
+    }
+  }
+}

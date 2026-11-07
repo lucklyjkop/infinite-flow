@@ -1,0 +1,227 @@
+{
+  "scope": "Current approved artwork sources and provenance only; runtime exports remain in loading-page/assets.",
+  "pathConvention": "Absolute Windows metadata paths have been replaced by repository-root-relative paths; original relative source references are retained.",
+  "files": [
+    {
+      "path": "art-source/imagegen/folding-fan-brocade.metadata.json",
+      "bytes": 903,
+      "sha256": "8679cf5026f2f6b666f4061432a490e4ec43c598a6eabd0bd34423a5488bec31"
+    },
+    {
+      "path": "art-source/imagegen/folding-fan-brocade.prompt.txt",
+      "bytes": 2122,
+      "sha256": "51efcd215133c2db78140578266154173bb85c9c77c3292f53d6b94cae31bb8b"
+    },
+    {
+      "path": "art-source/imagegen/folding-fan-brocade.png",
+      "bytes": 2280904,
+      "sha256": "329f3054164813cf46157c93cfcd325f54057614800d1f765882a2fcc6d9c67b"
+    },
+    {
+      "path": "art-source/imagegen/loading-boughs.json",
+      "bytes": 4072,
+      "sha256": "98aea876a1cbcaccaae8721af502bf71807dfa511e4ca1142cfb181441c2e014"
+    },
+    {
+      "path": "art-source/imagegen/loading-bough-a.png",
+      "bytes": 870686,
+      "sha256": "883add741e2ba8caf41b9d1ac31b95ab8c55094bc5638aaaafada06c37263a26"
+    },
+    {
+      "path": "art-source/imagegen/loading-bough-b.png",
+      "bytes": 1009526,
+      "sha256": "3d3faa62060323d8db3d34b939a85de30419d003bf9ef369b5f62d6877d95a72"
+    },
+    {
+      "path": "art-source/imagegen/sakura-title.json",
+      "bytes": 4239,
+      "sha256": "08396e526db541dfbbb80c3779bfad43771a039dc3baf8bfeb75a73bed2482a5"
+    },
+    {
+      "path": "art-source/imagegen/sakura-calligraphy.png",
+      "bytes": 994190,
+      "sha256": "8482f59b050ae35edc6d3c426cb72fb399f01a2ffb3868cafe50a076fc4a06c8"
+    },
+    {
+      "path": "art-source/imagegen/sakura-branch.png",
+      "bytes": 268030,
+      "sha256": "284c43894920778c5ab93c0a4e90b4bcc2fc7fd9135bacfb6a3007c5be3992fe"
+    },
+    {
+      "path": "art-source/imagegen/sakura-menu-atlas.json",
+      "bytes": 3753,
+      "sha256": "ea0b05d8b8dd368a54bdce2b0884d8e9f91a3d8dee1f1b51b684e37fcfbb01d8"
+    },
+    {
+      "path": "art-source/imagegen/sakura-menu-atlas.png",
+      "bytes": 2152851,
+      "sha256": "2d1ae19fcdeb1fca643a03abc33e1ba3c0562346873a58f8ff9feeb567becbce"
+    },
+    {
+      "path": "art-source/imagegen/title-ui-atlas-v2.metadata.json",
+      "bytes": 768,
+      "sha256": "4341ee2d442b9e00f893aaad59a1bc6b91c51f2ef1df4a3841b643d4b759fab0"
+    },
+    {
+      "path": "art-source/imagegen/title-ui-atlas-v2.prompt.txt",
+      "bytes": 1501,
+      "sha256": "b8417b40be268af92a6886aaf1d94489479b2fc426c1662672f34f4674d4ca37"
+    },
+    {
+      "path": "art-source/imagegen/title-ui-atlas-v2.png",
+      "bytes": 9480150,
+      "sha256": "9f7cd183532f9aa90806c91ed618aec5bd7c05085e1e7f06c4df8b9453c03723"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.metadata.json",
+      "bytes": 637,
+      "sha256": "d3dc2c9b192b6fc1f6651f58f561b827d6dd5f7fe4c34a3a56cde80849873297"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.prompt.txt",
+      "bytes": 2794,
+      "sha256": "6517edbc983e1c85fbffbde379a3f458de0a9ced3568bff09321b1e4ca98ea7f"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.negative.txt",
+      "bytes": 1421,
+      "sha256": "6061da71acce8322027d755d506b6fe1e476071957957b9cf95f89fbb182ebff"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.request.json",
+      "bytes": 9394,
+      "sha256": "e2f922ee3c0d7e4e943e3cf76cce3d2247b5ba1e80d0807a630731cd4c0d5815"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.native.png",
+      "bytes": 2268921,
+      "sha256": "5002d312edd240e842af36e2b7f7b70778e958ad79dd2df0be91112414a69de3"
+    },
+    {
+      "path": "art-source/imagegen/nai-v5-user-style-v3-fixed.4k.png",
+      "bytes": 9404557,
+      "sha256": "992eaa27fd2d710d46beb041ab1171cef938aeaaeeffb39d67163fd28fd19ced"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/asset-index.json",
+      "bytes": 4156,
+      "sha256": "342a2ffa1129f91b1305e43b051db3d4390d5fc3ecbd43d4ae46d1a86114a34e"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/controls-manifest.json",
+      "bytes": 9415,
+      "sha256": "9a61211db2a430d961ad97fe062b8a2621edafffd9b5cbc66954b4e5ec26fd45"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/controls-prompts.json",
+      "bytes": 4528,
+      "sha256": "e55e210f7e012f099bb80d69477fb04b6e9bcd817fa3f8bd7cf5f351e37fbcfd"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/dropdown-manifest.json",
+      "bytes": 2128,
+      "sha256": "317f512275ae9b99d3abdd56d70e9d41d433000ec3b0a6f31a605650f31afaa9"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/figure-manifest.json",
+      "bytes": 6588,
+      "sha256": "cf6d0c1c122ca1caf41e44d7f5544c7f3624dca95fa85dbf75f6833b24f96e11"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/figure-slices.json",
+      "bytes": 548,
+      "sha256": "9f0a60e214d7077e09ff7d29ea350f8564d2a3312c2fed4f5ccd01a32c187ba6"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/folio-manifest.json",
+      "bytes": 4731,
+      "sha256": "fdb1fa4f6653930259c08dc9fc5407e42691aa2f92d475e18888877457f2c68e"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/navigation-manifest.json",
+      "bytes": 2067,
+      "sha256": "12c1d4317c71c5d01320383edb4b417a4e18171f74e918da4c8992bae28238ed"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/blank-screen.png",
+      "bytes": 1958647,
+      "sha256": "9b57b2e8c21e49d122033124f4b7c01d0f6c3fa0b2e4d4780136ff58e75202bb"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/controls-atlas.png",
+      "bytes": 1515932,
+      "sha256": "fccced4755914ebbf84a55a9e27189c714fcb3d1e2ee6ff4d7a73d8f80f50f88"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/dice-atlas.png",
+      "bytes": 1968018,
+      "sha256": "bb7e91846997b84cd126f167b03f4b59b5908c01ee6db316b45f50d2b88dfcc9"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/dropdown-atlas.png",
+      "bytes": 1932135,
+      "sha256": "de7a697d824da994e2fe18ece7661870dbf8de98438e6927bcff3c4ff2f99d32"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/folio-cover.png",
+      "bytes": 2935703,
+      "sha256": "96484f53d5e0bbabff13ebddfbd23a9241ecfaf547ff0d11593f3be49786b6a3"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/folio-page.png",
+      "bytes": 2778164,
+      "sha256": "28abf96beb95b1bc3982b49f9f2dd4ea98a47773b6d2ba7f07bbbbb097780046"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/folio-room.png",
+      "bytes": 1915403,
+      "sha256": "f3b3fda29108cd62a1eb197f71543b197cbbd1ee3531e83e607f6e28ec40055c"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/navigation-selected.png",
+      "bytes": 1717074,
+      "sha256": "c5dad10d282923a4e9c1751f5153346f4f166d40d39abb6925f75d095123cd33"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/plum-atlas.png",
+      "bytes": 1588292,
+      "sha256": "5ebfda5fbb04a03f8b117d8434ccbe423c0ea3bb11ea4c83d6adc7e0d9f7d282"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/screen-figure.png",
+      "bytes": 2338216,
+      "sha256": "e967a5611f688612a32c2827eab7d2810f0978218c55ec07d276fe0b45c09f42"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/sliders-atlas.png",
+      "bytes": 1874276,
+      "sha256": "a76ceefc678bb5db8c04c588273386876453c6611e5df3341ee619eb29af35fc"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/imported/imported-1.png",
+      "bytes": 997171,
+      "sha256": "7de1a762b7a988440826af9442f68d4d5891897b634b903bec1890d1de40a042"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/imported/imported-2.png",
+      "bytes": 656570,
+      "sha256": "8e31652df849e3f64bb33f544564aeb6fb9f21f3c55e4cc355c486156c30e2eb"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/imported/imported-3.png",
+      "bytes": 1158802,
+      "sha256": "2c709fafdde62b561ed14029af429b533e6ee23817e6804b0b88a7a90e20cf71"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/reference-layout.png",
+      "bytes": 2453361,
+      "sha256": "dbe9df3be31734b99f6dc6015a15eb71cec34b12711cf17d450eebb2e07cb5c9"
+    },
+    {
+      "path": "art-source/imagegen/settings-folio/reference-controls.png",
+      "bytes": 2432577,
+      "sha256": "808d5ae781669ba0f476bb2174f728a88683a701de660b5ffb844883a173d14c"
+    }
+  ],
+  "historicalInputs": []
+}
