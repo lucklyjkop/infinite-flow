@@ -10,6 +10,12 @@
 | Sound Walk - Writing.wav | JennaW_ksc | [作品与 CC0](https://freesound.org/people/JennaW_ksc/sounds/537718/) | 书法显现、滑杆细微摩擦；使用作者公开的高质量预览录音 |
 | Wooden dice on wodden table roll, `Holzwürfel_auf_Holztisch_2.flac` | Wuzzy | [作品与 CC0](https://opengameart.org/content/wooden-dice-on-wodden-table-roll) | 骰子单次触地、纸面按钮及开关触感 |
 
-运行资源为 Ogg Opus、48 kHz、双声道。17 个音效及峰值、响度、来源对应记录在 `manifest.json`。[制作脚本](../../../scripts/build-game-audio.py)保留处理过程，[原始录音](../../../audio-source/)随仓库保存，编辑后的无损 WAV 写入本机 `output/audio-design/wav/`。当前版本不播放背景音乐，环境音默认 25%。
+运行资源为 Ogg Opus、48 kHz、双声道。原有 17 个音效及新增 10 个主神空间独立音效的峰值、响度、来源对应记录在 `manifest.json`。[制作脚本](../../../scripts/build-game-audio.py)保留处理过程，[原始录音](../../../audio-source/)随仓库保存，编辑后的无损 WAV 写入本机 `output/audio-design/wav/`。当前版本不播放背景音乐，环境音默认 25%。
 
 短声保留轻微材质随机变化，运行时限制触发频率与叠音数量。骰子录音只截取一次触地，弹跳声由实际动画触点安排；滑杆不是每个指针事件都播放声音。雨声循环经过 1.4 秒等功率交叉衔接，打开设置时降低环境音，离开画面及切换后台时收尾。
+
+## 开始游戏与主神空间的独立声音
+
+`start-cube-wave`、`start-cube-fracture`、`deity-cube-assemble`、`deity-return-wave` 与 `deity-inscribe`、`deity-branch`、`deity-hover`、`deity-select`、`deity-confirm`、`deity-back` 为本项目原创程序化合成声音。它们没有使用上表录音或既有 UI 音频 buffer，每条使用独立种子、材质配比和时序生成。
+
+制作包括单峰空气压力、受阻尼的哑光石/陶材质接触、颗粒裂解、纤维摩擦和短空间反射。开始游戏波浪由中央向外张开，主神拼合由两侧向内，返回波浪只从左向右经过一次。没有电子提示音或背景配乐。[合成脚本](../../../scripts/build-deity-audio.py)、[设计与复现说明](../../../audio-source/deity-design/README.md)、[种子与测量记录](../../../audio-source/deity-design/design.json)随仓库保存。试听 WAV 写入本机 `output/audio-design/deity/`。

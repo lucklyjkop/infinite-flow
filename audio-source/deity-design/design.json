@@ -1,0 +1,190 @@
+{
+  "created": "2026-11-08",
+  "authoring": "Original procedural synthesis; no input audio files or service API.",
+  "sampleRate": 48000,
+  "channels": 2,
+  "preview": "output/audio-design/deity/deity-preview.wav",
+  "truePeakMeasurement": "4x polyphase oversampling of the decoded delivery Opus waveform; dBFS.",
+  "assets": [
+    {
+      "name": "start-cube-wave",
+      "file": "start-cube-wave.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "One pressure crest travels outwards from the center; matte cube lift, broad air, restrained low body.",
+      "loop": false,
+      "duration": 2.6,
+      "bytes": 30686,
+      "peakDbfs": -9.49,
+      "truePeakDbfs": -9.47,
+      "rmsDbfs": -26.76,
+      "boundaryStep": 0.0,
+      "seed": 723051,
+      "sha256": "57f484113459f0b4d2c42db1923d83f86ab5592b17bf52c11d41dd566131e2b4",
+      "masterSha256": "9aa79287ce85d5680291a8cdce1c3e69a7e49af9d368e68d41a3e0d16f87908d"
+    },
+    {
+      "name": "start-cube-fracture",
+      "file": "start-cube-fracture.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Independent porous-stone fractures and diminishing fine debris; trigger 0.70 seconds after start-cube-wave.",
+      "loop": false,
+      "duration": 1.8,
+      "bytes": 19673,
+      "peakDbfs": -10.2,
+      "truePeakDbfs": -10.18,
+      "rmsDbfs": -29.71,
+      "boundaryStep": 0.0,
+      "seed": 810263,
+      "sha256": "e58ce1405cdb7263bcaa006b8d05f185fde02fd7d30cd36ad1d226f642e22abc",
+      "masterSha256": "5205d3887d1cde63b48af01b754f54e25aec63632f3b942ed30b88a794c2ec9c"
+    },
+    {
+      "name": "deity-cube-assemble",
+      "file": "deity-cube-assemble.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Air and individual block contacts move from the sides inward; softly seat at 1.015 seconds.",
+      "loop": false,
+      "duration": 1.55,
+      "bytes": 17250,
+      "peakDbfs": -10.16,
+      "truePeakDbfs": -10.11,
+      "rmsDbfs": -26.7,
+      "boundaryStep": 9.2e-05,
+      "seed": 961733,
+      "sha256": "b44d9832a13934aa5dafe71fc9f50f4f7f89b494a620254bf0e5efbf89a0c0d0",
+      "masterSha256": "611fc9e18bbcb68fb5cfe7ec310919f66989693eb4be34fe9f7f5a3d3d7b48f2"
+    },
+    {
+      "name": "deity-return-wave",
+      "file": "deity-return-wave.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Single matte cube tide pans continuously left to right and settles as the title image reconstructs.",
+      "loop": false,
+      "duration": 2.2,
+      "bytes": 23388,
+      "peakDbfs": -9.44,
+      "truePeakDbfs": -9.41,
+      "rmsDbfs": -26.04,
+      "boundaryStep": 0.000305,
+      "seed": 137819,
+      "sha256": "57c05df311cfc9aba7660e31730d058c13181c4d0757dc997e8bbb944a3d77e9",
+      "masterSha256": "bf05f107a35c811f37138846aa70a1ba5f3131a370eb8d549717a34f37a22716"
+    },
+    {
+      "name": "deity-inscribe",
+      "file": "deity-inscribe.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Four new irregular dry brush-fibre gestures for deity-space calligraphy; stereo follows the writing.",
+      "loop": false,
+      "duration": 0.9,
+      "bytes": 9507,
+      "peakDbfs": -14.73,
+      "truePeakDbfs": -14.72,
+      "rmsDbfs": -31.12,
+      "boundaryStep": 0.0,
+      "seed": 287119,
+      "sha256": "9cf5d631666831cd73f961a34ad4283eaf5298b26d618e282f56415cebfaf0db",
+      "masterSha256": "f213c23cce886d9a3b39868b27b062807307b705615aabe51bf6756147010cab"
+    },
+    {
+      "name": "deity-branch",
+      "file": "deity-branch.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Fine woody-fibre stretch and tiny bark contacts, a short organic growth sound.",
+      "loop": false,
+      "duration": 0.4,
+      "bytes": 4662,
+      "peakDbfs": -16.96,
+      "truePeakDbfs": -16.96,
+      "rmsDbfs": -31.98,
+      "boundaryStep": 0.0,
+      "seed": 398821,
+      "sha256": "93ce72dc991eb3850b8787fbcd6b51ffb772693e794cdd8fe0bb8b6c2c329fc0",
+      "masterSha256": "26ab02b8896df75e69e6015e6e9fb6fff2ddc5de9411a785ae8520939aac7928"
+    },
+    {
+      "name": "deity-hover",
+      "file": "deity-hover.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Continuous soft fibre brush; no impact or echo, 480–2050 Hz core, 25 ms onset and 80 ms release for avatar focus.",
+      "loop": false,
+      "duration": 0.2,
+      "bytes": 3724,
+      "peakDbfs": -24.87,
+      "truePeakDbfs": -24.85,
+      "rmsDbfs": -35.99,
+      "boundaryStep": 0.0,
+      "seed": 421867,
+      "sha256": "7bc44be47f7ae03f4bbdbb2b0fabdb88fcca3142240e6e1ad3e1620a54a91b54",
+      "masterSha256": "bf5c0532b17c2ee37b6ba71b31fa8190551130338a9859efad2d9945414c6364"
+    },
+    {
+      "name": "deity-select",
+      "file": "deity-select.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Soft unglazed ceramic contact with a fine cloth tail; deity-avatar activation only.",
+      "loop": false,
+      "duration": 0.2,
+      "bytes": 3314,
+      "peakDbfs": -14.53,
+      "truePeakDbfs": -14.46,
+      "rmsDbfs": -30.32,
+      "boundaryStep": 9.2e-05,
+      "seed": 562091,
+      "sha256": "b609e2d39551a2af7dcbe2ab09fa57f3ff59d0bc4a270eb2a6fe22985fa9a5ed",
+      "masterSha256": "95b31c5eb3836273522e9f69181f6868d8b8968f24433503b01096c56b87bd62"
+    },
+    {
+      "name": "deity-confirm",
+      "file": "deity-confirm.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "Warm damped stone seating with an airy fabric release; deity commitment only, no pitched chime.",
+      "loop": false,
+      "duration": 0.5,
+      "bytes": 5876,
+      "peakDbfs": -12.07,
+      "truePeakDbfs": -11.96,
+      "rmsDbfs": -28.57,
+      "boundaryStep": 0.0,
+      "seed": 631913,
+      "sha256": "cb56bf199fc6fffd666bd2fe3d5333604a324ca91bec44f34ed811d3b0e587c9",
+      "masterSha256": "6ff2d6d7e033fe65d759f2ceb61f0b1f605f3ea8dce509db07d22df6d869b889"
+    },
+    {
+      "name": "deity-back",
+      "file": "deity-back.ogg",
+      "source": [
+        "Original procedural material synthesis / scripts/build-deity-audio.py"
+      ],
+      "design": "A short leftward cloth retreat with low soft contact before the return wave begins.",
+      "loop": false,
+      "duration": 0.22,
+      "bytes": 3093,
+      "peakDbfs": -16.89,
+      "truePeakDbfs": -16.88,
+      "rmsDbfs": -32.36,
+      "boundaryStep": 0.0,
+      "seed": 704177,
+      "sha256": "2c30c2f90e49ac945e22eca17ca1ebcd90156d2951c6071cfbf7eaef3ee9ddf8",
+      "masterSha256": "2b34662547289720c1744ff1ab6b60884df886c8ab143b30c1f0ccccff49c99a"
+    }
+  ]
+}

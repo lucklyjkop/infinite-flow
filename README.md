@@ -55,7 +55,7 @@ python -m unittest discover -s tests -p "test_*.py"
 | --- | --- |
 | `loading-page/` | 可独立运行的游戏入口、交互、动画与本地素材 |
 | `art-source/` | 当前设计的源图、提示词与处理记录 |
-| `audio-source/` | 当前音效使用的 CC0 原始录音 |
+| `audio-source/` | CC0 原始录音，以及主神空间原创音效的设计与复现记录 |
 | `scripts/` | 跨平台项目检查 |
 | `.devcontainer/` | GitHub Codespaces / VS Code 开发容器 |
 | `.github/workflows/` | 自动资源与语法检查 |

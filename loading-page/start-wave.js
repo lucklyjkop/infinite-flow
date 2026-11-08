@@ -1,7 +1,9 @@
 /* Own one playback, from the frame beneath the pointer to an empty scene. */
 (() => {
   'use strict';
+  let playbackSerial=0;
   window.playStartWave = (world, {motion, pointer}) => {
+    const soundGroup=`start-cube-transition-${++playbackSerial}`;
     const bounds=world.getBoundingClientRect();
     const width=bounds.width, height=bounds.height;
     const media=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -68,12 +70,13 @@
     window.dispatchEvent(new Event('infinite:starttransition'));
 
     const duration=name==='fade'||liveFade?180:2600;
-    let resolve, id=0, done=false;
+    let resolve, id=0, done=false, soundStarted=false;
     const finished=new Promise(complete=>{resolve=complete;});
     let start,previous;
     function stop(completed) {
       if(done) return;
       done=true;
+      window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:soundGroup,fade:.035}}));
       cancelAnimationFrame(id);
       world.removeEventListener('pointermove',aim);
       document.removeEventListener('visibilitychange',visibility);
@@ -105,6 +108,15 @@
       try {
         if (renderer?.draw(t,x,y)===false) { skip(); return; }
       } catch { skip(); return; }
+      if(!soundStarted && name!=='fade' && !liveFade && !reduced) {
+        soundStarted=true;
+        // Use the first successfully rendered cube frame as the audio origin.
+        // Both sources share a group, including the not-yet-started fracture.
+        for(const [cue,delay] of [['start-cube-wave',0],['start-cube-fracture',.7]]) {
+          window.dispatchEvent(new CustomEvent('infinite:soundcue', {detail:{name:cue,
+            group:soundGroup,delay,variation:false}}));
+        }
+      }
       if(t>=1) skip();
       else id=requestAnimationFrame(frame);
     }

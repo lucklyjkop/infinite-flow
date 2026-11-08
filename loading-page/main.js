@@ -148,7 +148,7 @@
   function syncGlass() {
     const state = world.dataset.state;
     const showing = state === 'title' || ((state === 'loading' || state === 'ready') && elapsed >= rainFadeInAt);
-    if (showing && loaded && !manualPaused && !document.hidden && !document.querySelector('dialog[open]')) glass?.start();
+    if (showing && loaded && !manualPaused && !document.hidden && !world.classList.contains('deity-returning') && !document.querySelector('dialog[open]')) glass?.start();
     else glass?.stop();
   }
 
@@ -164,7 +164,7 @@
     petals?.setReducedMotion(media.matches);
     rain?.setReducedMotion(media.matches);
     const state = world.dataset.state;
-    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity'].includes(state);
+    const backstage = world.classList.contains('deity-returning') || ['exited', 'start-ended', 'deity-arriving', 'deity'].includes(state);
     // A warm camera can track during a replay. The first full-resolution GL
     // upload waits for the menu entrance to finish instead of stalling the opening.
     const canUseCamera = spatial?.renderer || (state === 'title' && !world.classList.contains('title-unfold'));
@@ -302,6 +302,7 @@
     }
   });
   window.addEventListener('infinite:returntitle', applyMotion);
+  window.addEventListener('infinite:deityreturnend', applyMotion);
   document.getElementById('title-menu').addEventListener('animationend', event => {
     if (event.animationName === 'menu-row-in' && event.target.dataset.menuAction === 'exit') {
       world.classList.remove('title-unfold');

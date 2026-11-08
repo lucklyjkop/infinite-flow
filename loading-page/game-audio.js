@@ -1,4 +1,4 @@
-/* One restrained, sample-based sound stage for the title, folio and their controls.
+/* Recorded title/folio foley and independently synthesized deity material sounds.
    Fetching is silent. The AudioContext is only created by a real user gesture. */
 (() => {
   'use strict';
@@ -22,12 +22,24 @@
     'ui-save': {bus: 'effects', gain: .52, interval: 200, vary: .015},
     'ui-back': {bus: 'effects', gain: .4, interval: 100, vary: .03},
     'ui-focus': {bus: 'effects', gain: .28, interval: 65, vary: .025},
+    // The cube journey has original waveforms; never alias these to folio/title cues.
+    'start-cube-wave': {bus: 'effects', gain: .9, interval: 150, vary: 0},
+    'start-cube-fracture': {bus: 'effects', gain: .85, interval: 150, vary: 0},
+    'deity-cube-assemble': {bus: 'effects', gain: .9, interval: 150, vary: 0},
+    'deity-return-wave': {bus: 'effects', gain: .9, interval: 150, vary: 0},
+    'deity-inscribe': {bus: 'effects', gain: 1, interval: 100, vary: 0},
+    'deity-branch': {bus: 'effects', gain: 1, interval: 100, vary: 0},
+    'deity-hover': {bus: 'effects', gain: 1, interval: 600, vary: 0, revision: 'soft-fibre-2'},
+    'deity-select': {bus: 'effects', gain: 1, interval: 100, vary: .018},
+    'deity-confirm': {bus: 'effects', gain: .9, interval: 200, vary: 0},
+    'deity-back': {bus: 'effects', gain: 1, interval: 100, vary: 0},
   };
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
   const finite = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
   const encoded = new Map(), decoded = new Map(), fetching = new Map(), decoding = new Map();
   const failed = new Set(), voices = new Set(), pending = new Set(), lastRequested = new Map();
-  const counts = Object.create(null), recent = [];
+  const counts = Object.fromEntries(Object.keys(bank).map(name => [name, 0]));
+  const scheduledCounts = {...counts}, recent = [];
   let context = null, master = null, compressor = null, ambient = null, resumeJob = null, suspendJob = null;
   let pageAway = false;
   let buses = null, unlocked = false, epoch = 0, dropped = 0;
@@ -38,7 +50,8 @@
   function fetchSample(name) {
     if (encoded.has(name)) return Promise.resolve(encoded.get(name));
     if (fetching.has(name)) return fetching.get(name);
-    const job = fetch(`assets/audio/${name}.ogg`, {cache: 'force-cache'})
+    const revision = bank[name]?.revision ? `?v=${bank[name].revision}` : '';
+    const job = fetch(`assets/audio/${name}.ogg${revision}`, {cache: 'force-cache'})
       .then(response => { if (!response.ok) throw Error('Audio asset unavailable'); return response.arrayBuffer(); })
       .then(bytes => { encoded.set(name, bytes); return bytes; })
       .catch(() => { failed.add(name); return null; });
@@ -153,14 +166,33 @@
   document.addEventListener('pointerdown', activate, {capture: true, passive: true});
   document.addEventListener('keydown', activate, true);
 
+  // BufferSource has no "started" event. Count only after its audio-clock start,
+  // so cancelling a delayed fracture does not look like an audible playback.
+  function recordStarted(voice) {
+    if (voice.recorded || voice.stopped || !voice.source || context.currentTime < voice.at) return;
+    voice.recorded = true;
+    counts[voice.name]++;
+    recent.push({name: voice.name, group: voice.group, time: Math.round(performance.now())});
+    if (recent.length > 32) recent.shift();
+  }
+  function watchVoiceStart(voice) {
+    if (voice.cleaned || voice.stopped) return;
+    recordStarted(voice);
+    if (!voice.recorded) voice.startTimer = setTimeout(() => watchVoiceStart(voice),
+      Math.max(8, Math.min(80, (voice.at - context.currentTime) * 1000)));
+  }
   function cleanVoice(voice) {
     if (voice.cleaned) return;
+    recordStarted(voice);
+    clearTimeout(voice.startTimer);
     voice.cleaned = true;
     voices.delete(voice); pending.delete(voice);
     voice.nodes?.forEach(node => { try { node.disconnect(); } catch {} });
   }
   function stopVoice(voice, seconds = .035) {
     if (voice.stopped) return;
+    recordStarted(voice);
+    clearTimeout(voice.startTimer);
     voice.stopped = true; pending.delete(voice);
     if (!voice.source) return;
     const now = context.currentTime, fade = clamp(finite(seconds, .035), 0, 2);
@@ -217,9 +249,8 @@
       voice.source = source; voice.gain = envelope; voice.at = at;
       voices.add(voice); source.onended = () => cleanVoice(voice);
       source.start(at); source.stop(at + duration + .012);
-      counts[name] = (counts[name] || 0) + 1;
-      recent.push({name, group: voice.group, time: Math.round(performance.now())});
-      if (recent.length > 32) recent.shift();
+      scheduledCounts[name]++;
+      watchVoiceStart(voice);
       window.dispatchEvent(new CustomEvent('infinite:audioplay', {detail: {name, group: voice.group, at, duration, bus: spec.bus}}));
     };
     if (decoded.has(name) && context.state === 'running') accepted(decoded.get(name));
@@ -291,7 +322,11 @@
     const bounds = element.getBoundingClientRect();
     return clamp(((bounds.left + bounds.width / 2) / innerWidth - .5) * .6, -.3, .3);
   }
-  function controlSound(name, element, options = {}) { play(name, {group: 'ui', pan: positionPan(element), ...options}); }
+  function controlSound(name, element, options = {}) {
+    // The deity screen explicitly owns its hover, selection and action recordings.
+    if (element?.closest?.('#deity-space')) return;
+    play(name, {group: 'ui', pan: positionPan(element), ...options});
+  }
   document.addEventListener('click', event => {
     const button = event.target.closest?.('button');
     if (!button || button.disabled || button.closest('[inert]') || button.matches('#save-settings, #preview-dice')) return;
@@ -333,11 +368,17 @@
   });
 
   window.InfiniteAudio = Object.freeze({unlock, play, stopGroup, sync,
-    getState: () => ({context: context?.state || 'locked', unlocked,
+    getState: () => {
+      voices.forEach(recordStarted);
+      return {context: context?.state || 'locked', unlocked,
       resuming: Boolean(resumeJob), suspending: Boolean(suspendJob),
       activeVoices: voices.size, pendingVoices: pending.size, ambient: Boolean(ambient && ambientLevel()),
       loaded: [...decoded.keys()], failed: [...failed], gains: {...values},
-      played: {...counts}, dropped, recent: recent.map(item => ({...item}))}),
+      played: {...counts}, scheduled: {...scheduledCounts}, dropped,
+      voices: [...voices].map(voice => ({name: voice.name, group: voice.group,
+        started: Boolean(voice.recorded), stopped: voice.stopped})),
+      recent: recent.map(item => ({...item}))};
+    },
   });
   sync(window.InfiniteSettings?.getState?.());
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', preload, {once: true});

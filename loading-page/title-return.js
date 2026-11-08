@@ -73,7 +73,7 @@
 
   function begin(event) {
     settle();
-    if (!event.detail?.motion || !allowed()) return;
+    if (event.detail?.presentation === 'cube-wave' || !event.detail?.motion || !allowed()) return;
     sequence++;
     const run = active = {id: event.detail.id, animations: [], layers: [], guard: 0};
     screen.dataset.returnGrowth = 'drawing';

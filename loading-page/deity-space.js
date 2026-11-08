@@ -18,12 +18,12 @@
       <img class="deity-backdrop" src="assets/deity-space/nai-scene.webp" alt="" draggable="false" decoding="async">
       <canvas id="deity-spatial" class="deity-spatial-surface"></canvas>
       <canvas id="deity-spatial-fallback" class="deity-spatial-surface"></canvas>
-      <canvas id="deity-freeze" hidden></canvas>
       <div class="deity-tone"></div>
       <div class="deity-depth-haze"></div>
       <div class="deity-scene-light"></div>
     </div>
     <canvas id="deity-assembly" aria-hidden="true"></canvas>
+    <canvas id="deity-return-wave" aria-hidden="true" hidden></canvas>
     <header class="deity-location">
       <h1 id="deity-location"><span class="deity-heading-words">主神空间</span><img src="assets/deity-space/location-title.webp" alt="" draggable="false" decoding="async"></h1>
       <div class="deity-location-branch"><img src="assets/menu-ui/sakura-branch.webp" alt="" draggable="false" decoding="async"></div>
@@ -57,9 +57,9 @@
   const confirm = root.querySelector('#deity-confirm');
   const titleArt = root.querySelector('.deity-location img');
   const locationBranch = root.querySelector('.deity-location-branch img');
-  const frozen = root.querySelector('#deity-freeze');
+  let returnCanvas = root.querySelector('#deity-return-wave');
   const titleScreen = document.getElementById('title-screen');
-  const canvas = root.querySelector('#deity-assembly');
+  let canvas = root.querySelector('#deity-assembly');
   const status = root.querySelector('#deity-selection-status');
   const images = [...root.querySelectorAll('img')];
   const waiting = new Map();
@@ -68,6 +68,7 @@
   let hovering = false, focusing = false;
   let loads = 0, failures = 0;
   let locationReveal = null, closing = null, restoringTitle = false;
+  let avatarHoverTimer = 0, avatarHoverAt = -Infinity;
 
   const motionAllowed = () => !reduced.matches && window.InfiniteSettings?.getState().motion !== false;
   const isOpen = () => phase !== 'hidden';
@@ -75,6 +76,7 @@
     window.dispatchEvent(new CustomEvent('infinite:soundcue', {detail: {name, group: 'deity-space', ...options}}));
   }
   function setPhase(value) {
+    if (value !== 'ready') cancelAvatarFeedback();
     phase = value;
     root.dataset.phase = value;
     if (value !== 'hidden' && value !== 'closing') world.dataset.state = value === 'ready' ? 'deity' : 'deity-arriving';
@@ -116,7 +118,7 @@
       loads = results.filter(Boolean).length;
       failures = results.length - loads;
       root.classList.toggle('has-title-art', titleArt.naturalWidth > 0);
-      return {loaded: loads, failed: failures};
+      return Promise.resolve(window.DeityReturnCapture?.ready).then(() => ({loaded: loads, failed: failures}));
     });
     return preloadJob;
   }
@@ -206,6 +208,8 @@
     if (token !== generation || !isOpen() || phase === 'ready') return;
     assembly = null;
     canvas.hidden = true;
+    // Retire the preserved final frame as soon as the real scene takes over.
+    canvas.width = canvas.height = 1;
     root.classList.remove('is-assembling');
     root.classList.toggle('motion-reduced', !motionAllowed());
     spatial?.refresh();
@@ -228,7 +232,7 @@
     root.classList.toggle('motion-reduced', !motionAllowed());
     root.hidden = false;
     root.inert = false;
-    root.classList.remove('location-written', 'is-frozen');
+    root.classList.remove('location-written', 'is-returning');
     back.disabled = false;
     canvas.hidden = true;
     choices.forEach(button => { button.disabled = true; });
@@ -239,7 +243,7 @@
     await preload();
     if (token !== generation || !isOpen()) return false;
     const animated = motionAllowed() && !document.hidden;
-    if (animated) { cue('brush-write', {gain: .68}); cue('branch-grow', {gain: .4, delay: .65}); }
+    if (animated) { cue('deity-inscribe', {variation:false}); cue('deity-branch', {delay:.65, variation:false}); }
     const writing = window.playDeityLocationReveal?.(root, titleArt, locationBranch, {motion:animated});
     locationReveal = writing ?? null;
     if (!writing) root.classList.add('location-written');
@@ -254,12 +258,18 @@
       ready(token);
       return true;
     }
-    canvas.hidden = false;
     try {
+      // Prepare a fresh hidden surface: the previous WebGL drawing buffer held
+      // a complete photograph which must never flash before the incoming cubes.
+      const fresh = canvas.cloneNode(false);
+      fresh.hidden = true;
+      fresh.width = fresh.height = 1;
+      canvas.replaceWith(fresh); canvas = fresh;
       assembly = window.playDeityAssembly(canvas, frame.image, {
         width: frame.width, height: frame.height, reducedMotion: !motionAllowed(),
       });
-      cue('menu-open', {gain: .55});
+      canvas.hidden = false;
+      cue('deity-cube-assemble', {variation:false});
       const complete = await assembly.finished;
       if (token !== generation || !isOpen()) return false;
       if (!complete) { ready(token); return true; }
@@ -269,21 +279,6 @@
   }
   function signalReturn(type, detail) {
     window.dispatchEvent(new CustomEvent(`infinite:deityreturn${type}`, {detail}));
-  }
-  function freezeView() {
-    const bounds = root.getBoundingClientRect();
-    const dpr = Math.min(devicePixelRatio || 1, 1.25);
-    frozen.width = Math.max(1, Math.round(bounds.width * dpr));
-    frozen.height = Math.max(1, Math.round(bounds.height * dpr));
-    const context = frozen.getContext('2d', {alpha:false});
-    if (!context) return false;
-    const source = spatial?.captureSource() || backdrop;
-    context.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (source === backdrop) drawFitted(context, source, {x:0,y:0,width:bounds.width,height:bounds.height});
-    else context.drawImage(source, 0, 0, bounds.width, bounds.height);
-    frozen.hidden = false;
-    root.classList.add('is-frozen');
-    return true;
   }
   function showTitle() {
     restoringTitle = true;
@@ -295,15 +290,16 @@
     closing = null;
     root.hidden = true;
     root.inert = false;
-    canvas.hidden = frozen.hidden = true;
-    frozen.width = frozen.height = 1;
-    root.classList.remove('is-frozen', 'is-assembling');
+    canvas.hidden = returnCanvas.hidden = true;
+    root.classList.remove('is-returning', 'is-assembling');
     root.setAttribute('aria-busy', 'false');
     back.disabled = false;
     if (run) {
       clearTimeout(run.guard);
-      run.animations.forEach(animation => animation.cancel());
+      run.player?.cancel();
+      for (const frame of run.frames) frame.image.width = frame.image.height = 1;
     }
+    returnCanvas.width = returnCanvas.height = 1;
     setPhase('hidden');
     hovering = focusing = false; updateLight();
     world.classList.remove('deity-returning');
@@ -315,6 +311,7 @@
       }
     }
     window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-space',fade:.1}}));
+    window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-return',fade:.1}}));
   }
   function close({returnToTitle = true, immediate = false} = {}) {
     if (!isOpen() && !launching) return false;
@@ -329,14 +326,18 @@
     locationReveal?.cancel(); locationReveal = null;
     assembly?.cancel(); assembly = null;
     window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail: {group: 'deity-space', fade: .1}}));
-    if (!animated || !freezeView()) {
+    let from = null;
+    if (animated) {
+      // Copy the actual spatial camera before setPhase disables its renderer.
+      try { from = window.captureDeityReturnFrame?.(root, spatial?.captureSource() || backdrop); }
+      catch { /* A missing compositor must never leave the return button inert. */ }
+    }
+    if (!animated || !from || !window.playDeityReturnWave) {
       resetAim(); finishClose(true);
       if (returnToTitle) showTitle();
       return true;
     }
-    // Keep the exact displayed camera pose while its live renderer returns to
-    // zero. The compositor fades this frozen scene over the restored title.
-    const run = closing = {id:`deity-${generation}`, animations:[], guard:0};
+    const run = closing = {id:`deity-${generation}`, player:null, frames:[from], guard:0, sounded:false};
     root.inert = true;
     back.disabled = confirm.disabled = true;
     choices.forEach(button => {button.disabled = true;});
@@ -345,38 +346,67 @@
     titleScreen.classList.add('deity-restored');
     showTitle();
     titleScreen.inert = true;
-    cue('menu-close', {gain:.65});
-    signalReturn('start', {id:run.id, motion:true, duration:780});
-    const animate = (element, frames, duration) => {
-      const animation = element.animate(frames, {duration, easing:'cubic-bezier(.22,.61,.28,1)', fill:'both'});
-      run.animations.push(animation);
-      return animation.finished.catch(() => {});
-    };
-    const fades = [
-      animate(root, [{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.988)'}], 780),
-      animate(root.querySelector('.deity-location'), [{opacity:1,translate:'0 0'},{opacity:0,translate:'0 -6px'}], 330),
-      animate(root.querySelector('.deity-roster'), [{opacity:1},{opacity:0}], 280),
-    ];
+    // The full title is already part of the destination texture: do not layer
+    // the separate settings-return handwriting or its old sounds on this wave.
+    signalReturn('start', {id:run.id, motion:true, presentation:'cube-wave', duration:2200});
     const finish = () => {if (closing === run) finishClose();};
-    Promise.all(fades).then(finish);
-    run.guard = setTimeout(finish, 1050);
+    try {
+      const to = window.captureTitleReturnFrame?.(world);
+      if (!to) {finishClose(true); return true;}
+      run.frames.push(to);
+      // A fresh context lets a later visit recover from a WebGL context loss.
+      const fresh = returnCanvas.cloneNode(false);
+      returnCanvas.replaceWith(fresh); returnCanvas = fresh;
+      returnCanvas.hidden = false;
+      root.classList.add('is-returning');
+      run.player = window.playDeityReturnWave(returnCanvas, from.image, to.image, {
+        width:from.width, height:from.height, duration:2200,
+        onProgress: progress => {
+          if (closing !== run || run.sounded || progress >= 1) return;
+          run.sounded = true;
+          cue('deity-return-wave', {group:'deity-return', variation:false});
+        },
+      });
+      run.player.finished.then(finish, finish);
+      run.guard = setTimeout(finish, 2900);
+    } catch {finishClose(true);}
     return true;
   }
 
+  function cancelAvatarFeedback() {
+    clearTimeout(avatarHoverTimer); avatarHoverTimer = 0;
+    window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-hover',fade:.07}}));
+  }
+  function queueAvatarFeedback(button, dwell = 85) {
+    clearTimeout(avatarHoverTimer);
+    avatarHoverTimer = setTimeout(() => {
+      avatarHoverTimer = 0;
+      const now = performance.now();
+      if (phase !== 'ready' || document.hidden || now - avatarHoverAt < 600
+        || (!button.matches(':hover') && document.activeElement !== button)) return;
+      avatarHoverAt = now;
+      cue('deity-hover', {group:'deity-hover', pan:-.2, variation:false});
+    }, dwell);
+  }
   choices.forEach(button => {
-    button.addEventListener('pointerenter', () => {
-      if (phase !== 'ready') return;
+    button.addEventListener('pointerenter', event => {
+      if (phase !== 'ready' || event.pointerType === 'touch') return;
       hovering = true; updateLight();
-      if (!focusing) cue('ui-focus', {gain: .75, pan: -.2});
+      queueAvatarFeedback(button);
     });
-    button.addEventListener('pointerleave', () => { hovering = false; updateLight(); });
+    button.addEventListener('pointerleave', () => {
+      clearTimeout(avatarHoverTimer); avatarHoverTimer = 0;
+      hovering = false; updateLight();
+    });
     button.addEventListener('focus', () => {
       focusing = true; updateLight();
-      if (phase === 'ready' && !hovering) cue('ui-focus', {gain: .75, pan: -.2});
+      if (phase === 'ready' && !hovering && button.matches(':focus-visible')) queueAvatarFeedback(button, 0);
     });
-    button.addEventListener('blur', () => { focusing = false; updateLight(); });
+    button.addEventListener('blur', () => { focusing = false; updateLight(); if (!hovering) cancelAvatarFeedback(); });
     button.addEventListener('click', () => {
       if (phase !== 'ready') return;
+      cancelAvatarFeedback();
+      cue('deity-select', {group:'deity-ui', pan:-.2});
       setSelection(button.dataset.deityId);
     });
   });
@@ -387,17 +417,22 @@
     confirm.querySelector('span').textContent = '已确认';
     const deity = roster.find(item => item.id === selected);
     status.textContent = `已确认 · ${deity.name}`;
-    cue('ui-save', {gain: .7});
+    cue('deity-confirm', {group:'deity-ui'});
     window.dispatchEvent(new CustomEvent('infinite:deityselected', {
       cancelable: true, detail: {id: deity.id, name: deity.name},
     }));
   });
-  back.addEventListener('click', () => close());
+  function requestReturn() {
+    if (closing) return;
+    cue('deity-back', {group:'deity-ui'});
+    close();
+  }
+  back.addEventListener('click', requestReturn);
   root.addEventListener('contextmenu', event => event.preventDefault());
   root.addEventListener('dragstart', event => event.preventDefault());
   document.addEventListener('keydown', event => {
     if ((!isOpen() && !launching) || event.altKey || event.ctrlKey || event.metaKey) return;
-    if (event.key === 'Escape') { event.preventDefault(); close(); }
+    if (event.key === 'Escape') { event.preventDefault(); requestReturn(); }
     else if (phase === 'ready' && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) {
       event.preventDefault();
       const current = choices.indexOf(document.activeElement);
@@ -408,7 +443,9 @@
   });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
+      cancelAvatarFeedback();
       if (closing) {finishClose(true); return;}
+      window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-space',fade:.08}}));
       locationReveal?.finish();
       resetAim();
       hovering = focusing = false; updateLight();
@@ -423,6 +460,7 @@
     root.classList.toggle('motion-reduced', !motionAllowed());
     if (!motionAllowed()) {
       if (closing) {finishClose(true); return;}
+      window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-space',fade:.08}}));
       locationReveal?.finish();
       resetAim();
       if (phase === 'assembling') { assembly?.cancel(); assembly = null; ready(generation); }
@@ -456,7 +494,7 @@
     getState: () => ({phase, visible: !root.hidden, selected,
       confirmed, launching, loaded: loads, failed: failures, locked: 0, available: roster.map(item => item.id),
       assembly: assembly?.getState?.() ?? null, pointerFrame: Boolean(spatial?.getState().moving),
-      spatial: spatial?.getState() ?? null, closing:Boolean(closing), writing:Boolean(locationReveal)}),
+      spatial: spatial?.getState() ?? null, closing:Boolean(closing), returnWave:closing?.player?.getState() ?? null, writing:Boolean(locationReveal)}),
   });
   preload();
 })();

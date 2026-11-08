@@ -6,6 +6,7 @@ import os
 import shutil
 import io
 import wave
+import runpy
 import numpy as np
 from scipy.signal import butter, sosfilt, resample_poly, find_peaks
 from scipy.io.wavfile import write
@@ -133,3 +134,9 @@ save('ui-focus', mix(.32,[(0,softpaper,.30),(.015,pluck,.018)]), ['Voltiment555/
 
 (OUT/'manifest.json').write_text(json.dumps({'format':'Ogg Opus, 48 kHz stereo', 'processing':'Edited CC0 recorded foley; selection resonance composed in this script. Source links in SOURCES.md.', 'assets':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'files':len(records),'bytes':sum(x['bytes'] for x in records),'assets':records},ensure_ascii=False,indent=2))
+
+# The deity scene has its own original material score. Rebuilding title/settings
+# foley must not remove those independent entries from the shared manifest.
+deity_builder = runpy.run_path(str(ROOT / 'scripts/build-deity-audio.py'))
+deity_records = deity_builder['build'](ffmpeg=FF)
+print(json.dumps({'independentDeityCues':len(deity_records), 'bytes':sum(x['bytes'] for x in deity_records)}))

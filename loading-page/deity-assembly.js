@@ -253,6 +253,9 @@
   }
 
   window.playDeityAssembly = (canvas, image, options = {}) => {
+    // A reused preserveDrawingBuffer canvas can retain the last complete scene
+    // even after assigning the same width/height. Never expose it while warming.
+    canvas.style.opacity = '0';
     const width = options.width || canvas.clientWidth || innerWidth;
     const height = options.height || canvas.clientHeight || innerHeight;
     const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -262,7 +265,13 @@
     try {
       if (crop) renderer = createGL(canvas, image, width, height, field, crop)
         || create2D(canvas, image, width, height, field, crop);
-    } catch { /* The live scene can still replace an unavailable canvas. */ }
+      // Establish the genuinely empty first frame synchronously, before the
+      // caller reveals this surface. Waiting for RAF briefly showed the old photo.
+      if (renderer && renderer.draw(0) === false) throw Error('Assembly first frame unavailable');
+    } catch {
+      renderer?.dispose(); renderer = null;
+      // The live scene can still replace an unavailable canvas.
+    }
     const mode = renderer?.name || 'fade';
     canvas.dataset.renderer = mode;
     canvas.style.opacity = reduced ? '0' : '1';
@@ -293,8 +302,9 @@
       const box = canvas.getBoundingClientRect();
       if (Math.abs(box.width - width) > 8 || Math.abs(box.height - height) > 8) skip();
     };
-    const frame = now => {
+    const frame = () => {
       if (done) return;
+      const now = performance.now();
       if (start == null) start = now;
       progress = clamp((now - start) / (reduced ? 160 : duration));
       try {
