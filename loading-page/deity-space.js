@@ -24,24 +24,25 @@
     </div>
     <canvas id="deity-assembly" aria-hidden="true"></canvas>
     <canvas id="deity-return-wave" aria-hidden="true" hidden></canvas>
-    <header class="deity-location">
+    <div class="deity-location-plane"><header class="deity-location">
       <h1 id="deity-location"><span class="deity-heading-words">主神空间</span><img src="assets/deity-space/location-title.webp" alt="" draggable="false" decoding="async"></h1>
+      <div class="deity-location-compact" aria-hidden="true"><span><img src="assets/deity-space/location-title.webp" alt="" draggable="false"></span><span><img src="assets/deity-space/location-title.webp" alt="" draggable="false"></span></div>
       <div class="deity-location-branch"><img src="assets/menu-ui/sakura-branch.webp" alt="" draggable="false" decoding="async"></div>
-    </header>
+    </header></div>
     <button id="deity-return" class="deity-return" type="button"><span class="deity-return-arrow" aria-hidden="true">←</span><span>返回标题</span></button>
     <aside class="deity-roster" aria-labelledby="deity-roster-title">
       <header class="deity-roster-heading"><span class="deity-roster-rule" aria-hidden="true"></span><h2 id="deity-roster-title">选择主神</h2></header>
       <div class="deity-roster-list" role="group" aria-label="可选择的主神">
         ${roster.map(deity => `<button id="deity-${deity.id}" class="deity-choice" type="button" data-deity-id="${deity.id}" aria-pressed="false" aria-label="选择${deity.name}">
           <span class="deity-avatar"><span class="deity-avatar-window"><img src="${deity.image}" alt="" draggable="false" decoding="async"></span><span class="deity-avatar-border" aria-hidden="true"></span></span>
-          <span class="deity-choice-name">${deity.name}</span><span class="deity-choice-state" aria-hidden="true">已选择</span>
+          <span class="deity-choice-name">${deity.name}</span><span class="deity-choice-state" aria-hidden="true">待选择</span>
         </button>`).join('')}
       </div>
       <div class="deity-detail">
         <p class="deity-detail-kicker">红线相系</p><h2 id="deity-detail-name">红妆</h2>
         <p id="deity-detail-note">一袭红妆，静候与你相逢。</p>
       </div>
-      <button id="deity-confirm" class="deity-confirm" type="button"><span>确认主神</span></button>
+      <button id="deity-confirm" class="deity-confirm" type="button" disabled><span>请选择主神</span></button>
       <p id="deity-selection-status" class="deity-selection-status" role="status" aria-live="polite"></p>
     </aside>
     <p class="deity-controls" aria-hidden="true">选择头像切换主神<span>ESC 返回</span></p>`;
@@ -49,9 +50,13 @@
 
   const choices = [...root.querySelectorAll('.deity-choice')];
   const backdrop = root.querySelector('.deity-backdrop');
+  const occlusion = window.createDeityOcclusion?.(root, root.querySelector('.deity-location-plane'),
+    backdrop, 'assets/deity-space/nai-portrait.webp');
   const spatial = window.SpatialPhoto ? new window.SpatialPhoto(root, backdrop,
     root.querySelector('#deity-spatial'), root.querySelector('#deity-spatial-fallback'), {
       urls: ['assets/deity-space/nai-plate.webp', 'assets/deity-space/nai-portrait.webp'],
+      depthOfField:2.4,
+      onRender: pose => occlusion?.update(pose),
     }) : null;
   const back = root.querySelector('#deity-return');
   const confirm = root.querySelector('#deity-confirm');
@@ -64,10 +69,10 @@
   const images = [...root.querySelectorAll('img')];
   const waiting = new Map();
   let generation = 0, phase = 'hidden', assembly = null, preloadJob = null;
-  let selected = roster[0].id, confirmed = false, launching = false;
+  let selected = null, confirmed = false, launching = false;
   let hovering = false, focusing = false;
   let loads = 0, failures = 0;
-  let locationReveal = null, closing = null, restoringTitle = false;
+  let locationReveal = null, closing = null, restoringTitle = false, handoff = null;
   let avatarHoverTimer = 0, avatarHoverAt = -Infinity;
 
   const motionAllowed = () => !reduced.matches && window.InfiniteSettings?.getState().motion !== false;
@@ -118,7 +123,7 @@
       loads = results.filter(Boolean).length;
       failures = results.length - loads;
       root.classList.toggle('has-title-art', titleArt.naturalWidth > 0);
-      return Promise.resolve(window.DeityReturnCapture?.ready).then(() => ({loaded: loads, failed: failures}));
+      return Promise.all([window.DeityReturnCapture?.ready, occlusion?.ready]).then(() => ({loaded: loads, failed: failures}));
     });
     return preloadJob;
   }
@@ -129,22 +134,26 @@
     spatial?.reset();
   }
   function updateLight() {
-    root.classList.toggle('is-peering', hovering || focusing);
+    // Preview feedback belongs to the avatar; the scene keeps its own exposure.
+    root.classList.remove('is-peering');
     root.classList.toggle('is-communing', Boolean(selected));
+    root.classList.toggle('selection-pending', !selected);
   }
   function setSelection(id, reset = false) {
-    const deity = roster.find(item => item.id === id);
+    const next = id ?? null;
+    const deity = next ? roster.find(item => item.id === next) : roster[0];
     if (!deity) return;
-    const changed = selected !== id;
-    selected = id;
+    const changed = selected !== next;
+    selected = next;
     if (changed || reset) confirmed = false;
     choices.forEach(button => {
       const active = button.dataset.deityId === selected;
       button.classList.toggle('is-selected', active);
       button.setAttribute('aria-pressed', String(active));
+      button.querySelector('.deity-choice-state').textContent = active ? '已选择' : '待选择';
     });
-    confirm.disabled = phase !== 'ready' || confirmed;
-    confirm.querySelector('span').textContent = confirmed ? '已确认' : '确认主神';
+    confirm.disabled = !selected || phase !== 'ready' || confirmed;
+    confirm.querySelector('span').textContent = !selected ? '请选择主神' : confirmed ? '已确认' : '确认主神';
     root.querySelector('.deity-detail-kicker').textContent = deity.title;
     root.querySelector('#deity-detail-name').textContent = deity.name;
     root.querySelector('#deity-detail-note').textContent = deity.description;
@@ -204,30 +213,87 @@
     return {image: output, width: bounds.width, height: bounds.height};
   }
 
-  function ready(token) {
+  function cancelHandoff() {
+    const run = handoff;
+    handoff = null;
+    if (run) {
+      spatial?.cancelPreparation();
+      cancelAnimationFrame(run.raf);
+      clearTimeout(run.timer); clearTimeout(run.warmTimer); clearTimeout(run.guard);
+      run.animation?.cancel();
+      run.resolve(false);
+    }
+    root.classList.remove('assembly-handoff');
+  }
+  function completeReady(token) {
     if (token !== generation || !isOpen() || phase === 'ready') return;
     assembly = null;
-    canvas.hidden = true;
-    // Retire the preserved final frame as soon as the real scene takes over.
-    canvas.width = canvas.height = 1;
-    root.classList.remove('is-assembling');
     root.classList.toggle('motion-reduced', !motionAllowed());
+    spatial?.cancelPreparation();
+    // The original photograph is already painted below the complete cube frame.
+    // Commit its visible state before retiring the GPU surface, never the reverse.
     spatial?.refresh();
     setPhase('ready');
+    canvas.hidden = true;
+    canvas.width = canvas.height = 1;
+    const run = handoff;
+    if (run) run.resolve(true);
+    cancelHandoff();
+    root.classList.remove('is-assembling');
     back.disabled = false;
     choices.forEach(button => { button.disabled = false; });
-    confirm.disabled = confirmed;
+    confirm.disabled = !selected || confirmed;
     root.setAttribute('aria-busy', 'false');
     root.focus({preventScroll: true});
     window.dispatchEvent(new CustomEvent('infinite:deityready', {detail: {available: roster.map(item => item.id), locked: 0}}));
   }
+  function ready(token) {
+    if (token !== generation || !isOpen() || phase === 'ready') return Promise.resolve(false);
+    const covered = !canvas.hidden && canvas.width > 1 && canvas.dataset.renderer !== 'fade';
+    if (!covered || !motionAllowed() || document.hidden) {
+      completeReady(token);
+      return Promise.resolve(true);
+    }
+    if (handoff) return handoff.finished;
+    // Upload and draw the neutral depth-of-field frame beneath the opaque final
+    // cubes first. Pointer input stays disabled until the live scene is ready.
+    const run = {raf:0, timer:0, warmTimer:0, guard:0, animation:null, resolve:null, finished:null, revealing:false};
+    run.finished = new Promise(resolve => {run.resolve = resolve;});
+    handoff = run;
+    root.classList.add('assembly-handoff');
+    const finish = () => {if (handoff === run && token === generation) completeReady(token);};
+    const reveal = () => {
+      if (handoff !== run || run.revealing) return;
+      run.revealing = true;
+      clearTimeout(run.warmTimer);
+      run.raf = requestAnimationFrame(() => {
+        run.raf = requestAnimationFrame(() => {
+          if (handoff !== run) return;
+          run.timer = setTimeout(() => {
+            if (handoff !== run) return;
+            run.animation = canvas.animate([{opacity:1},{opacity:0}], {duration:140, easing:'ease-out', fill:'forwards'});
+            run.animation.finished.then(finish, () => {});
+          }, 80);
+        });
+      });
+    };
+    run.warmTimer = setTimeout(() => {
+      if (handoff !== run) return;
+      spatial?.cancelPreparation({deferRetry:3000});
+      reveal();
+    }, 1200);
+    Promise.resolve(spatial?.prepareNeutral()).then(reveal, reveal);
+    run.guard = setTimeout(finish, 1800);
+    return run.finished;
+  }
   async function open() {
     if (isOpen()) return false;
     const token = ++generation;
+    cancelHandoff();
     window.InfiniteTitle?.hide();
     titleScreen.classList.remove('deity-restored');
     hovering = focusing = false;
-    setSelection(selected || roster[0].id, true);
+    setSelection(null, true);
     resetAim();
     root.classList.toggle('motion-reduced', !motionAllowed());
     root.hidden = false;
@@ -239,6 +305,7 @@
     confirm.disabled = true;
     root.setAttribute('aria-busy', 'true');
     setPhase('announcing');
+    occlusion?.refresh();
     root.focus({preventScroll: true});
     await preload();
     if (token !== generation || !isOpen()) return false;
@@ -250,12 +317,12 @@
     const written = writing ? await writing.finished : await delay(animated ? 700 : 0);
     if (locationReveal === writing) locationReveal = null;
     if (!written || token !== generation || !isOpen()) return false;
-    if (!motionAllowed() || document.hidden) { ready(token); return true; }
+    if (!motionAllowed() || document.hidden) { await ready(token); return true; }
     setPhase('assembling');
     root.classList.add('is-assembling');
     const frame = snapshot();
     if (!frame || typeof window.playDeityAssembly !== 'function') {
-      ready(token);
+      await ready(token);
       return true;
     }
     try {
@@ -272,9 +339,9 @@
       cue('deity-cube-assemble', {variation:false});
       const complete = await assembly.finished;
       if (token !== generation || !isOpen()) return false;
-      if (!complete) { ready(token); return true; }
-      ready(token);
-    } catch { assembly?.cancel(); assembly = null; ready(token); }
+      if (!complete) { await ready(token); return true; }
+      await ready(token);
+    } catch { assembly?.cancel(); assembly = null; await ready(token); }
     return true;
   }
   function signalReturn(type, detail) {
@@ -286,6 +353,7 @@
     finally { restoringTitle = false; }
   }
   function finishClose(immediate = false) {
+    cancelHandoff();
     const run = closing;
     closing = null;
     root.hidden = true;
@@ -297,6 +365,7 @@
     if (run) {
       clearTimeout(run.guard);
       run.player?.cancel();
+      run.weather?.dispose();
       for (const frame of run.frames) frame.image.width = frame.image.height = 1;
     }
     returnCanvas.width = returnCanvas.height = 1;
@@ -321,6 +390,7 @@
     }
     const animated = returnToTitle && !immediate && phase === 'ready' && motionAllowed() && !document.hidden;
     ++generation;
+    cancelHandoff();
     launching = false;
     cancelWaiting();
     locationReveal?.cancel(); locationReveal = null;
@@ -337,11 +407,12 @@
       if (returnToTitle) showTitle();
       return true;
     }
-    const run = closing = {id:`deity-${generation}`, player:null, frames:[from], guard:0, sounded:false};
+    const run = closing = {id:`deity-${generation}`, player:null, weather:null, frames:[from], guard:0, sounded:false};
     root.inert = true;
     back.disabled = confirm.disabled = true;
     choices.forEach(button => {button.disabled = true;});
     setPhase('closing');
+    run.weather = window.createDeityReturnWeather?.(world, from.width, from.height);
     world.classList.add('deity-returning');
     titleScreen.classList.add('deity-restored');
     showTitle();
@@ -362,6 +433,7 @@
       run.player = window.playDeityReturnWave(returnCanvas, from.image, to.image, {
         width:from.width, height:from.height, duration:2200,
         onProgress: progress => {
+          if (closing === run) run.weather?.update(progress);
           if (closing !== run || run.sounded || progress >= 1) return;
           run.sounded = true;
           cue('deity-return-wave', {group:'deity-return', variation:false});
@@ -472,7 +544,10 @@
   window.addEventListener('infinite:settingssaved', updateMotion);
   window.addEventListener('infinite:title', () => { if (isOpen() && !restoringTitle) close({returnToTitle:false, immediate:true}); });
   window.addEventListener('pagehide', () => { if (isOpen()) close({returnToTitle:false, immediate:true}); });
-  window.addEventListener('resize', () => {if (closing) finishClose(true);}, {passive:true});
+  window.addEventListener('resize', () => {
+    if (closing) finishClose(true);
+    else if (handoff) completeReady(generation);
+  }, {passive:true});
   window.addEventListener('infinite:startgame', async event => {
     if (event.defaultPrevented || event.detail?.mode !== 'new' || typeof event.detail.playTransition !== 'function') return;
     event.preventDefault();
@@ -494,7 +569,8 @@
     getState: () => ({phase, visible: !root.hidden, selected,
       confirmed, launching, loaded: loads, failed: failures, locked: 0, available: roster.map(item => item.id),
       assembly: assembly?.getState?.() ?? null, pointerFrame: Boolean(spatial?.getState().moving),
-      spatial: spatial?.getState() ?? null, closing:Boolean(closing), returnWave:closing?.player?.getState() ?? null, writing:Boolean(locationReveal)}),
+      spatial: spatial?.getState() ?? null, closing:Boolean(closing), handoff:Boolean(handoff), returnWave:closing?.player?.getState() ?? null,
+      returnWeather:closing?.weather?.getState() ?? null, occlusion:occlusion?.getState() ?? null, writing:Boolean(locationReveal)}),
   });
   preload();
 })();

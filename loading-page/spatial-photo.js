@@ -9,6 +9,9 @@
       this.image = image;
       this.canvas = canvas;
       this.layersCanvas = layersCanvas;
+      this.renderOptions = {depthOfField: Math.max(0, Number(options.depthOfField) || 0)};
+      this.keepNeutral = this.renderOptions.depthOfField > 0;
+      this.onRender = typeof options.onRender === 'function' ? options.onRender : null;
       this.customURLs = Array.isArray(options.urls) && options.urls.length === 2;
       this.urls = this.customURLs ? [...options.urls] :
         ['assets/spatial-photo/plate.webp', 'assets/spatial-photo/portrait.webp'];
@@ -18,6 +21,8 @@
       this.request = 0;
       this.textures = null;
       this.warmPending = false;
+      this.initialization = null;
+      this.preparingNeutral = false;
       this.retryAfter = 0;
       this.mode = 'idle';
       this.enabled = false;
@@ -50,12 +55,14 @@
     }
 
     setEnabled(enabled) {
+      const wasEnabled = this.enabled;
       this.enabled = !!enabled;
       if (!this.enabled) {
+        this.cancelPreparation();
         this.reset();
-        if (this.mode === 'loading') { this.request++; this.mode = 'idle'; }
+        if (this.mode === 'loading') { this.request++; this.initialization = null; this.mode = 'idle'; }
       }
-      else if (this.mode === 'idle' && !this.warmPending && window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches) {
+      else if (this.mode === 'idle' && !this.warmPending && (this.keepNeutral || window.matchMedia('(any-hover: hover) and (any-pointer: fine)').matches)) {
         // Prepare the full-resolution layers once the menu has settled.
         // The original still stays on screen until the pointer actually moves.
         this.warmPending = true;
@@ -66,6 +73,7 @@
         if (window.requestIdleCallback) window.requestIdleCallback(prepare, {timeout: 1200});
         else window.setTimeout(prepare, 250);
       }
+      if (!wasEnabled && this.enabled && this.keepNeutral && this.renderer) this.reset();
     }
 
     refresh() {
@@ -85,8 +93,39 @@
       this.reset();
     }
 
-    async initialize() {
-      if (this.mode !== 'idle' || performance.now() < this.retryAfter) return;
+    initialize() {
+      if (this.initialization) return this.initialization;
+      if (this.mode !== 'idle' || performance.now() < this.retryAfter) return Promise.resolve(!!this.renderer);
+      const job = this.buildRenderer();
+      this.initialization = job;
+      const clear = () => { if (this.initialization === job) this.initialization = null; };
+      job.then(clear, clear);
+      return job;
+    }
+
+    // Warm the neutral photograph beneath an opaque transition frame without
+    // enabling pointer input. The scene controller explicitly ends this lease.
+    async prepareNeutral() {
+      if (!this.keepNeutral || document.hidden || this.blocked) return false;
+      this.preparingNeutral = true;
+      this.refresh();
+      await this.initialize();
+      return this.preparingNeutral && this.view.classList.contains('spatial-visible');
+    }
+
+    cancelPreparation({deferRetry = 0} = {}) {
+      if (!this.preparingNeutral) return;
+      this.preparingNeutral = false;
+      if (this.mode === 'loading') {
+        this.request++;
+        this.initialization = null;
+        this.mode = 'idle';
+        this.retryAfter = Math.max(this.retryAfter, performance.now() + deferRetry);
+      }
+      if (!this.enabled) this.reset();
+    }
+
+    async buildRenderer() {
       this.mode = 'loading';
       const request = ++this.request;
       const current = () => request === this.request;
@@ -97,7 +136,7 @@
       // The native fast path contains edge samples for the title's exact art.
       // Other scenes use the general factory, which builds their own samples.
       if (canUseGL && !this.customURLs && factory?.fromURLs) {
-        try { renderer = await factory.fromURLs(view, urls, current); }
+        try { renderer = await factory.fromURLs(view, urls, current, this.renderOptions); }
         catch { /* Try the public blob factory for browsers without native texture upload. */ }
         if (!current()) { renderer?.dispose(); return; }
       }
@@ -124,7 +163,7 @@
         }
         if (!current()) return;
         if (canUseGL && factory) {
-          try { renderer = await factory(view, ...images); }
+          try { renderer = await factory(view, ...images, this.renderOptions); }
           catch { /* The same two layers also work without WebGL. */ }
           if (!current()) { renderer?.dispose(); return; }
         }
@@ -132,7 +171,7 @@
           view = this.layersCanvas;
           mode = 'static';
           try {
-            renderer = window.createFlatSpatialRenderer?.(view, ...images);
+            renderer = window.createFlatSpatialRenderer?.(view, ...images, this.renderOptions);
             if (renderer) mode = 'layered-2d';
           } catch { /* The original photograph remains visible if both paths fail. */ }
         }
@@ -144,10 +183,16 @@
       if (renderer) {
         const style = getComputedStyle(this.image);
         const layout = [this.image.clientWidth, this.image.clientHeight, style.objectFit, style.objectPosition];
-        renderer.resize(...layout);
+        try {
+          if (renderer.resize(...layout) === false) return this.recoverDrawFailure();
+        } catch { return this.recoverDrawFailure(); }
         this.layoutKey = [...layout, window.devicePixelRatio].join('|');
       }
-      if (renderer && this.enabled && !this.blocked && !document.hidden && (this.goalX || this.goalY)) this.schedule();
+      if (renderer && (this.enabled || this.preparingNeutral) && !this.blocked && !document.hidden) {
+        if (this.keepNeutral && !this.present(this.x, this.y)) return this.recoverDrawFailure();
+        if (this.enabled && (this.goalX || this.goalY)) this.schedule();
+      }
+      return !!renderer;
     }
 
     pointer(event) {
@@ -191,16 +236,12 @@
       if (Math.abs(this.goalX - this.x) < .025 && Math.abs(this.vx) < .35) { this.x = this.goalX; this.vx = 0; }
       if (Math.abs(this.goalY - this.y) < .025 && Math.abs(this.vy) < .35) { this.y = this.goalY; this.vy = 0; }
       if (!this.x && !this.y && !this.goalX && !this.goalY) { this.reset(); return; }
-      if (!this.renderer || this.renderer.draw(this.x, this.y) === false) {
-        if (this.view === this.canvas) this.preferLayers = true;
-        this.release();
+      if (!this.present(this.x, this.y)) {
+        this.recoverDrawFailure();
         return;
       }
-      this.view.classList.add('spatial-visible');
-      this.world.classList.add('spatial-engaged');
       this.world.style.setProperty('--mist-view-x', `${(-.13 * this.x).toFixed(2)}px`);
       this.world.style.setProperty('--mist-view-y', `${(-.10 * this.y).toFixed(2)}px`);
-      this.draws++;
       if (this.x !== this.goalX || this.y !== this.goalY || this.vx || this.vy) this.schedule();
       else this.previous = 0;
     }
@@ -208,17 +249,56 @@
     reset() {
       cancelAnimationFrame(this.raf);
       this.raf = this.previous = this.x = this.y = this.goalX = this.goalY = this.vx = this.vy = 0;
+      // A focused portrait stays sharp over the soft rear plane even at rest.
+      // Draw once; this does not keep an idle animation loop alive.
+      if (this.renderer && this.keepNeutral && (this.enabled || this.preparingNeutral) && !this.blocked && !document.hidden) {
+        if (this.present(0, 0)) return;
+        this.recoverDrawFailure();
+        return;
+      }
       this.view.classList.remove('spatial-visible');
       this.world.classList.remove('spatial-engaged');
+      this.notifyRender(false);
+    }
+
+    notifyRender(active) {
+      try { this.onRender?.({x:active ? this.x : 0, y:active ? this.y : 0, mode:this.mode, active}); }
+      catch { /* A decorative label must not interrupt the photograph renderer. */ }
+    }
+
+    present(x, y) {
+      try { if (!this.renderer || this.renderer.draw(x, y) === false) return false; }
+      catch { return false; }
+      this.view.classList.add('spatial-visible');
+      this.world.classList.add('spatial-engaged');
+      this.draws++;
+      this.notifyRender(true);
+      return true;
     }
 
     release() {
       this.request++;
-      this.reset();
-      this.renderer?.dispose();
+      this.initialization = null;
+      const renderer = this.renderer;
       this.renderer = null;
+      this.reset();
+      try { renderer?.dispose(); } catch { /* A failed renderer must not prevent the original image from returning. */ }
       this.mode = 'idle';
       this.layoutKey = '';
+    }
+
+    recoverDrawFailure() {
+      const tryFallback = this.view === this.canvas && !this.preferLayers;
+      if (this.view === this.canvas) this.preferLayers = true;
+      this.release();
+      if (!tryFallback) {
+        // A failed fallback is terminal for this renderer generation. Keep the
+        // original photograph visible rather than rebuilding on every frame.
+        this.mode = 'static';
+        return Promise.resolve(false);
+      }
+      if ((this.enabled || this.preparingNeutral) && !this.blocked && !document.hidden) return this.initialize();
+      return Promise.resolve(false);
     }
 
     captureSource() {
@@ -231,6 +311,8 @@
 
     getState() {
       return { mode: this.mode, enabled: this.enabled, blocked: this.blocked, x: this.x, y: this.y,
+        active: this.view.classList.contains('spatial-visible'), depthOfField: this.renderOptions.depthOfField,
+        preparing: this.preparingNeutral,
         limitX: this.limitX, limitY: this.limitY, moving: !!this.raf, draws: this.draws,
         retryInMs: Math.max(0, Math.ceil(this.retryAfter - performance.now())) };
     }

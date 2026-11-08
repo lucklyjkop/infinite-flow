@@ -30,6 +30,32 @@ const parallelCamera = {
       }
       async function createFlowSlideRenderer(canvas, flow, options, textures) {`)
         .replace(inputs, (_, name, expression) => `\tconst ${name} = textures ? textures.${name} : await ${expression};`);
+      const optionsMarker = 'const normalizedOptions = {';
+      const bottomTexture = 'const bottomImageTexture = createTexture(bottomImage);';
+      const uniformsMarker = '\t\trenderWithUniforms({';
+      const bottomUniform = '\t\t\tbottom_image: bottomImageTexture,';
+      if (![optionsMarker, bottomTexture, uniformsMarker, bottomUniform].every(marker => source.includes(marker))) {
+        throw Error('Unexpected upstream SLIDE depth-of-field integration points');
+      }
+      source = source.replace(optionsMarker, optionsMarker + '\n\t\tdepthOfField: clamp(Number(resolvedOptions?.depthOfField) || 0, 0, 6),')
+        .replace(bottomTexture, bottomTexture + `
+  // Only the opt-in background needs mip levels. Portrait edges and the title's
+  // default five linear textures keep their existing sampling and memory usage.
+  if (normalizedOptions.depthOfField > 0) {
+    gl.bindTexture(gl.TEXTURE_2D, bottomImageTexture);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  }`)
+        .replace(uniformsMarker, `
+    const dofRadius = normalizedOptions.depthOfField > 0 ?
+      (args.depthOfFieldRadiusUV ?? [normalizedOptions.depthOfField / Math.max(1, canvas.clientWidth),
+        normalizedOptions.depthOfField / Math.max(1, canvas.clientHeight)]) : [0, 0];
+    const dofFootprint = Math.max(dofRadius[0] * width, dofRadius[1] * height, 1);
+${uniformsMarker}`)
+        .replace(bottomUniform, bottomUniform + `
+      depth_of_field_radius_uv: dofRadius,
+      depth_of_field_lod: Math.max(0, Math.log2(dofFootprint) - .75),`);
       return {contents: source};
     });
     // Interpolate premultiplied colors across transparent hair pixels. With
@@ -55,8 +81,32 @@ const parallelCamera = {
       const withParallelCamera = upstreamShader.slice(0, from) + camera + upstreamShader.slice(to);
       const straightOver = 'current_color = mix(bottom_color, top_color, top_alpha);';
       if (!withParallelCamera.includes(straightOver)) throw Error('Unexpected upstream transparency equation');
-      const fragment = withParallelCamera.replace(straightOver,
+      let fragment = withParallelCamera.replace(straightOver,
         'current_color = vec4(top_color.rgb * top_visibility + bottom_color.rgb * (1.f - top_alpha), 1.f);');
+      const bottomSampler = 'uniform sampler2D bottom_image;';
+      const bottomFunction = 'vec4 bottom_position_color(vec3 pos) {';
+      const bottomSample = 'vec4 sampl = texture(bottom_image, tex_coord);';
+      if (![bottomSampler, bottomFunction, bottomSample].every(marker => fragment.includes(marker))) {
+        throw Error('Unexpected upstream SLIDE background color sampler');
+      }
+      fragment = fragment.replace(bottomSampler, bottomSampler + '\nuniform vec2 depth_of_field_radius_uv;\nuniform float depth_of_field_lod;')
+        .replace(bottomFunction, `
+// A small optical kernel on the background intersection only. Top-plane alpha,
+// hair, silhouette and ray visibility are never filtered by this optional effect.
+vec4 focused_bottom_color(vec2 uv) {
+  vec2 r = depth_of_field_radius_uv;
+  if (max(r.x, r.y) <= 0.f) return texture(bottom_image, uv);
+  float lod = depth_of_field_lod;
+  vec4 color = textureLod(bottom_image, uv, lod) * .28f;
+  color += textureLod(bottom_image, uv + vec2(r.x, r.y), lod) * .18f;
+  color += textureLod(bottom_image, uv + vec2(r.x, -r.y), lod) * .18f;
+  color += textureLod(bottom_image, uv + vec2(-r.x, r.y), lod) * .18f;
+  color += textureLod(bottom_image, uv - r, lod) * .18f;
+  return color;
+}
+
+${bottomFunction}`)
+        .replace(bottomSample, 'vec4 sampl = focused_bottom_color(tex_coord);');
       return {contents: 'export default ' + JSON.stringify(fragment)};
     });
   }

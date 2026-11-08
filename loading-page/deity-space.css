@@ -19,9 +19,12 @@
 .deity-depth-haze { background: linear-gradient(90deg, rgba(9,11,16,.7), rgba(9,11,16,.45) 30%, rgba(9,11,16,0) 57%); }
 .deity-scene-light { opacity: 0; background: radial-gradient(ellipse at 74% 34%, #df925d20, #862c190a 42%, transparent 76%); transition: opacity 700ms ease; }
 .deity-space:is([data-phase="ready"],[data-phase="closing"]) .deity-view { opacity: 1; }
+.deity-space.assembly-handoff .deity-view { opacity: 1; }
 .deity-space.is-peering .deity-view { filter: brightness(1.035); }
 .deity-space.is-peering .deity-scene-light { opacity: .35; }
 #deity-assembly { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
+.deity-location-plane { position: absolute; inset: 0; z-index: 7; pointer-events: none; }
+.deity-location-compact { display: none; }
 .deity-location {
   position: absolute; z-index: 7; top: 27%; left: 50%; width: min(390px,31vw); transform: translateX(-50%);
   text-align: center; pointer-events: none; opacity: 0;
@@ -143,3 +146,29 @@
 @media (prefers-reduced-motion: reduce) {
   .deity-space *, .deity-space *::before, .deity-space *::after { animation: none !important; transition-duration: 160ms !important; }
 }
+
+/* On a narrow portrait screen, keep the same calligraphy in the free left
+   gutter. Two cropped rows stay behind the hair without hiding the whole name. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .deity-space.has-title-art:is([data-phase="assembling"],[data-phase="ready"],[data-phase="closing"]) .deity-location {
+    left: 7%; top: 10%; width: clamp(76px,22vw,112px); transform: none;
+  }
+  .deity-space.has-title-art:is([data-phase="assembling"],[data-phase="ready"],[data-phase="closing"]) .deity-location h1 {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  }
+  .deity-space.has-title-art:is([data-phase="assembling"],[data-phase="ready"],[data-phase="closing"]) .deity-location-compact { display: block; }
+  .deity-location-compact > span { display: block; position: relative; overflow: hidden; aspect-ratio: 5 / 3; }
+  .deity-location-compact img { display: block; position: relative; width: 200%; max-width: none; height: auto; }
+  .deity-location-compact > span + span img { left: -100%; }
+}
+
+/* Await explicit choice: preview light affects only the portrait thumbnail. */
+.deity-choice:not(.is-selected) { color: #bba79a; }
+.deity-choice:not(.is-selected) .deity-avatar-window img { filter: saturate(.48) brightness(.72); }
+.deity-choice:not(.is-selected) .deity-avatar-border { filter: saturate(.62) brightness(.79); transition: filter 320ms ease; }
+.deity-choice:not(.is-selected) .deity-choice-state { opacity: .72; color: #97877e; transition: color 280ms ease, opacity 280ms ease; }
+.deity-choice:not(.is-selected):is(:hover,:focus-visible) { color: #e2cbbc; filter: drop-shadow(0 0 8px #c37b4b24); }
+.deity-choice:not(.is-selected):is(:hover,:focus-visible) .deity-avatar-window img { filter: saturate(.8) brightness(.96); }
+.deity-choice:not(.is-selected):is(:hover,:focus-visible) .deity-avatar-border { filter: saturate(.85) brightness(1.06); }
+.deity-choice:not(.is-selected):is(:hover,:focus-visible) .deity-choice-state { opacity: 1; color: #c7aa92; }
+.deity-space.selection-pending .deity-confirm:disabled { filter: saturate(.4) brightness(.68); color: #a69890; }

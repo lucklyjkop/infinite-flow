@@ -231,7 +231,15 @@
     for (const selector of ['.deity-tone', '.deity-depth-haze', '.deity-scene-light']) paint(scene.ctx, root.querySelector(selector), viewport);
     frame.ctx.fillStyle = getComputedStyle(root).backgroundColor; frame.ctx.fillRect(0, 0, frame.width, frame.height);
     drawLayer(frame, scene, getComputedStyle(root.querySelector('.deity-view')));
-    for (const selector of ['.deity-location', '.deity-roster', '.deity-controls', '.deity-return']) paint(frame.ctx, root.querySelector(selector), viewport);
+    const location = root.querySelector('.deity-location-plane') || root.querySelector('.deity-location');
+    const ink = root.deityOcclusion?.applyToCanvas ? surface(viewport) : null;
+    if (ink) {
+      paint(ink.ctx, location, viewport);
+      root.deityOcclusion.applyToCanvas(ink.ctx, viewport);
+      frame.ctx.drawImage(ink.image, 0, 0, frame.width, frame.height);
+      ink.image.width = ink.image.height = 1;
+    } else paint(frame.ctx, location, viewport);
+    for (const selector of ['.deity-roster', '.deity-controls', '.deity-return']) paint(frame.ctx, root.querySelector(selector), viewport);
     return finish(frame, root);
   };
   window.captureTitleReturnFrame = function captureTitleReturnFrame(world) {
@@ -243,7 +251,9 @@
     for (const selector of ['.scene-shade', '.world-glow', '.mist-back', '.mist-front']) paint(scene.ctx, world.querySelector(selector), viewport);
     frame.ctx.fillStyle = getComputedStyle(world).backgroundColor; frame.ctx.fillRect(0, 0, frame.width, frame.height);
     drawLayer(frame, scene, getComputedStyle(world.querySelector('.scene')));
-    for (const selector of ['.vignette', '#petals', '#rain', '#title-screen', '#rain-impact', '#glass-rain']) paint(frame.ctx, world.querySelector(selector), viewport);
+    // Live weather is revealed over settled cubes by deity-return-weather.js.
+    // Baking these canvases here would leave a second, frozen layer underneath.
+    for (const selector of ['.vignette', '#title-screen']) paint(frame.ctx, world.querySelector(selector), viewport);
     return finish(frame, world);
   };
   window.DeityReturnCapture = Object.freeze({ready});

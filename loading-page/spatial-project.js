@@ -33,11 +33,18 @@
     return new ImageData(Uint8ClampedArray.from(atob(edgeSamples[name]), c => c.charCodeAt(0)), 8, 8);
   }
 
-  function settings() {
+  function focusRadius(options = {}) {
+    const value = options.depthOfField;
+    const radius = value === true ? 2.4 : Number(typeof value === 'object' && value ? value.radius : value);
+    return Number.isFinite(radius) ? Math.max(0, Math.min(6, radius)) : 0;
+  }
+
+  function settings(options) {
     return {
       forwardSteps: 24, backwardSteps: 12, edgeBlurThreshold: .0001,
       blurMipmapSize: 8, blurMipmapRadius: 0,
       pixelRatio: Math.min(1.5, window.devicePixelRatio || 1),
+      depthOfField: focusRadius(options),
     };
   }
 
@@ -49,7 +56,7 @@
     return room / 2;
   }
 
-  window.createProjectSpatialRenderer = async function(canvas, plate, portrait) {
+  window.createProjectSpatialRenderer = async function(canvas, plate, portrait, options = {}) {
     if (!window.DepthFlowSlide || !plate.naturalWidth || !portrait.naturalWidth) return null;
     if (plate.naturalWidth * portrait.naturalHeight !== portrait.naturalWidth * plate.naturalHeight) {
       throw new Error('Spatial photo layers must use the same framing');
@@ -60,13 +67,13 @@
     ]);
     const renderer = await window.DepthFlowSlide.createFlowSlideRenderer(canvas, {
       type:'slide', version:1, width, height, originalImage, bottomImage, originalDepthMap:layerMap, layerMap,
-    }, settings());
-    return camera(canvas, renderer, width, height);
+    }, settings(options));
+    return camera(canvas, renderer, width, height, options);
   };
 
   // Decode each source once, in the browser's asynchronous blob decoder.
   // Building a bitmap from an HTMLImageElement can block on another full decode.
-  window.createProjectSpatialRenderer.fromURLs = async function(canvas, urls, current) {
+  window.createProjectSpatialRenderer.fromURLs = async function(canvas, urls, current, options = {}) {
     const slide = window.DepthFlowSlide;
     if (!slide?.createSlideWithTextures || typeof createImageBitmap !== 'function') return null;
     const results = await Promise.allSettled(urls.map(async url => {
@@ -89,15 +96,17 @@
         width, height, topImage, bottomImage,
         layerMap:new ImageData(new Uint8ClampedArray([TOP_DEPTH,255,BACK_DEPTH,255]),1,1),
         topBlurMipmap:edgeTexture('portrait.webp'), bottomBlurMipmap:edgeTexture('plate.webp'),
-      }, settings());
-      return camera(canvas, renderer, width, height);
+      }, settings(options));
+      return camera(canvas, renderer, width, height, options);
     } finally {
       for (const result of results) if (result.status === 'fulfilled') result.value?.close();
     }
   };
 
-  function camera(canvas, renderer, width, height) {
+  function camera(canvas, renderer, width, height, options) {
     const target = [0, 0, 0], origin = [0, 0, -1];
+    const radius = focusRadius(options);
+    const depthOfFieldRadiusUV = [radius / width, radius / height];
     let displayedWidth = width, displayedHeight = height, zoomScale = 1;
 
     function resize(viewWidth, viewHeight, fit = 'cover', position = '50% 50%') {
@@ -106,6 +115,10 @@
       const scale = fit === 'contain' ? Math.min(viewWidth / width, viewHeight / height) : cover;
       displayedWidth = scale * width;
       displayedHeight = scale * height;
+      // Source UV radii follow the fitted image rectangle, not the drawing-buffer
+      // resolution, so 2.4 means 2.4 CSS px on both Retina and ordinary screens.
+      depthOfFieldRadiusUV[0] = radius / displayedWidth;
+      depthOfFieldRadiusUV[1] = radius / displayedHeight;
       zoomScale = cover / scale;
       const [x, y] = position.split(/\s+/);
       const left = alignment(x, viewWidth - displayedWidth);
@@ -120,11 +133,12 @@
     }
 
     return {
+      depthOfField: radius,
       resize,
       draw(dx, dy) {
         origin[0] = 2 * dx / displayedWidth;
         origin[1] = -2 * dy / displayedHeight;
-        renderer.render({origin, target, zoomScale});
+        renderer.render({origin, target, zoomScale, depthOfFieldRadiusUV});
         return true;
       },
       dispose() {
