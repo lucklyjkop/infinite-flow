@@ -9,9 +9,11 @@
 | `imagegen/sakura-calligraphy.png`、`sakura-branch.png`、`sakura-title.json` | `loading-page/assets/menu-ui/` 的标题与樱枝 |
 | `imagegen/sakura-menu-atlas.*`、`title-ui-atlas-v2.*` | `loading-page/assets/menu-ui/` 的按钮状态与文字 |
 | `imagegen/settings-folio/` 的纸页、封面、场景、屏风人物、梅枝、骰子、控件和左侧选中图集 | `loading-page/assets/settings-folio/` |
-| `imagegen/deity-space/` 的悬空神坛、黑色主神图集、红妆新姿态和地名书法 | `loading-page/assets/deity-space/` |
+| `imagegen/deity-space/nai-scene/` 的人景合一 NAI 原画与内部空间层处理记录；`ui-roster/` 的确认按钮与头像框；`location-calligraphy.*` 的樱花地名书法 | `loading-page/assets/deity-space/` |
 
 设置页的 `imported/imported-1.png` 至 `imported-3.png` 是用户提供的三张原始无字控件。`reference-layout.png` 和 `reference-controls.png` 是用户提供的设计参考；它们用于后续生成时核对风格，不由游戏加载。元数据中提到的原始 ZIP 是来源记录，已解出的三张 PNG 均在仓库内，无需该 ZIP 即可继续编辑。
+
+主神空间旧版独立人物、黑色剪影和神坛源稿保留为设计历史，不再由当前场景加载。`ui-roster/ui-return.png` 是已撤下的返回按钮试稿，实际界面使用简洁箭头文字。
 
 元数据中原电脑的绝对文件路径已换成仓库根目录下的相对路径；原本的相对路径仍相对于所在元数据文件。`archive-index.json` 记录收录文件的大小和 SHA-256。页面运行始终读取 `loading-page/assets/`，修改源图后需按对应 manifest 的尺寸、裁切和透明通道要求更新该目录中的导出图。
 

@@ -1,0 +1,28 @@
+{
+  "source": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.4k.png",
+  "sourceSha256": "3ee9b0a94aeda1c12ea1f8cfecde874509fdf8f673d18c4a93cd31255eb7a856",
+  "size": [
+    3840,
+    2160
+  ],
+  "workingSize": [
+    2048,
+    1152
+  ],
+  "method": "Source-registered trimap/GrabCut, narrow-band coverage inversion, rear occlusion inpaint",
+  "newArtGenerated": false,
+  "foregroundRepositioned": false,
+  "model": "No downloaded segmentation model; OpenCV GrabCut 5 iterations",
+  "rearPlate": "768x432 Telea radius 7, 12px subject safety dilation at 2048x1152; original visible pixels retained",
+  "export": "Lossless RGBA/RGB WebP, same camera framing as original",
+  "avatarCrop": [
+    2080,
+    0,
+    3100,
+    1020
+  ],
+  "localRefinement": "Loose curls below left fringe: expanded fractional-coverage region, complete rear-strand removal, no straight mask edge above shoulder",
+  "neutralCompositeMeanAbsoluteError": 0.09307,
+  "neutralComposite99thPercentileError": 1.99997,
+  "script": "scripts/build-deity-spatial.py"
+}

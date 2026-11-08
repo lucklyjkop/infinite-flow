@@ -1,6 +1,6 @@
 # 无限流
 
-以红妆、樱枝和雨幕为主题的游戏入口原型：资源加载、空间照片标题页、纸艺系统设置、方块转场与主神选择。开始游戏后进入「主神空间」，红妆可选择，其余主神尚未唤醒；首个可玩世界尚未接入。
+以红妆、樱枝和雨幕为主题的游戏入口原型：资源加载、空间照片标题页、纸艺系统设置、方块转场与主神选择。开始游戏后进入「主神空间」，左侧头像选择红妆，右侧以 NAI 整幅场景呈现并支持空间视差；首个可玩世界尚未接入。
 
 ## 在另一台电脑继续开发
 
@@ -46,6 +46,7 @@ python loading-page/serve.py --host 0.0.0.0
 ```sh
 # 可选：安装 Node.js 22+ 后执行资源引用和语法检查
 python scripts/check-project.py
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 每次 push 和 Pull Request 都会在 GitHub Actions 执行同一检查。视觉与声音仍需在真实浏览器中确认：首次点击解锁音频，标题菜单点击与选中是独立反馈，环境声默认 25%，当前不包含 BGM。
@@ -60,5 +61,7 @@ python scripts/check-project.py
 | `.github/workflows/` | 自动资源与语法检查 |
 
 详细的游戏接入接口见 [loading-page/README.md](loading-page/README.md)。素材来源与许可见 [音效来源](loading-page/assets/audio/SOURCES.md) 和 [空间渲染器来源](loading-page/vendor/depth-flow/SOURCE.md)。本仓库没有将项目美术或代码整体授予开源许可。
+
+设置页的模型 ID 使用纸艺下拉框，填写接口地址和密钥后打开即可获取模型；支持筛选、刷新和手动输入。该功能依赖随项目提供的 Python `/api/models` 服务，详见 [模型列表接口](loading-page/MODEL_CATALOG.md)。
 
 模型接口密钥只在运行页面中填写，保存在当前浏览器会话；不写进代码、提交、提示词或仓库。历史试验、生成缓存、安装包、录屏和本机依赖目录不属于运行所需文件，留在原电脑中。

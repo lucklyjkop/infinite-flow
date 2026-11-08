@@ -133,13 +133,15 @@
       .then(() => { if (active === run) settle(); });
     run.guard = setTimeout(() => { if (active === run) settle(); }, 1650);
   }
-  window.addEventListener('infinite:settingsreturnstart', begin);
-  window.addEventListener('infinite:settingsreturncancel', event => {
+  ['infinite:settingsreturnstart', 'infinite:deityreturnstart'].forEach(type => window.addEventListener(type, begin));
+  const cancelReturn = event => {
     if (active && (event.detail?.id === undefined || event.detail.id === active.id)) settle();
-  });
-  window.addEventListener('infinite:settingsreturnend', event => {
+  };
+  const endReturn = event => {
     if (active && event.detail?.id === active.id && event.detail?.immediate) settle();
-  });
+  };
+  ['infinite:settingsreturncancel', 'infinite:deityreturncancel'].forEach(type => window.addEventListener(type, cancelReturn));
+  ['infinite:settingsreturnend', 'infinite:deityreturnend'].forEach(type => window.addEventListener(type, endReturn));
   const settleIfUnavailable = () => { if (active && !allowed()) settle(); };
   reduced.addEventListener('change', settleIfUnavailable);
   document.addEventListener('visibilitychange', settleIfUnavailable);

@@ -16,10 +16,11 @@
   <link rel="stylesheet" href="title-return.css?v=twig-growth">
   <link rel="stylesheet" href="fan-loading.css?v=brocade-light">
   <link rel="stylesheet" href="start-wave.css">
-  <link rel="stylesheet" href="settings-folio.css?v=audio-mix">
+  <link rel="stylesheet" href="settings-folio.css?v=paper-corner">
   <link rel="stylesheet" href="settings-folio-art.css?v=paper">
   <link rel="stylesheet" href="settings-folio-transition.css?v=return">
-  <link rel="stylesheet" href="deity-space.css?v=first-arrival">
+  <link rel="stylesheet" href="model-catalog.css?v=paper-dropdown-2">
+  <link rel="stylesheet" href="deity-space.css?v=sakura-return-3">
   <link rel="icon" href="data:,">
   <script defer src="game-audio.js?v=title-click-no-bgm"></script>
   <script defer src="petals.js"></script>
@@ -28,7 +29,7 @@
   <script defer src="vendor/depth-flow/slide.min.js?v=native-textures"></script>
   <script defer src="spatial-project.js?v=native-textures"></script>
   <script defer src="spatial-flat.js"></script>
-  <script defer src="spatial-photo.js?v=native-textures"></script>
+  <script defer src="spatial-photo.js?v=multi-scene"></script>
   <script defer src="assets/loading-ui/fan-brocade-slices.js"></script>
   <script defer src="loading-fan.js?v=brocade-light"></script>
   <script defer src="assets/loading-ui/bough-fields.js"></script>
@@ -41,11 +42,13 @@
   <script defer src="main.js?v=deity-handoff"></script>
   <script defer src="settings-folio-art.js?v=foley"></script>
   <script defer src="settings-paper-select.js?v=paper-select"></script>
-  <script defer src="settings-folio.js?v=ambience-25"></script>
+  <script defer src="settings-folio.js?v=model-dropdown"></script>
+  <script defer src="model-catalog.js?v=paper-dropdown-2"></script>
   <script defer src="title-menu.js?v=title-click"></script>
-  <script defer src="title-return.js?v=foley"></script>
+  <script defer src="title-return.js?v=deity-return"></script>
   <script defer src="deity-assembly.js?v=first-arrival"></script>
-  <script defer src="deity-space.js?v=first-arrival"></script>
+  <script defer src="deity-transition.js?v=sakura-writing"></script>
+  <script defer src="deity-space.js?v=sakura-return-3"></script>
 </head>
 <body>
   <main class="world" id="world" data-state="boot" aria-label="无限流">
@@ -134,7 +137,15 @@
                 <div class="folio-row"><label for="model-protocol">接口协议</label><div class="paper-field select-field"><select id="model-protocol"><option value="openai">OpenAI 兼容</option><option value="anthropic">Anthropic</option></select></div></div>
                 <div class="folio-row"><label for="model-base-url">接口地址</label><div class="paper-field"><input id="model-base-url" type="url" placeholder="https://api.example.com/v1" spellcheck="false" autocapitalize="none"></div></div>
                 <div class="folio-row"><label for="model-api-key">API 密钥</label><div class="paper-field key-field"><input id="model-api-key" type="password" placeholder="输入 API 密钥" autocomplete="off" spellcheck="false" aria-describedby="model-key-help"><button id="toggle-api-key" type="button" aria-label="显示密钥" aria-pressed="false"><span class="key-eye" aria-hidden="true"></span></button></div></div>
-                <div class="folio-row"><label for="model-name">模型 ID</label><div class="paper-field"><input id="model-name" type="text" placeholder="输入模型 ID" spellcheck="false" autocapitalize="none"></div></div>
+                <div class="folio-row model-catalog-row"><label id="model-name-label" for="model-name-trigger">模型 ID</label><div class="paper-field select-field"><input id="model-name" type="hidden"><button id="model-name-trigger" class="paper-select-trigger" type="button" aria-labelledby="model-name-label model-name-value" aria-haspopup="dialog" aria-expanded="false" aria-controls="model-catalog-popover"><span id="model-name-value" class="paper-select-value">选择模型</span><span class="paper-select-arrow" aria-hidden="true"></span></button></div></div>
+              </div>
+              <div id="model-catalog-popover" class="model-catalog-popover" popover="manual" role="dialog" aria-label="选择模型">
+                <div class="model-catalog-caption"><span>可用模型 <small id="model-catalog-count"></small></span><button id="model-catalog-refresh" type="button">刷新列表</button></div>
+                <input id="model-catalog-search" type="text" placeholder="筛选模型，或输入模型 ID" aria-label="筛选或手动输入模型 ID" spellcheck="false" autocapitalize="none" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="model-catalog-options" aria-autocomplete="list" aria-describedby="model-catalog-status">
+                <p id="model-catalog-status" class="model-catalog-status" role="status" aria-live="polite"></p>
+                <div id="model-catalog-options" role="listbox" aria-label="可用模型 ID"></div>
+                <p id="model-catalog-empty" hidden>没有匹配的模型，可手动填写。</p>
+                <button id="model-catalog-manual" type="button" disabled>使用输入的模型 ID</button>
               </div>
               <p class="folio-help" id="model-key-help">密钥保存在当前浏览器会话</p>
               <div class="model-check"><button id="test-model-config" class="folio-ticket ticket-secondary" type="button">检查配置</button><output id="model-config-status" role="status">尚未检查</output></div>

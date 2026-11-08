@@ -1,0 +1,25 @@
+{
+  "entry": "OpenAI built-in Image generation",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "requestedQuality": "highest available",
+  "generatedAt": "2026-11-08",
+  "transparent_background": true,
+  "reference": "art-source/imagegen/sakura-calligraphy.png",
+  "prompt": "Create a finished production game UI lettering sprite, highest available quality, with a truly transparent background. Use the attached image ONLY as an exact style/material/calligraphic rhythm reference; replace its words with EXACTLY FOUR simplified Chinese characters: 主神空间, reading left to right in a single horizontal line. 主 / 神 / 空 / 间 must each be correct and legible. No other text.\n\nMatch the reference's elegant semi-cursive Chinese xingshu, warm luminous moon-ivory pigment, subtle shell pink and muted carmine on lifted dry-brush tips, tactile fine feibai texture and varied brush pressure. Thin confident entries, weighty graceful bodies, tapered sweeping exits, living asymmetry rather than a typeset font. Four characters have balanced clear gaps and broadly equal visual size. Preserve radicals; do not merge words, omit strokes, or invent glyphs. Overall inked aspect ratio about 4.2:1. The final 间 may have a restrained trailing brush sweep, but no giant flourishes.\n\nSakura theme integrated with utmost restraint: pale dusty rose accents within the lower brush ends and just ONE tiny elegant five-petal shell-pink cherry blossom resting against an outer trailing stroke near the lower right, plus at most two tiny carmine petal flecks. Lettering is the focal point, blossoms are very small supporting accents. Harmonize with the original ivory-and-rose 无限流 title, dark red embroidered silk and quiet night mist. Flat exquisite brush art, no bevel, no metallic 3D extrusion, no hard shadow, no black outline.\n\nWide landscape sprite canvas with all lettering fully visible and comfortable transparent margins. Entire background must be actual alpha transparency: no black rectangle, no paper, no checkerboard, no scenery, no UI frame. NO underline, no straight decorative rule, no geometric divider, no long branch (a separate cherry branch is added later by the UI). No seal, logo, English, caption or watermark.",
+  "sourceSize": [
+    2172,
+    724
+  ],
+  "crop": [
+    88,
+    94,
+    2083,
+    692
+  ],
+  "exportSize": [
+    1600,
+    480
+  ],
+  "runtime": "loading-page/assets/deity-space/location-title.webp"
+}

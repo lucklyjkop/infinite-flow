@@ -1,83 +1,100 @@
 {
-  "entry": "OpenAI built-in Image generation",
-  "reportedModel": null,
-  "reportedQuality": null,
-  "requestedQuality": "highest available",
+  "role": "Left avatar roster and one integrated NAI sanctuary photograph with registered internal spatial layers. No detached character or locked silhouettes.",
   "sourceDirectory": "art-source/imagegen/deity-space",
-  "promptFile": "art-source/imagegen/deity-space/generation.json",
-  "role": "Matte deity sanctuary, six dormant silhouettes from five variants, redesigned Hongzhuang character, location title. Runtime lighting is applied by CSS; original title-page art is unchanged.",
+  "sceneGeneration": {
+    "entry": "NovelAI official image API",
+    "model": "nai-diffusion-5-full",
+    "effort": "High (full model, 23 steps)",
+    "promptFile": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.prompt.txt",
+    "parametersFile": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.metadata.json"
+  },
+  "uiGeneration": {
+    "entry": "OpenAI built-in Image generation",
+    "reportedModel": null,
+    "reportedQuality": null,
+    "requestedQuality": "highest available",
+    "promptFile": "art-source/imagegen/deity-space/ui-roster/generation.json"
+  },
   "assets": [
-    {
-      "file": "hongzhuang.webp",
-      "size": [
-        1024,
-        1536
-      ],
-      "bytes": 357630,
-      "sha256": "3dbe3199e57b537b63e996a424db2c5235214472de4a53484c73287cc2961262"
-    },
     {
       "file": "location-title.webp",
       "size": [
-        2065,
-        720
+        1600,
+        480
       ],
-      "bytes": 424848,
-      "sha256": "0c1dc71dea336de334609d46a6bb5ebeb28f2b7dd196a443b1550a168fdee541"
+      "bytes": 302782,
+      "sha256": "b762e661a5b166d9b4df50a1ccaeb8d42b2c9dd5cca210bd36fecee70d50476f"
     },
     {
-      "file": "locked-1.webp",
+      "file": "nai-avatar.webp",
       "size": [
-        434,
-        724
+        640,
+        640
       ],
-      "bytes": 75660,
-      "sha256": "d0694b91ac036d4ea36e3069cbb7e96d78422d807dbea9a742bd0eb148008fc6"
+      "bytes": 101080,
+      "sha256": "50d5ed7256289e524bbd64d91d5bee2474d3f267798fc0f895685dbb88bb4211"
     },
     {
-      "file": "locked-2.webp",
+      "file": "nai-plate.webp",
       "size": [
-        426,
-        724
+        3840,
+        2160
       ],
-      "bytes": 86562,
-      "sha256": "72f92cb92cc3bc708c62a6a082819f49cce04c8b5672e130b2c94b2a7703942f"
+      "bytes": 4478318,
+      "sha256": "f28f6a5955c69598fa3ff86337f22c68e4bad766498d3485a2997f964d504267"
     },
     {
-      "file": "locked-3.webp",
+      "file": "nai-portrait.webp",
       "size": [
-        431,
-        724
+        3840,
+        2160
       ],
-      "bytes": 101294,
-      "sha256": "3234cb2f23471be0245b415e22ae6f825acd18a7b2838c9f4b9a61869ef31bfb"
+      "bytes": 2559682,
+      "sha256": "38684213277c23a70203f24be3bd619e3c4f6d48cc8d71d27e656c7179bf2796"
     },
     {
-      "file": "locked-4.webp",
+      "file": "nai-scene.webp",
       "size": [
-        435,
-        724
+        3840,
+        2160
       ],
-      "bytes": 76578,
-      "sha256": "9695d8bf53de26618a58b5d3c38c3d6e95bcaeafdd1dd0e26c3aaae1382e821f"
+      "bytes": 535368,
+      "sha256": "7f5d2d677b7de3d99e1a16d21695bd4e9841efb78dea83e22714c880f9cad3de"
     },
     {
-      "file": "locked-5.webp",
+      "file": "ui-avatar-active.webp",
       "size": [
-        434,
-        724
+        640,
+        640
       ],
-      "bytes": 90312,
-      "sha256": "1dc0f355c66a51460cce8ad3665627dcddb72a0fdd9f3b5eb6130692da2147f8"
+      "bytes": 63230,
+      "sha256": "2dfea9907907f8bb701eeda9876872fadbddb8a6339e05c8efd0fda008c3e89f"
     },
     {
-      "file": "sanctuary.webp",
+      "file": "ui-avatar-frame.webp",
       "size": [
-        1672,
-        941
+        640,
+        640
       ],
-      "bytes": 219594,
-      "sha256": "7d90607d799f0739a40cec7f041ec6d16ff47fa68ce9c6c93635f1d1c13a756b"
+      "bytes": 52346,
+      "sha256": "6c5c181e1be1786428fbf225aac66bc4726ee1547009d6e8c95eb615843be279"
+    },
+    {
+      "file": "ui-confirm.webp",
+      "size": [
+        1024,
+        153
+      ],
+      "bytes": 51916,
+      "sha256": "a551cd5c77b1c38337f25692314639668dc019a934ff7f06c01b5e2283c245e2"
     }
-  ]
+  ],
+  "locationGeneration": {
+    "entry": "OpenAI built-in Image generation",
+    "reportedModel": null,
+    "reportedQuality": null,
+    "requestedQuality": "highest available",
+    "promptFile": "art-source/imagegen/deity-space/location-calligraphy.json",
+    "branch": "Reuses assets/menu-ui/sakura-branch.webp; title-matched sakura ornament"
+  }
 }

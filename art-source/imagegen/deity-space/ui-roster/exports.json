@@ -1,0 +1,82 @@
+[
+  {
+    "source": "ui-return.png",
+    "sourceSize": [
+      2172,
+      724
+    ],
+    "crop": [
+      4,
+      119,
+      2169,
+      599
+    ],
+    "runtime": "ui-return.webp",
+    "size": [
+      1024,
+      227
+    ],
+    "centerAlpha": 253,
+    "cropBoundsAlphaThreshold": 16,
+    "notes": "Bounds ignore stray alpha <=16; cropped pixels retain original RGBA alpha."
+  },
+  {
+    "source": "ui-confirm.png",
+    "sourceSize": [
+      2172,
+      724
+    ],
+    "crop": [
+      7,
+      186,
+      2168,
+      508
+    ],
+    "runtime": "ui-confirm.webp",
+    "size": [
+      1024,
+      153
+    ],
+    "centerAlpha": 253,
+    "cropBoundsAlphaThreshold": 16,
+    "notes": "Bounds ignore stray alpha <=16; cropped pixels retain original RGBA alpha."
+  },
+  {
+    "source": "ui-avatar-frame.png",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "crop": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "runtime": "ui-avatar-frame.webp",
+    "size": [
+      640,
+      640
+    ],
+    "centerAlpha": 0
+  },
+  {
+    "source": "ui-avatar-active.png",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "crop": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "runtime": "ui-avatar-active.webp",
+    "size": [
+      640,
+      640
+    ],
+    "centerAlpha": 0
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "model": "nai-diffusion-5-full",
+  "seed": 192748563,
+  "steps": 23,
+  "sampler": "k_euler_ancestral",
+  "scale": 7,
+  "noise_schedule": "karras",
+  "nativeSize": [
+    1920,
+    1088
+  ],
+  "nativeOutput": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.native.png",
+  "artistMix": "User supplied validated artist chain; from approved title artwork",
+  "entry": "NovelAI official image API",
+  "effort": "High / nai-diffusion-5-full (not distilled)",
+  "modelVerification": "https://docs.novelai.net/en/image/models/",
+  "effortVerification": "https://docs.novelai.net/en/image/effort/",
+  "upscaleMethod": "NovelAI dedicated upscale 2x",
+  "upscaledSize": [
+    3840,
+    2176
+  ],
+  "finalSize": [
+    3840,
+    2160
+  ],
+  "cropTop": 8,
+  "output": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.4k.png",
+  "generatedAt": "2026-11-08",
+  "framing": "Coherent whole scene; character and sanctuary generated together, left UI negative space, right character."
+}

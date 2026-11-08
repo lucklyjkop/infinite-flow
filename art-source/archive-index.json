@@ -1,5 +1,5 @@
 {
-  "scope": "Current approved artwork sources and provenance only; runtime exports remain in loading-page/assets.",
+  "scope": "Current and retained historical artwork sources and provenance; runtime exports remain in loading-page/assets.",
   "pathConvention": "Absolute Windows metadata paths have been replaced by repository-root-relative paths; original relative source references are retained.",
   "files": [
     {
@@ -18,6 +18,16 @@
       "sha256": "691f77b29bd05d263c47279b3b0e85464b947ed9041c5e49c13d30da1f1b1817"
     },
     {
+      "path": "art-source/imagegen/deity-space/location-calligraphy.json",
+      "bytes": 2449,
+      "sha256": "9742c06e973d1b7c4e8141318749845015bde414a251c838bf798d93f95b5e41"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/location-calligraphy.png",
+      "bytes": 1140101,
+      "sha256": "ba87ba6bc4733a1e5cbf55f7670f3e3939de680779e8681ee7fbc4a0c155a43d"
+    },
+    {
       "path": "art-source/imagegen/deity-space/location-title.png",
       "bytes": 1225576,
       "sha256": "d986dc1c883d64fba4aba69ce6d219ce2b93fbc5bce02991cf0a2fce7b558d46"
@@ -33,9 +43,74 @@
       "sha256": "1deca2bd9beb1a03b6e09216dc2815377fff4786619ef930154e422031812841"
     },
     {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.4k.png",
+      "bytes": 8062173,
+      "sha256": "3ee9b0a94aeda1c12ea1f8cfecde874509fdf8f673d18c4a93cd31255eb7a856"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.metadata.json",
+      "bytes": 997,
+      "sha256": "c8c04b41d042529fd2e1dcd5190585f768de09d0dd3a7f027840e1e75cb6afbc"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.native.png",
+      "bytes": 2056081,
+      "sha256": "c1165545a566398ccb3953a728b44e135825794796b7ce51b49abd21bf1fde0d"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.negative.txt",
+      "bytes": 1625,
+      "sha256": "b00e48db962f33f230cd618763b412f694567466590a2e7fdf848511c2e9add6"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.prompt.txt",
+      "bytes": 3081,
+      "sha256": "642b5daf6cd6bff8cb6e1a133ac64e6ee41b12c2b85d5178a5cc9e85ed29d7d4"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/nai-deity-scene-v1.request.json",
+      "bytes": 10353,
+      "sha256": "3118e9c74322ae109e27934fa801ee6514974ad5f84e78d215ab0f9335af4bf5"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/nai-scene/spatial-preparation.json",
+      "bytes": 1045,
+      "sha256": "50beffc5f7d799e8d508a34db9514fc51c90c282bcc040d0354175217530acd6"
+    },
+    {
       "path": "art-source/imagegen/deity-space/sanctuary.png",
       "bytes": 2149278,
       "sha256": "784a78a6c27226bf83f948e09e7f2e0bfbcb36261dc01b4fb4abcf6b290dc16e"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/exports.json",
+      "bytes": 1283,
+      "sha256": "11c865e1183e8ef811a47a6bc55d050a8e79ccd2f4e7e616a25471875c0a7e33"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/generation.json",
+      "bytes": 4141,
+      "sha256": "8179ccc71bb3c6b58ed425dd976b41348fe6bc88e37558816aa5da33d5437cf4"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/ui-avatar-active.png",
+      "bytes": 692701,
+      "sha256": "36778b4594fe56a4143c627a8ce9cc9011b85d6ce691b8cad6bd36c50c977b3c"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/ui-avatar-frame.png",
+      "bytes": 752708,
+      "sha256": "115e3617b064c85991521b45c9da7d60d95f3131e9dbaa7c808561afb80ef7cb"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/ui-confirm.png",
+      "bytes": 1452794,
+      "sha256": "771b05041df843714e6180e476a822344efa49db4399615a7a8a16d826e36238"
+    },
+    {
+      "path": "art-source/imagegen/deity-space/ui-roster/ui-return.png",
+      "bytes": 2005119,
+      "sha256": "c6f9a75fd4d5b66f2499593810a4bc2e06488784e8c033c20c88bbfe0f312734"
     },
     {
       "path": "art-source/imagegen/folding-fan-brocade.metadata.json",

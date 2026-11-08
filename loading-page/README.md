@@ -47,7 +47,7 @@ window.InfiniteLoading.updateProgress(35); // 0—100，来自实际资源加载
 window.addEventListener('infinite:ready', () => { /* 所有资源准备完成 */ });
 ```
 
-标题页已接入加载完成事件。点击「开始游戏」时，当前空间照片化为立方体，单个波峰由中心向四周推进；每块方块只抬起、回落一次，随后碎开消散，约 2.6 秒后画面收暗。WebGL 与 2D 回退使用相同的单峰节奏。随后先在中间偏上显示「主神空间」，约 0.65 秒后，448 个左右的哑光方块从四边向内拼回新场景，重组约 1.55 秒。「继续游戏」使用已有存档的入口。接入玩法时可在点击事件内接管，并按需等待内置过场：
+标题页已接入加载完成事件。点击「开始游戏」时，当前空间照片化为立方体，单个波峰由中心向四周推进；每块方块只抬起、回落一次，随后碎开消散，约 2.6 秒后画面收暗。WebGL 与 2D 回退使用相同的单峰节奏。随后在中间偏上逐笔写出「主神空间」，细樱枝随后生长，约 0.96 秒后，448 个左右的哑光方块从四边向内拼回新场景，重组约 1.55 秒。「继续游戏」使用已有存档的入口。接入玩法时可在点击事件内接管，并按需等待内置过场：
 
 ```js
 window.addEventListener('infinite:startgame', async event => {
@@ -67,7 +67,7 @@ window.InfiniteTitle.returnToTitle();
 
 `assets/menu-ui/manifest.json` 记录原书法图集的源图哈希、裁切区域和尺寸。标题与菜单有语义文字供辅助工具读取，按钮的交互区域覆盖整行。
 
-系统设置使用 `assets/settings-folio/` 的纸艺贴图与独立屏风、人物、梅枝、骰子图层。`settings-folio.js` 管理四类设置及草稿，点击「保存设置」写入本机，返回撤回未保存的预览。模型页当前提供本地配置检查，密钥仅保存在当前浏览器会话。`infinite:settings` 派发预览值，`infinite:settingssaved` 派发已保存值，均不包含密钥。总音量、环境音、界面音效及掷骰音效均已接入实际混音。环境音默认 25%，当前不包含背景音乐。
+系统设置使用 `assets/settings-folio/` 的纸艺贴图与独立屏风、人物、梅枝、骰子图层。`settings-folio.js` 管理四类设置及草稿，点击「保存设置」写入本机，返回撤回未保存的预览。模型页的模型 ID 使用统一纸艺下拉框：打开时经同源 `/api/models` 获取模型，可筛选、刷新、重试或手动填写。支持 OpenAI 兼容和 Anthropic；当前「检查配置」仍只检查字段格式，模型获取才会实际请求远端。密钥仅保存在当前浏览器会话。服务边界与协议见 [MODEL_CATALOG.md](MODEL_CATALOG.md)。`infinite:settings` 派发预览值，`infinite:settingssaved` 派发已保存值，均不包含密钥。总音量、环境音、界面音效及掷骰音效均已接入实际混音。环境音默认 25%，当前不包含背景音乐。
 
 `settings-paper-select.js` 将原生字段增强为纸艺下拉，保留真实表单值、键盘交互及全屏请求。`settings-folio-art.js` 的独立时间轴负责梅枝、屏风人物、红线和骰子进退场。原始图集、提示词和切图记录保存在 `../art-source/imagegen/settings-folio/`。
 
@@ -81,11 +81,15 @@ window.InfiniteTitle.returnToTitle();
 
 ### 主神空间
 
-`deity-space.js/.css` 接入新的主神选择场景：左下红妆以新姿态登场，默认低饱和暗色；悬停、键盘聚焦或选中后恢复色彩，并出现柔和的轮廓光与脚下光晕。其他六位主神是不可选择的黑色剪影。选择红妆后可以确认，当前确认只记录本次界面选择，不创建假存档或进入未制作的世界。
+`deity-space.js/.css` 使用左侧头像列表和右侧红妆的构图，默认选择红妆，不再显示黑色锁定人物。返回标题恢复简洁箭头文字；确认按钮与头像框由内置生图制作透明贴图。确认只记录本次界面选择，不创建假存档或进入未制作的世界。
 
-`deity-assembly.js` 批量绘制四边飞入的哑光立方体，以新场景和人物的合成快照作为表面，结束后由原位置 DOM 接管。WebGL 不可用时回退到 Canvas 2D；减少动态模式使用短淡入。进入主神空间会停止原标题页的雨滴、花瓣和空间相机，返回标题会恢复。Esc、切后台、窗口缩放和取消都有收尾路径。
+主神场景由 NAI V5 Full（High）生成一张完整的人景合一原画，沿用标题的画师串。原图 1920 × 1088，经 NAI 专用 2 倍放大并裁至 3840 × 2160；源图、正负提示词和可核实参数在 `../art-source/imagegen/deity-space/nai-scene/`。`nai-scene.webp` 用于静态显示，`nai-plate.webp` 和 `nai-portrait.webp` 仅作为同一画幅的内部空间层，页面没有独立缩放摆位的人物组件。头像从同一张原图裁出。
 
-新场景的内置生图源稿和完整提示词保存在 `../art-source/imagegen/deity-space/`，运行贴图在 `assets/deity-space/`。`InfiniteDeitySpace.open()`、`.close()`、`.getState()`、`.preload()` 可用于调试；角色确认时派发 `infinite:deityselected`，正式游戏可接管此事件：
+主神与标题共用 `SpatialPhoto` / DepthFlow SLIDE，通过可选资源路径创建独立相机，保持两场景互不干扰。鼠标移动时平滑产生小幅视差；返回、后台或减少动态时停止。按钮与头像框源稿和提示词在 `../art-source/imagegen/deity-space/ui-roster/`。新的米金淡红行书地名与末笔樱花由内置 Image 生成，源稿/提示词在 `location-calligraphy.png/.json`；下方复用原标题页的细樱枝。`deity-transition.js` 使用注册到原字形的局部笔划遮罩揭示题字，再展开樱枝，动画完成恢复原图。所有运行素材位于 `assets/deity-space/`。
+
+`deity-assembly.js` 批量绘制四边飞入的哑光立方体，以新场景整图快照为表面，结束后由同裁切位置的原画接管。WebGL 不可用时回退到 Canvas 2D；减少动态模式使用短淡入。进入主神空间会停止原标题页的雨滴、花瓣和空间相机，返回标题会恢复。返回标题时冻结当前空间视角，主神画面微缩并柔和退隐，原标题的樱枝、题字和菜单接续显现，避免直接黑屏切换；返回期间阻止重复操作。Esc、切后台、窗口缩放、减少动态和取消都有收尾路径。
+
+`InfiniteDeitySpace.open()`、`.close()`、`.getState()`、`.preload()` 可用于调试；角色确认时派发 `infinite:deityselected`，正式游戏可接管此事件：
 
 ```js
 window.addEventListener('infinite:deityselected', event => {
@@ -97,6 +101,6 @@ window.addEventListener('infinite:deityselected', event => {
 
 ### 项目检查
 
-从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频清单、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。GitHub Actions 会在 push 和 Pull Request 中运行同一检查。
+从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频清单、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。模型列表接口另运行 `python -m unittest discover -s tests -p "test_*.py"`。GitHub Actions 会在 push 和 Pull Request 中运行上述检查。
 
 修改交互或动画后还应实测：完整加载到标题、鼠标和键盘选中/点击、设置保存与放弃草稿、关闭转场、开始游戏单次波浪、前后台切换、窄屏布局及系统减少动态偏好。音频需要真实操作解锁；无存档时继续按钮保持禁用。该自动检查不代替这些视觉和听感验证。

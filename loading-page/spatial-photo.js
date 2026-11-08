@@ -4,17 +4,21 @@
   const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
   class SpatialPhoto {
-    constructor(world, image, canvas, layersCanvas) {
+    constructor(world, image, canvas, layersCanvas, options = {}) {
       this.world = world;
       this.image = image;
       this.canvas = canvas;
       this.layersCanvas = layersCanvas;
+      this.customURLs = Array.isArray(options.urls) && options.urls.length === 2;
+      this.urls = this.customURLs ? [...options.urls] :
+        ['assets/spatial-photo/plate.webp', 'assets/spatial-photo/portrait.webp'];
       this.view = canvas;
       this.preferLayers = false;
       this.renderer = null;
       this.request = 0;
       this.textures = null;
       this.warmPending = false;
+      this.retryAfter = 0;
       this.mode = 'idle';
       this.enabled = false;
       this.blocked = false;
@@ -82,15 +86,17 @@
     }
 
     async initialize() {
-      if (this.mode !== 'idle') return;
+      if (this.mode !== 'idle' || performance.now() < this.retryAfter) return;
       this.mode = 'loading';
       const request = ++this.request;
       const current = () => request === this.request;
-      const urls = ['assets/spatial-photo/plate.webp', 'assets/spatial-photo/portrait.webp'];
+      const urls = this.urls;
       const factory = window.createProjectSpatialRenderer;
       const canUseGL = !this.preferLayers && location.protocol !== 'file:';
       let renderer = null, mode = 'depthflow-slide', view = this.canvas;
-      if (canUseGL && factory?.fromURLs) {
+      // The native fast path contains edge samples for the title's exact art.
+      // Other scenes use the general factory, which builds their own samples.
+      if (canUseGL && !this.customURLs && factory?.fromURLs) {
         try { renderer = await factory.fromURLs(view, urls, current); }
         catch { /* Try the public blob factory for browsers without native texture upload. */ }
         if (!current()) { renderer?.dispose(); return; }
@@ -108,7 +114,12 @@
         try { images = await this.textures; }
         catch {
           this.textures = null;
-          if (current()) this.mode = 'idle';
+          if (current()) {
+            // Missing or still-generating layers must not refetch on every
+            // pointer event. Retry on a later interaction, without a busy timer.
+            this.retryAfter = performance.now() + 3000;
+            this.mode = 'idle';
+          }
           return;
         }
         if (!current()) return;
@@ -127,6 +138,7 @@
         }
       }
       this.renderer = renderer;
+      if (renderer) this.retryAfter = 0;
       this.view = view;
       this.mode = mode;
       if (renderer) {
@@ -219,7 +231,8 @@
 
     getState() {
       return { mode: this.mode, enabled: this.enabled, blocked: this.blocked, x: this.x, y: this.y,
-        limitX: this.limitX, limitY: this.limitY, moving: !!this.raf, draws: this.draws };
+        limitX: this.limitX, limitY: this.limitY, moving: !!this.raf, draws: this.draws,
+        retryInMs: Math.max(0, Math.ceil(this.retryAfter - performance.now())) };
     }
   }
   window.SpatialPhoto = SpatialPhoto;

@@ -89,12 +89,14 @@
   }
 
   function fillForm() {
+    window.ModelCatalogue?.reset();
     input('setting-brightness').value = draft.brightness;
     input('setting-motion').checked = draft.motion;
     input('setting-display').value = draft.display;
     input('model-protocol').value = draft.model.protocol;
     input('model-base-url').value = draft.model.baseUrl;
     input('model-name').value = draft.model.name;
+    window.ModelCatalogue?.refresh();
     input('model-api-key').value = savedSecret;
     input('model-api-key').type = 'password';
     input('toggle-api-key')?.setAttribute('aria-pressed', 'false');
@@ -276,6 +278,7 @@
 
   function close({immediate = false, restoreFocus = true} = {}) {
     if (!dialog.open) return;
+    window.ModelCatalogue?.reset();
     if (immediate) { finishClose(restoreFocus, true, true); return; }
     if (dialog.dataset.phase === 'closing') return;
     closingRestoreFocus = restoreFocus;
@@ -387,7 +390,7 @@
 
   input('test-model-config')?.addEventListener('click', () => {
     readForm();
-    status(configError(true) || '本地配置有效，连接待接入。', 'model-config-status');
+    status(configError(true) || '格式正确；打开“模型 ID”可获取列表。', 'model-config-status');
   });
   input('toggle-api-key')?.addEventListener('click', event => {
     const secret = input('model-api-key'), show = secret.type === 'password';

@@ -64,7 +64,7 @@ for file in GAME.rglob("*.json"):
 manifest = GAME / "assets/audio/manifest.json"
 for sample in json.loads(manifest.read_text(encoding="utf-8"))["assets"]:
     asset(manifest, sample["file"])
-for file in [GAME / "serve.py", *ROOT.joinpath("scripts").glob("*.py")]:
+for file in [*GAME.glob("*.py"), *ROOT.joinpath("scripts").glob("*.py"), *ROOT.joinpath("tests").glob("test_*.py")]:
     try:
         ast.parse(file.read_text(encoding="utf-8"), filename=str(file))
     except SyntaxError as exc:
