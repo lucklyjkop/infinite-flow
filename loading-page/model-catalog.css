@@ -1,10 +1,10 @@
 /* Main row is the same generated paper selector as the protocol control. */
 #model-name-trigger.is-placeholder { color: #797c6d; }
 .model-catalog-popover[popover] {
-  position: fixed; inset: auto; margin: 0; padding: 16px; border: 0; border-radius: 3px;
+  position: fixed; inset: auto; margin: 0; padding: 16px; border: 0; border-radius: 0;
   isolation: isolate; color: #3b382e; opacity: 1;
-  background: #eeecdf url('assets/settings-folio/dropdown-panel.webp') center / 100% 100% no-repeat;
-  box-shadow: 0 10px 28px #21170e38, 0 1px 3px #392b182b; overflow: auto;
+  background: url('assets/settings-folio/dropdown-panel.webp') center / 100% 100% no-repeat;
+  box-shadow: none; overflow: auto;
   overscroll-behavior: contain; scrollbar-width: none;
   font: clamp(14px,1.1vw,18px)/1.5 'STSong','Noto Serif CJK SC','SimSun',serif;
   -webkit-touch-callout: none; user-select: none;
@@ -12,7 +12,7 @@
 .model-catalog-popover::backdrop { background: transparent; }
 .model-catalog-popover:popover-open { display: flex; flex-direction: column; animation: model-catalog-in .14s ease-out both; }
 .model-catalog-popover::-webkit-scrollbar { display: none; }
-/* Keep paper opaque throughout opening; only its position eases into place. */
+/* Preserve the texture's own paper edge; only its position eases into place. */
 @keyframes model-catalog-in { from { transform: translateY(-3px); } to { transform: none; } }
 .model-catalog-caption { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #63563f; padding: 0 4px 10px; }
 .model-catalog-caption small { padding-left: 6px; font: .75em/1.4 'Microsoft YaHei',sans-serif; color: #7a7564; }
@@ -26,22 +26,21 @@
 #model-catalog-refresh:hover, #model-catalog-manual:not(:disabled):hover { color: #bc4136; }
 #model-catalog-search {
   appearance: none; flex: 0 0 auto; display: block; width: 100%; min-width: 0; height: 42px; padding: 8px 12px;
-  border: 0; border-radius: 2px; background: #e4e3d4 url('assets/settings-folio/dropdown-active.webp') center / 100% 100% no-repeat;
+  border: 0; border-radius: 0; background: url('assets/settings-folio/dropdown-active.webp') center / 100% 100% no-repeat;
   font: max(14px,.9em)/1.5 'Microsoft YaHei',sans-serif; color: #393c31; box-shadow: none; outline: none;
   user-select: text; -webkit-user-select: text;
 }
 #model-catalog-search::placeholder { color: #797a6c; opacity: 1; }
-#model-catalog-search:focus { background-color: #e9e7d9; }
 #model-catalog-options { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; margin-top: 8px; }
 #model-catalog-options:has(.model-catalog-option) { min-height: 84px; }
 #model-catalog-options::-webkit-scrollbar { display: none; }
 .model-catalog-option { font: max(14px,.9em)/1.6 'Microsoft YaHei',sans-serif; min-height: 42px; overflow-wrap: anywhere; word-break: break-word; padding: 10px 12px; cursor: pointer; }
-.model-catalog-option:is(:hover,.is-active,[aria-selected='true']) { color: #913c31; background: #e3dfcd url('assets/settings-folio/dropdown-active.webp') center / 100% 100% no-repeat; }
+.model-catalog-option:is(:hover,.is-active,[aria-selected='true']) { color: #913c31; background: url('assets/settings-folio/dropdown-active.webp') center / 100% 100% no-repeat; }
 .model-catalog-option[aria-selected='true'] { font-weight: 600; }
 .model-catalog-status { flex: 0 0 auto; margin: 12px 4px 4px; font: .84em/1.65 'Microsoft YaHei',sans-serif; color: #676c58; overflow-wrap: anywhere; }
 .model-catalog-status:empty { display: none; }
 .model-catalog-status.is-error { color: #914237; }
 #model-catalog-empty { flex: 0 0 auto; margin: 12px 4px; font-size: .9em; color: #7b6d59; }
-#settings-dialog .model-catalog-popover button:focus-visible { color: #8c352e; background-color: #d2c7ad5c; border-radius: 2px; }
+#settings-dialog .model-catalog-popover button:focus-visible { color: #8c352e; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 600px) { #model-catalog-search { font-size: 16px; } }
 @media (prefers-reduced-motion: reduce) { .model-catalog-popover:popover-open { animation: none; } }

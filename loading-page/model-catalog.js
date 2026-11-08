@@ -102,7 +102,7 @@
     count.textContent = fetched ? matches.length + ' / ' + ids.length : '';
     empty.hidden = !fetched || matches.length > 0 || !query;
     manualButton.disabled = !search.value.trim();
-    manualButton.textContent = manualButton.disabled ? '输入模型 ID 后可手动使用' : '使用输入的模型 ID';
+    manualButton.hidden = manualButton.disabled;
     place();
     activate(matches.indexOf(field.value));
   }
@@ -135,7 +135,7 @@
     const [protocol, address, secret] = dependencies;
     const baseUrl = address.value.trim();
     const error = text => { message(text, true); refreshButton.textContent = '重试'; render(); };
-    if (!baseUrl) { error('请先填写接口地址，也可在此手动输入模型 ID。'); return; }
+    if (!baseUrl) { message(''); render(); return; }
     try {
       const url = new URL(baseUrl);
       if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password || url.hash || url.search) throw Error();
