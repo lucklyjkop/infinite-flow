@@ -47,7 +47,7 @@ window.InfiniteLoading.updateProgress(35); // 0—100，来自实际资源加载
 window.addEventListener('infinite:ready', () => { /* 所有资源准备完成 */ });
 ```
 
-标题页已接入加载完成事件。点击「开始游戏」时，当前空间照片化为立方体，单个波峰由中心向四周推进；每块方块只抬起、回落一次，随后碎开消散，约 2.6 秒后画面收暗。WebGL 与 2D 回退使用相同的单峰节奏。原型随后提示「首个世界尚未开放。」，关闭提示可回到标题。「继续游戏」使用已有存档的入口。接入玩法时可在点击事件内接管，并按需等待内置过场：
+标题页已接入加载完成事件。点击「开始游戏」时，当前空间照片化为立方体，单个波峰由中心向四周推进；每块方块只抬起、回落一次，随后碎开消散，约 2.6 秒后画面收暗。WebGL 与 2D 回退使用相同的单峰节奏。随后先在中间偏上显示「主神空间」，约 0.65 秒后，448 个左右的哑光方块从四边向内拼回新场景，重组约 1.55 秒。「继续游戏」使用已有存档的入口。接入玩法时可在点击事件内接管，并按需等待内置过场：
 
 ```js
 window.addEventListener('infinite:startgame', async event => {
@@ -78,6 +78,24 @@ window.InfiniteTitle.returnToTitle();
 `assets/audio/SOURCES.md` 和 `manifest.json` 保存 CC0 录音及剪辑信息，源录音见 `../audio-source/`，跨平台制作脚本为 `../scripts/build-game-audio.py`。旧版本未标记的默认环境音 60% 在载入时迁移到 25%；其他自定义音量保留。新保存的配置带默认版本标记，用户随后主动设为 60% 也会保留。
 
 ## 验证
+
+### 主神空间
+
+`deity-space.js/.css` 接入新的主神选择场景：左下红妆以新姿态登场，默认低饱和暗色；悬停、键盘聚焦或选中后恢复色彩，并出现柔和的轮廓光与脚下光晕。其他六位主神是不可选择的黑色剪影。选择红妆后可以确认，当前确认只记录本次界面选择，不创建假存档或进入未制作的世界。
+
+`deity-assembly.js` 批量绘制四边飞入的哑光立方体，以新场景和人物的合成快照作为表面，结束后由原位置 DOM 接管。WebGL 不可用时回退到 Canvas 2D；减少动态模式使用短淡入。进入主神空间会停止原标题页的雨滴、花瓣和空间相机，返回标题会恢复。Esc、切后台、窗口缩放和取消都有收尾路径。
+
+新场景的内置生图源稿和完整提示词保存在 `../art-source/imagegen/deity-space/`，运行贴图在 `assets/deity-space/`。`InfiniteDeitySpace.open()`、`.close()`、`.getState()`、`.preload()` 可用于调试；角色确认时派发 `infinite:deityselected`，正式游戏可接管此事件：
+
+```js
+window.addEventListener('infinite:deityselected', event => {
+  event.preventDefault();
+  const { id, name } = event.detail; // hongzhuang / 红妆
+  // 在这里创建实际角色与世界；真正保存后再调用 InfiniteTitle.setSave。
+});
+```
+
+### 项目检查
 
 从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频清单、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。GitHub Actions 会在 push 和 Pull Request 中运行同一检查。
 

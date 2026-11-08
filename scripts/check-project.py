@@ -54,7 +54,7 @@ for file in GAME.glob("*.css"):
         asset(file, match[1].strip())
 for file in GAME.glob("*.js"):
     for match in re.finditer(r"(['\"])(assets/[^'\"]+)\1", file.read_text(encoding="utf-8")):
-        if re.search(r"\.(?:webp|png|jpg|jpeg|ogg|json|js|woff2)(?:[?#].*)?$", match[2]):
+        if '${' not in match[2] and re.search(r"\.(?:webp|png|jpg|jpeg|ogg|json|js|woff2)(?:[?#].*)?$", match[2]):
             asset(file, match[2])
 for file in GAME.rglob("*.json"):
     try:

@@ -164,7 +164,7 @@
     petals?.setReducedMotion(media.matches);
     rain?.setReducedMotion(media.matches);
     const state = world.dataset.state;
-    const backstage = state === 'exited' || state === 'start-ended';
+    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity'].includes(state);
     // A warm camera can track during a replay. The first full-resolution GL
     // upload waits for the menu entrance to finish instead of stalling the opening.
     const canUseCamera = spatial?.renderer || (state === 'title' && !world.classList.contains('title-unfold'));
@@ -309,6 +309,8 @@
     }
   });
   const dialogVisibility = new MutationObserver(syncGlass);
+  // Each scene owns its effects; stop title rain and camera before deity assembly.
+  new MutationObserver(applyMotion).observe(world, {attributes: true, attributeFilter: ['data-state']});
   document.querySelectorAll('dialog').forEach(dialog => {
     dialogVisibility.observe(dialog, {attributes:true, attributeFilter:['open']});
   });

@@ -1,0 +1,38 @@
+[
+  {
+    "source": "hongzhuang.png",
+    "file": "hongzhuang.webp",
+    "sourceSize": [
+      1024,
+      1536
+    ],
+    "crop": [
+      0,
+      0,
+      1024,
+      1536
+    ],
+    "size": [
+      1024,
+      1536
+    ]
+  },
+  {
+    "source": "location-title.png",
+    "file": "location-title.webp",
+    "sourceSize": [
+      2172,
+      724
+    ],
+    "crop": [
+      73,
+      4,
+      2138,
+      724
+    ],
+    "size": [
+      2065,
+      720
+    ]
+  }
+]

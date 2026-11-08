@@ -1,0 +1,83 @@
+{
+  "entry": "OpenAI built-in Image generation",
+  "reportedModel": null,
+  "reportedQuality": null,
+  "requestedQuality": "highest available",
+  "sourceDirectory": "art-source/imagegen/deity-space",
+  "promptFile": "art-source/imagegen/deity-space/generation.json",
+  "role": "Matte deity sanctuary, six dormant silhouettes from five variants, redesigned Hongzhuang character, location title. Runtime lighting is applied by CSS; original title-page art is unchanged.",
+  "assets": [
+    {
+      "file": "hongzhuang.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "bytes": 357630,
+      "sha256": "3dbe3199e57b537b63e996a424db2c5235214472de4a53484c73287cc2961262"
+    },
+    {
+      "file": "location-title.webp",
+      "size": [
+        2065,
+        720
+      ],
+      "bytes": 424848,
+      "sha256": "0c1dc71dea336de334609d46a6bb5ebeb28f2b7dd196a443b1550a168fdee541"
+    },
+    {
+      "file": "locked-1.webp",
+      "size": [
+        434,
+        724
+      ],
+      "bytes": 75660,
+      "sha256": "d0694b91ac036d4ea36e3069cbb7e96d78422d807dbea9a742bd0eb148008fc6"
+    },
+    {
+      "file": "locked-2.webp",
+      "size": [
+        426,
+        724
+      ],
+      "bytes": 86562,
+      "sha256": "72f92cb92cc3bc708c62a6a082819f49cce04c8b5672e130b2c94b2a7703942f"
+    },
+    {
+      "file": "locked-3.webp",
+      "size": [
+        431,
+        724
+      ],
+      "bytes": 101294,
+      "sha256": "3234cb2f23471be0245b415e22ae6f825acd18a7b2838c9f4b9a61869ef31bfb"
+    },
+    {
+      "file": "locked-4.webp",
+      "size": [
+        435,
+        724
+      ],
+      "bytes": 76578,
+      "sha256": "9695d8bf53de26618a58b5d3c38c3d6e95bcaeafdd1dd0e26c3aaae1382e821f"
+    },
+    {
+      "file": "locked-5.webp",
+      "size": [
+        434,
+        724
+      ],
+      "bytes": 90312,
+      "sha256": "1dc0f355c66a51460cce8ad3665627dcddb72a0fdd9f3b5eb6130692da2147f8"
+    },
+    {
+      "file": "sanctuary.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "bytes": 219594,
+      "sha256": "7d90607d799f0739a40cec7f041ec6d16ff47fa68ce9c6c93635f1d1c13a756b"
+    }
+  ]
+}

@@ -9,6 +9,7 @@
 | `imagegen/sakura-calligraphy.png`、`sakura-branch.png`、`sakura-title.json` | `loading-page/assets/menu-ui/` 的标题与樱枝 |
 | `imagegen/sakura-menu-atlas.*`、`title-ui-atlas-v2.*` | `loading-page/assets/menu-ui/` 的按钮状态与文字 |
 | `imagegen/settings-folio/` 的纸页、封面、场景、屏风人物、梅枝、骰子、控件和左侧选中图集 | `loading-page/assets/settings-folio/` |
+| `imagegen/deity-space/` 的悬空神坛、黑色主神图集、红妆新姿态和地名书法 | `loading-page/assets/deity-space/` |
 
 设置页的 `imported/imported-1.png` 至 `imported-3.png` 是用户提供的三张原始无字控件。`reference-layout.png` 和 `reference-controls.png` 是用户提供的设计参考；它们用于后续生成时核对风格，不由游戏加载。元数据中提到的原始 ZIP 是来源记录，已解出的三张 PNG 均在仓库内，无需该 ZIP 即可继续编辑。
 
