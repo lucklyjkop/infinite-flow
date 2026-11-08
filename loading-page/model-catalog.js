@@ -14,6 +14,9 @@
   const count = document.getElementById('model-catalog-count');
   const empty = document.getElementById('model-catalog-empty');
   if (!dialog || !field || !trigger || !popup) return;
+  // Keep the popup in the modal, but outside the animated/perspective paper and
+  // its scroll container. A top-layer surface must not inherit that composition.
+  dialog.append(popup);
   const dependencies = ['model-protocol', 'model-base-url', 'model-api-key'].map(id => document.getElementById(id));
   let ids = [], matches = [], active = -1, serial = 0, controller = null, timer = 0, fetched = false;
   function message(value, error = false) { status.textContent = value; status.classList.toggle('is-error', error); }
@@ -46,19 +49,40 @@
   function place() {
     if (!popup.matches(':popover-open')) return;
     const r = trigger.closest('.paper-field').getBoundingClientRect();
-    const margin = 12, below = innerHeight - r.bottom - margin, above = r.top - margin;
-    const up = below < 230 && above > below;
-    popup.style.width = Math.min(Math.max(r.width, 240), innerWidth - margin * 2) + 'px';
-    popup.style.maxHeight = Math.min(360, Math.max(150, (up ? above : below) - 6)) + 'px';
+    const viewport = window.visualViewport;
+    const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+    const width = viewport?.width || innerWidth, heightAvailable = viewport?.height || innerHeight;
+    const margin = 12, gap = 6, bottom = top + heightAvailable;
+    const below = bottom - r.bottom - margin - gap, above = r.top - top - margin - gap;
+    const up = below < 300 && above > below;
+    const available = Math.max(0, up ? above : below);
+    const maximumHeight = Math.min(420, heightAvailable - margin * 2);
+    popup.style.width = Math.min(Math.max(r.width, 310), width - margin * 2) + 'px';
+    // If the keyboard covers the anchor, use the visible viewport; never force
+    // a 150px menu into a smaller gap or clip the manual-entry control.
+    const detached = available < 170;
+    popup.style.maxHeight = Math.max(1, detached ? maximumHeight : Math.min(maximumHeight, available)) + 'px';
     const height = popup.getBoundingClientRect().height;
-    popup.style.left = Math.max(margin, Math.min(r.left, innerWidth - popup.getBoundingClientRect().width - margin)) + 'px';
-    popup.style.top = Math.max(margin, up ? r.top - height - 6 : r.bottom + 6) + 'px';
+    popup.style.left = Math.max(left + margin, Math.min(r.left, left + width - popup.getBoundingClientRect().width - margin)) + 'px';
+    const targetTop = detached ? top + (heightAvailable - height) / 2 : up ? r.top - height - gap : r.bottom + gap;
+    popup.style.top = Math.max(top + margin, Math.min(targetTop, bottom - margin - height)) + 'px';
   }
   function activate(index) {
     active = index;
     [...options.children].forEach((element, i) => element.classList.toggle('is-active', i === active));
     const element = options.children[active];
-    if (element) { search.setAttribute('aria-activedescendant', element.id); element.scrollIntoView({block: 'nearest'}); }
+    if (element) {
+      search.setAttribute('aria-activedescendant', element.id);
+      // Scroll only the options viewport, not the settings page behind it.
+      const row = element.getBoundingClientRect(), list = options.getBoundingClientRect();
+      if (row.top < list.top) options.scrollTop += row.top - list.top;
+      else if (row.bottom > list.bottom) options.scrollTop += row.bottom - list.bottom;
+      if (popup.scrollHeight > popup.clientHeight) {
+        const visible = element.getBoundingClientRect(), menu = popup.getBoundingClientRect();
+        if (visible.top < menu.top) popup.scrollTop += visible.top - menu.top;
+        else if (visible.bottom > menu.bottom) popup.scrollTop += visible.bottom - menu.bottom;
+      }
+    }
     else search.removeAttribute('aria-activedescendant');
   }
   function render() {
@@ -78,8 +102,9 @@
     count.textContent = fetched ? matches.length + ' / ' + ids.length : '';
     empty.hidden = !fetched || matches.length > 0 || !query;
     manualButton.disabled = !search.value.trim();
-    activate(matches.indexOf(field.value));
+    manualButton.textContent = manualButton.disabled ? '输入模型 ID 后可手动使用' : '使用输入的模型 ID';
     place();
+    activate(matches.indexOf(field.value));
   }
   function open() {
     if (!dialog.open || dialog.dataset.phase === 'closing') return;
@@ -88,9 +113,10 @@
     render();
     popup.showPopover();
     trigger.setAttribute('aria-expanded', 'true');
-    search.focus({preventScroll: true});
     sound('ui-select-open');
     place();
+    search.focus({preventScroll: true});
+    activate(matches.indexOf(field.value));
     if (!fetched && !controller) load();
   }
   function chooseId(value) {
@@ -173,6 +199,10 @@
   popup.addEventListener('keydown', event => {
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(true); }
   });
+  dialog.addEventListener('cancel', event => {
+    if (!popup.matches(':popover-open')) return;
+    event.preventDefault(); event.stopImmediatePropagation(); close(true);
+  }, true);
   options.addEventListener('pointerdown', event => event.preventDefault());
   options.addEventListener('click', event => {
     const element = event.target.closest('[data-index]');
@@ -182,6 +212,8 @@
   document.addEventListener('pointerdown', event => { if (!popup.contains(event.target) && !trigger.contains(event.target)) close(); }, true);
   document.addEventListener('focusin', event => { if (!popup.contains(event.target) && !trigger.contains(event.target)) close(); });
   window.addEventListener('resize', place, {passive: true});
+  window.visualViewport?.addEventListener('resize', place, {passive: true});
+  window.visualViewport?.addEventListener('scroll', place, {passive: true});
   dialog.querySelector('.folio-pages')?.addEventListener('scroll', () => close(), {passive: true});
   dialog.addEventListener('close', reset);
   new MutationObserver(() => { if (!dialog.open || dialog.dataset.phase === 'closing') reset(); }).observe(dialog, {attributes: true, attributeFilter: ['open', 'data-phase']});

@@ -352,7 +352,7 @@
   document.addEventListener('visibilitychange', settleMotion);
   window.addEventListener('infinite:settings', settleMotion);
   function outsidePanel(target) {
-    return !target.closest('.folio-navigation, .folio-paper');
+    return !target.closest('.folio-navigation, .folio-paper, .model-catalog-popover');
   }
   dialog.addEventListener('pointerdown', event => { beganOutside = outsidePanel(event.target); });
   dialog.addEventListener('click', event => {
