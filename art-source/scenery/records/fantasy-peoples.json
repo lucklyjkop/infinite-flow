@@ -1,0 +1,24 @@
+{
+  "id": "fantasy-peoples",
+  "label": "奇幻种族",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/fantasy-peoples.txt",
+  "file": "atlases/fantasy-peoples.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "ab3a3e2ba35bba52f13a0d0936777af1fd15a19a78c151aaea2f88bb80453e6c",
+  "bytes": 3151671,
+  "original_preserved": true
+}

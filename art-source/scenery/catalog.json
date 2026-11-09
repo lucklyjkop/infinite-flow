@@ -268,6 +268,90 @@
       "sha256": "4de10d38fa40d64db2ac32d4175929f9146df3ff34a9e854bca3637600d1a31b",
       "prompt": "prompts/youth-anime.txt",
       "record": "records/youth-anime.json"
+    },
+    {
+      "id": "management-realms",
+      "name": "经营建设",
+      "file": "atlases/management-realms.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "fc3e366bb4614f5637a26b2b290ae669bbf9fe6252d98d69fbde8d23b3c006ce",
+      "prompt": "prompts/management-realms.txt",
+      "record": "records/management-realms.json"
+    },
+    {
+      "id": "fantasy-peoples",
+      "name": "奇幻种族",
+      "file": "atlases/fantasy-peoples.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "ab3a3e2ba35bba52f13a0d0936777af1fd15a19a78c151aaea2f88bb80453e6c",
+      "prompt": "prompts/fantasy-peoples.txt",
+      "record": "records/fantasy-peoples.json"
+    },
+    {
+      "id": "voyages-discovery",
+      "name": "航海探险",
+      "file": "atlases/voyages-discovery.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "dd953083cc108103e669e19fa71766c37c5c20741e86490223c23f8e317add6e",
+      "prompt": "prompts/voyages-discovery.txt",
+      "record": "records/voyages-discovery.json"
+    },
+    {
+      "id": "global-trials",
+      "name": "灾变试炼",
+      "file": "atlases/global-trials.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "de76345aff9f8e80080410205e123a8c5ad425ce9f7733946f38acf95a821b0b",
+      "prompt": "prompts/global-trials.txt",
+      "record": "records/global-trials.json"
+    },
+    {
+      "id": "fairytale-fables",
+      "name": "童话寓言",
+      "file": "atlases/fairytale-fables.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "90caba8bac098835c4c82fe68c81969aca7720e793f7862adc068e3e672722ff",
+      "prompt": "prompts/fairytale-fables.txt",
+      "record": "records/fairytale-fables.json"
+    },
+    {
+      "id": "digital-worlds",
+      "name": "数字虚拟",
+      "file": "atlases/digital-worlds.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "d55eb330a850453ab7779fae80ad0154f42ef87d127a155d76e59c3142bf74e2",
+      "prompt": "prompts/digital-worlds.txt",
+      "record": "records/digital-worlds.json"
     }
   ],
   "scenes": [
@@ -2058,6 +2142,582 @@
         "height": 512
       },
       "brief": "imaginative old post office and public reading courtyard, many blank envelopes in trays, linked pathways, listening alcoves, no legible marks"
+    },
+    {
+      "id": "management-realms-01",
+      "name": "边疆领主庄园",
+      "topic": "领主经营",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "frontier medieval domain with a small fortified manor, grain fields, lumber mill and ordered new construction plots"
+    },
+    {
+      "id": "management-realms-02",
+      "name": "河谷工坊",
+      "topic": "工业种田",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "early industrial river colony with brick water-powered mill, wooden aqueduct, gear workshop, ore cart and vegetable plots"
+    },
+    {
+      "id": "management-realms-03",
+      "name": "迷宫工匠城",
+      "topic": "地下城经营",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original cutaway underground dungeon settlement with rooms carved in rock, tool workshop, crystal reservoir and small bridge"
+    },
+    {
+      "id": "management-realms-04",
+      "name": "初创魔法学园",
+      "topic": "学院建设",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "compact original magical academy under construction, scaffolded observatory, small lecture hall, botanical beds and stone amphitheatre"
+    },
+    {
+      "id": "management-realms-05",
+      "name": "百货商埠",
+      "topic": "商业模拟",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "early modern trading district with a handsome department store, small loading yard, covered market stalls and a tram stop without signs"
+    },
+    {
+      "id": "management-realms-06",
+      "name": "珊瑚小镇",
+      "topic": "海岛经营",
+      "sheetId": "management-realms",
+      "file": "atlases/management-realms.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "beautiful self-sufficient island settlement with timber cottages, a tiny windmill, fishing dock, vegetable plots and contained clear seawater"
+    },
+    {
+      "id": "fantasy-peoples-01",
+      "name": "银叶圣林",
+      "topic": "精灵奇幻",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original elven settlement of slender white timber dwellings woven around silver-leaf trees, elegant root bridge and turquoise spring"
+    },
+    {
+      "id": "fantasy-peoples-02",
+      "name": "山心锻炉",
+      "topic": "矮人奇幻",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original dwarven mountain forge cutaway with massive angular stone entrance, copper smelter, water wheel, anvils and ore railway"
+    },
+    {
+      "id": "fantasy-peoples-03",
+      "name": "幽灯墓城",
+      "topic": "亡灵奇幻",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "gothic necropolis with weathered crypt houses and quiet pale blue lanterns, stone bridge over still black water, no bodies or bones"
+    },
+    {
+      "id": "fantasy-peoples-04",
+      "name": "虹晶高塔",
+      "topic": "魔法学院",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original magical university tower with intricate glass observatory, compact library wing and six colored crystals around a garden"
+    },
+    {
+      "id": "fantasy-peoples-05",
+      "name": "龙脊空巢",
+      "topic": "龙骑奇幻",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "dramatic cliffside ancient rider watchtower beside a huge empty dragon nesting bowl, wind bridge, brass landing beacon and rugged pale rocks"
+    },
+    {
+      "id": "fantasy-peoples-06",
+      "name": "月草药屋",
+      "topic": "女巫奇幻",
+      "sheetId": "fantasy-peoples",
+      "file": "atlases/fantasy-peoples.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original woodland herbalist witch cottage, irregular timber and moss roof, drying herbs, tiny greenhouse and moonlit mushroom spring"
+    },
+    {
+      "id": "voyages-discovery-01",
+      "name": "远洋启航港",
+      "topic": "航海冒险",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original age-of-sail coastal harbor with one detailed small sailing ship, stone lighthouse, warehouse and timber pier"
+    },
+    {
+      "id": "voyages-discovery-02",
+      "name": "沉船藏宝湾",
+      "topic": "海盗冒险",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "isolated pirate-style hidden bay with old shipwreck, small cave containing a closed treasure chest, ropes, palm trees, no flags or skulls"
+    },
+    {
+      "id": "voyages-discovery-03",
+      "name": "雨林溪谷营地",
+      "topic": "荒野求生",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "remote realistic tropical forest survival camp with simple raised shelter, clean water collector, rope bridge and small river bend"
+    },
+    {
+      "id": "voyages-discovery-04",
+      "name": "石火聚落",
+      "topic": "原始部落/史前",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "prehistoric village of hide tents and timber palisade, stone tool worktable, primitive hearth and huge fern leaves, no people or bones"
+    },
+    {
+      "id": "voyages-discovery-05",
+      "name": "深海珊瑚宫",
+      "topic": "海底文明",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original ancient underwater coral-covered stone city fragment, small translucent dome, bioluminescent plants and contained blue water base"
+    },
+    {
+      "id": "voyages-discovery-06",
+      "name": "沙海遗迹",
+      "topic": "考古探险/传奇",
+      "sheetId": "voyages-discovery",
+      "file": "atlases/voyages-discovery.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ancient desert excavation site with partially buried original temple pillars, dig tents, wooden tools and carved stone animal guardians without writing"
+    },
+    {
+      "id": "global-trials-01",
+      "name": "孤岛试炼",
+      "topic": "全球求生",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "rugged isolated island with sparse palm trees, basic emergency shelter, a carved signal platform and simple rainwater collection equipment"
+    },
+    {
+      "id": "global-trials-02",
+      "name": "觉醒试炼塔",
+      "topic": "全民转职",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original modern fantasy class-awakening plaza with grand stone trial tower, six differently colored crystal pedestals and clean marble pathways"
+    },
+    {
+      "id": "global-trials-03",
+      "name": "界域竞技城",
+      "topic": "国运争霸",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original neutral fantasy survival tournament fort, paired tall gateways, central resource cache and empty plain banners with no flags or emblems"
+    },
+    {
+      "id": "global-trials-04",
+      "name": "山隘防线",
+      "topic": "塔防",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original stone tower-defense fortification on a narrow pass, winding approach road, small ballista towers and glowing blue defensive crystal"
+    },
+    {
+      "id": "global-trials-05",
+      "name": "无声机关馆",
+      "topic": "密室逃脱",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "isometric cutaway intricate old manor puzzle rooms with blank picture frames, mechanical lock doors, clockwork levers and hidden spiral stair"
+    },
+    {
+      "id": "global-trials-06",
+      "name": "洪水高台",
+      "topic": "天灾求生",
+      "sheetId": "global-trials",
+      "file": "atlases/global-trials.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "realistic compact neighborhood refuge on upper floors above contained floodwater, improvised footbridges, rooftop vegetables and rescue supply crates"
+    },
+    {
+      "id": "fairytale-fables-01",
+      "name": "蘑菇灯村",
+      "topic": "童话",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original sophisticated fairytale hamlet of tiny mushroom-roof stone houses beneath graceful ferns, glowing acorn lamps and a clear brook, rich matte details"
+    },
+    {
+      "id": "fairytale-fables-02",
+      "name": "林间议事树",
+      "topic": "寓言",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original fable forest clearing with a great hollow tree library, small round stone discussion circle and animal-sized empty paths, no characters"
+    },
+    {
+      "id": "fairytale-fables-03",
+      "name": "风筝探险营",
+      "topic": "儿童冒险",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original gentle children's adventure treehouse, rope ladders, blank colorful handmade kites, small telescope and garden trail, no children"
+    },
+    {
+      "id": "fairytale-fables-04",
+      "name": "云邮小站",
+      "topic": "轻幻想治愈",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original charming miniature post station on a small cloud-fringed floating island, brass mail tubes, flowering garden and delicate wind chimes without text"
+    },
+    {
+      "id": "fairytale-fables-05",
+      "name": "甜麦烘焙屋",
+      "topic": "美食奇幻",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original elegant fairytale bakery built in an old windmill, wheat patch, small oven visible through cutaway, bread cooling trays and climbing roses"
+    },
+    {
+      "id": "fairytale-fables-06",
+      "name": "河狸水工镇",
+      "topic": "非人/动物主角",
+      "sheetId": "fairytale-fables",
+      "file": "atlases/fairytale-fables.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original animal-scale ecological village with intricate dam, tiny timber lodge, waterways and reed gardens, no visible animals or copyrighted characters"
+    },
+    {
+      "id": "digital-worlds-01",
+      "name": "全息主城",
+      "topic": "虚拟网游",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original coherent fantasy game hub built from translucent blue glass towers and pale stone, central respawn crystal, floating bridge and contained particle accents"
+    },
+    {
+      "id": "digital-worlds-02",
+      "name": "数据生命庭园",
+      "topic": "数字生命/AI",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "abstract but physically believable futuristic server garden, elegant cable-rooted synthetic tree, memory crystal pools and white computational vaults, no text"
+    },
+    {
+      "id": "digital-worlds-03",
+      "name": "量子丹炉",
+      "topic": "赛博修仙",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "near-future Chinese cyber-cultivation laboratory on a compact rooftop, bronze alchemy furnace wired to photonic rings, tiny bamboo grove and glass control bays"
+    },
+    {
+      "id": "digital-worlds-04",
+      "name": "生物星巢",
+      "topic": "虫族科幻",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original alien organic colony architecture grown from dark chitin and amber membranes, brood chamber domes, bioluminescent pathways and strange ferns, no creatures"
+    },
+    {
+      "id": "digital-worlds-05",
+      "name": "循环街口",
+      "topic": "时间循环",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original modern street corner where the same elegant clock pavilion appears in three connected temporal phases, subtle circular light path, no writing or numbers"
+    },
+    {
+      "id": "digital-worlds-06",
+      "name": "失联轨道舱",
+      "topic": "太空惊悚",
+      "sheetId": "digital-worlds",
+      "file": "atlases/digital-worlds.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "abandoned original space station corridor cutaway with broken observation dome, dark starlit aperture, red emergency light and empty unmarked cargo containers"
     }
   ],
   "classification": {
@@ -2644,7 +3304,43 @@
             "youth-anime-03",
             "youth-anime-04",
             "youth-anime-05",
-            "youth-anime-06"
+            "youth-anime-06",
+            "management-realms-01",
+            "management-realms-02",
+            "management-realms-03",
+            "management-realms-04",
+            "management-realms-05",
+            "management-realms-06",
+            "fantasy-peoples-01",
+            "fantasy-peoples-02",
+            "fantasy-peoples-03",
+            "fantasy-peoples-04",
+            "fantasy-peoples-05",
+            "fantasy-peoples-06",
+            "voyages-discovery-01",
+            "voyages-discovery-02",
+            "voyages-discovery-03",
+            "voyages-discovery-04",
+            "voyages-discovery-05",
+            "voyages-discovery-06",
+            "global-trials-01",
+            "global-trials-02",
+            "global-trials-03",
+            "global-trials-04",
+            "global-trials-05",
+            "global-trials-06",
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06",
+            "digital-worlds-01",
+            "digital-worlds-02",
+            "digital-worlds-03",
+            "digital-worlds-04",
+            "digital-worlds-05",
+            "digital-worlds-06"
           ]
         },
         {
@@ -2763,7 +3459,43 @@
             "youth-anime-03",
             "youth-anime-04",
             "youth-anime-05",
-            "youth-anime-06"
+            "youth-anime-06",
+            "management-realms-01",
+            "management-realms-02",
+            "management-realms-03",
+            "management-realms-04",
+            "management-realms-05",
+            "management-realms-06",
+            "fantasy-peoples-01",
+            "fantasy-peoples-02",
+            "fantasy-peoples-03",
+            "fantasy-peoples-04",
+            "fantasy-peoples-05",
+            "fantasy-peoples-06",
+            "voyages-discovery-01",
+            "voyages-discovery-02",
+            "voyages-discovery-03",
+            "voyages-discovery-04",
+            "voyages-discovery-05",
+            "voyages-discovery-06",
+            "global-trials-01",
+            "global-trials-02",
+            "global-trials-03",
+            "global-trials-04",
+            "global-trials-05",
+            "global-trials-06",
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06",
+            "digital-worlds-01",
+            "digital-worlds-02",
+            "digital-worlds-03",
+            "digital-worlds-04",
+            "digital-worlds-05",
+            "digital-worlds-06"
           ]
         },
         {
@@ -2882,7 +3614,43 @@
             "youth-anime-03",
             "youth-anime-04",
             "youth-anime-05",
-            "youth-anime-06"
+            "youth-anime-06",
+            "management-realms-01",
+            "management-realms-02",
+            "management-realms-03",
+            "management-realms-04",
+            "management-realms-05",
+            "management-realms-06",
+            "fantasy-peoples-01",
+            "fantasy-peoples-02",
+            "fantasy-peoples-03",
+            "fantasy-peoples-04",
+            "fantasy-peoples-05",
+            "fantasy-peoples-06",
+            "voyages-discovery-01",
+            "voyages-discovery-02",
+            "voyages-discovery-03",
+            "voyages-discovery-04",
+            "voyages-discovery-05",
+            "voyages-discovery-06",
+            "global-trials-01",
+            "global-trials-02",
+            "global-trials-03",
+            "global-trials-04",
+            "global-trials-05",
+            "global-trials-06",
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06",
+            "digital-worlds-01",
+            "digital-worlds-02",
+            "digital-worlds-03",
+            "digital-worlds-04",
+            "digital-worlds-05",
+            "digital-worlds-06"
           ]
         },
         {
@@ -2894,6 +3662,242 @@
             "youth-anime-04",
             "youth-anime-05",
             "youth-anime-06"
+          ]
+        }
+      ],
+      "补充类型（晋江作品库）": [
+        {
+          "label": "童话",
+          "sceneIds": [
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06"
+          ]
+        },
+        {
+          "label": "寓言",
+          "sceneIds": [
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06"
+          ]
+        },
+        {
+          "label": "儿童小说",
+          "sceneIds": [
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06",
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "传奇",
+          "sceneIds": [
+            "voyages-discovery-01",
+            "voyages-discovery-02",
+            "voyages-discovery-03",
+            "voyages-discovery-04",
+            "voyages-discovery-05",
+            "voyages-discovery-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06"
+          ]
+        },
+        {
+          "label": "剧情",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "apocalypse-survival-01",
+            "apocalypse-survival-02",
+            "apocalypse-survival-03",
+            "apocalypse-survival-04",
+            "apocalypse-survival-05",
+            "apocalypse-survival-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06",
+            "digital-worlds-01",
+            "digital-worlds-02",
+            "digital-worlds-03",
+            "digital-worlds-04",
+            "digital-worlds-05",
+            "digital-worlds-06",
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "fairytale-fables-01",
+            "fairytale-fables-02",
+            "fairytale-fables-03",
+            "fairytale-fables-04",
+            "fairytale-fables-05",
+            "fairytale-fables-06",
+            "fantasy-peoples-01",
+            "fantasy-peoples-02",
+            "fantasy-peoples-03",
+            "fantasy-peoples-04",
+            "fantasy-peoples-05",
+            "fantasy-peoples-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06",
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06",
+            "global-trials-01",
+            "global-trials-02",
+            "global-trials-03",
+            "global-trials-04",
+            "global-trials-05",
+            "global-trials-06",
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06",
+            "management-realms-01",
+            "management-realms-02",
+            "management-realms-03",
+            "management-realms-04",
+            "management-realms-05",
+            "management-realms-06",
+            "military-operations-01",
+            "military-operations-02",
+            "military-operations-03",
+            "military-operations-04",
+            "military-operations-05",
+            "military-operations-06",
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06",
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06",
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "urban-extraordinary-01",
+            "urban-extraordinary-02",
+            "urban-extraordinary-03",
+            "urban-extraordinary-04",
+            "urban-extraordinary-05",
+            "urban-extraordinary-06",
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06",
+            "voyages-discovery-01",
+            "voyages-discovery-02",
+            "voyages-discovery-03",
+            "voyages-discovery-04",
+            "voyages-discovery-05",
+            "voyages-discovery-06",
+            "world-hopping-01",
+            "world-hopping-02",
+            "world-hopping-03",
+            "world-hopping-04",
+            "world-hopping-05",
+            "world-hopping-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06",
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06",
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "衍生言情",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
           ]
         }
       ]
@@ -3360,6 +4364,270 @@
             "ancient-romance-06"
           ]
         }
+      ],
+      "补充·经营建设": [
+        {
+          "label": "领主经营",
+          "sceneIds": [
+            "management-realms-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "工业种田",
+          "sceneIds": [
+            "management-realms-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "地下城经营",
+          "sceneIds": [
+            "management-realms-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "学院建设",
+          "sceneIds": [
+            "management-realms-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "商业模拟",
+          "sceneIds": [
+            "management-realms-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "海岛经营",
+          "sceneIds": [
+            "management-realms-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
+      ],
+      "补充·奇幻种族": [
+        {
+          "label": "精灵奇幻",
+          "sceneIds": [
+            "fantasy-peoples-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "矮人奇幻",
+          "sceneIds": [
+            "fantasy-peoples-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "亡灵奇幻",
+          "sceneIds": [
+            "fantasy-peoples-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "魔法学院",
+          "sceneIds": [
+            "fantasy-peoples-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "龙骑奇幻",
+          "sceneIds": [
+            "fantasy-peoples-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "女巫奇幻",
+          "sceneIds": [
+            "fantasy-peoples-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
+      ],
+      "补充·航海探险": [
+        {
+          "label": "航海冒险",
+          "sceneIds": [
+            "voyages-discovery-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "海盗冒险",
+          "sceneIds": [
+            "voyages-discovery-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "荒野求生",
+          "sceneIds": [
+            "voyages-discovery-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "原始部落/史前",
+          "sceneIds": [
+            "voyages-discovery-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "海底文明",
+          "sceneIds": [
+            "voyages-discovery-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "考古探险/传奇",
+          "sceneIds": [
+            "voyages-discovery-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
+      ],
+      "补充·灾变试炼": [
+        {
+          "label": "全球求生",
+          "sceneIds": [
+            "global-trials-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "全民转职",
+          "sceneIds": [
+            "global-trials-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "国运争霸",
+          "sceneIds": [
+            "global-trials-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "塔防",
+          "sceneIds": [
+            "global-trials-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "密室逃脱",
+          "sceneIds": [
+            "global-trials-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "天灾求生",
+          "sceneIds": [
+            "global-trials-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
+      ],
+      "补充·童话寓言": [
+        {
+          "label": "童话",
+          "sceneIds": [
+            "fairytale-fables-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "寓言",
+          "sceneIds": [
+            "fairytale-fables-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "儿童冒险",
+          "sceneIds": [
+            "fairytale-fables-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "轻幻想治愈",
+          "sceneIds": [
+            "fairytale-fables-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "美食奇幻",
+          "sceneIds": [
+            "fairytale-fables-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "非人/动物主角",
+          "sceneIds": [
+            "fairytale-fables-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
+      ],
+      "补充·数字虚拟": [
+        {
+          "label": "虚拟网游",
+          "sceneIds": [
+            "digital-worlds-01"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "数字生命/AI",
+          "sceneIds": [
+            "digital-worlds-02"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "赛博修仙",
+          "sceneIds": [
+            "digital-worlds-03"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "虫族科幻",
+          "sceneIds": [
+            "digital-worlds-04"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "时间循环",
+          "sceneIds": [
+            "digital-worlds-05"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        },
+        {
+          "label": "太空惊悚",
+          "sceneIds": [
+            "digital-worlds-06"
+          ],
+          "provenance": "本次造景细分；平台查阅依据见 RESEARCH.md"
+        }
       ]
     },
     "L3": [
@@ -3438,18 +4706,12 @@
       {
         "label": "基建流",
         "sceneIds": [
-          "urban-life-01",
-          "urban-life-02",
-          "urban-life-03",
-          "urban-life-04",
-          "urban-life-05",
-          "urban-life-06",
-          "apocalypse-survival-01",
-          "apocalypse-survival-02",
-          "apocalypse-survival-03",
-          "apocalypse-survival-04",
-          "apocalypse-survival-05",
-          "apocalypse-survival-06"
+          "management-realms-01",
+          "management-realms-02",
+          "management-realms-03",
+          "management-realms-04",
+          "management-realms-05",
+          "management-realms-06"
         ],
         "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
       },
@@ -3595,14 +4857,36 @@
       {
         "label": "巫师流",
         "sceneIds": [
-          "cosmic-gothic-05"
+          "fantasy-peoples-01",
+          "fantasy-peoples-02",
+          "fantasy-peoples-03",
+          "fantasy-peoples-04",
+          "fantasy-peoples-05",
+          "fantasy-peoples-06",
+          "cosmic-gothic-01",
+          "cosmic-gothic-02",
+          "cosmic-gothic-03",
+          "cosmic-gothic-04",
+          "cosmic-gothic-05",
+          "cosmic-gothic-06"
         ],
         "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
       },
       {
         "label": "游戏现实融合流",
         "sceneIds": [
-          "game-sports-05"
+          "digital-worlds-01",
+          "digital-worlds-02",
+          "digital-worlds-03",
+          "digital-worlds-04",
+          "digital-worlds-05",
+          "digital-worlds-06",
+          "game-sports-01",
+          "game-sports-02",
+          "game-sports-03",
+          "game-sports-04",
+          "game-sports-05",
+          "game-sports-06"
         ],
         "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
       },
@@ -3770,7 +5054,13 @@
           "apocalypse-survival-03",
           "apocalypse-survival-04",
           "apocalypse-survival-05",
-          "apocalypse-survival-06"
+          "apocalypse-survival-06",
+          "global-trials-01",
+          "global-trials-02",
+          "global-trials-03",
+          "global-trials-04",
+          "global-trials-05",
+          "global-trials-06"
         ],
         "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
       },
@@ -3802,19 +5092,26 @@
         "label": "重生",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "world-hopping-05"
+        ]
       },
       {
         "label": "转生",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "world-hopping-03"
+        ]
       },
       {
         "label": "群穿",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "global-trials-01",
+          "world-hopping-03"
+        ]
       },
       {
         "label": "系统",
@@ -3828,7 +5125,9 @@
         "label": "签到",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "world-hopping-04"
+        ]
       },
       {
         "label": "随身空间",
@@ -3842,7 +5141,9 @@
         "label": "金手指",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "world-hopping-04"
+        ]
       },
       {
         "label": "异能",
@@ -3876,7 +5177,9 @@
         "label": "全民觉醒",
         "dimension": "元素或叙事标签",
         "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
-        "sceneIds": []
+        "sceneIds": [
+          "global-trials-02"
+        ]
       },
       {
         "label": "性别转换",
@@ -4073,6 +5376,35 @@
       "虐文",
       "治愈",
       "正剧"
+    ],
+    "性向/关系": [
+      "言情",
+      "纯爱",
+      "百合",
+      "无CP",
+      "多元"
+    ],
+    "补充形式": [
+      "直播",
+      "盘点",
+      "影视同人",
+      "动漫同人",
+      "古典衍生",
+      "东方衍生",
+      "西方衍生",
+      "其他衍生",
+      "儿歌",
+      "童谣",
+      "散文"
+    ]
+  },
+  "research": {
+    "file": "RESEARCH.md",
+    "date": "2026-11-09",
+    "addedSceneryDirections": 36,
+    "verifiedSources": [
+      "https://www.jjwxc.net/bookbase.php",
+      "https://b.faloo.com/"
     ]
   }
 }

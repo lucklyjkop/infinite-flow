@@ -1,0 +1,24 @@
+{
+  "id": "fairytale-fables",
+  "label": "童话寓言",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/fairytale-fables.txt",
+  "file": "atlases/fairytale-fables.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "90caba8bac098835c4c82fe68c81969aca7720e793f7862adc068e3e672722ff",
+  "bytes": 3082749,
+  "original_preserved": true
+}

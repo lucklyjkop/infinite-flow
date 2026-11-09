@@ -1,0 +1,24 @@
+{
+  "id": "global-trials",
+  "label": "灾变试炼",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/global-trials.txt",
+  "file": "atlases/global-trials.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "de76345aff9f8e80080410205e123a8c5ad425ce9f7733946f38acf95a821b0b",
+  "bytes": 3027885,
+  "original_preserved": true
+}

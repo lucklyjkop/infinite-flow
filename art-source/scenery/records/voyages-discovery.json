@@ -1,0 +1,24 @@
+{
+  "id": "voyages-discovery",
+  "label": "航海探险",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/voyages-discovery.txt",
+  "file": "atlases/voyages-discovery.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "dd953083cc108103e669e19fa71766c37c5c20741e86490223c23f8e317add6e",
+  "bytes": 3178145,
+  "original_preserved": true
+}

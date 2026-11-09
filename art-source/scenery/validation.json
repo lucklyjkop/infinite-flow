@@ -1,9 +1,9 @@
 {
-  "sheets": 19,
-  "scenes": 114,
+  "sheets": 25,
+  "scenes": 150,
   "classificationCounts": {
-    "L1": 39,
-    "L2": 74,
+    "L1": 45,
+    "L2": 110,
     "L3": 36,
     "L4": 38
   },
@@ -795,6 +795,252 @@
         {
           "sceneId": "youth-anime-06",
           "occupiedFraction": 0.6009
+        }
+      ]
+    },
+    {
+      "id": "management-realms",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "fc3e366bb4614f5637a26b2b290ae669bbf9fe6252d98d69fbde8d23b3c006ce",
+      "cells": [
+        {
+          "sceneId": "management-realms-01",
+          "occupiedFraction": 0.5063
+        },
+        {
+          "sceneId": "management-realms-02",
+          "occupiedFraction": 0.5269
+        },
+        {
+          "sceneId": "management-realms-03",
+          "occupiedFraction": 0.5457
+        },
+        {
+          "sceneId": "management-realms-04",
+          "occupiedFraction": 0.524
+        },
+        {
+          "sceneId": "management-realms-05",
+          "occupiedFraction": 0.5561
+        },
+        {
+          "sceneId": "management-realms-06",
+          "occupiedFraction": 0.5337
+        }
+      ]
+    },
+    {
+      "id": "fantasy-peoples",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "ab3a3e2ba35bba52f13a0d0936777af1fd15a19a78c151aaea2f88bb80453e6c",
+      "cells": [
+        {
+          "sceneId": "fantasy-peoples-01",
+          "occupiedFraction": 0.4739
+        },
+        {
+          "sceneId": "fantasy-peoples-02",
+          "occupiedFraction": 0.5381
+        },
+        {
+          "sceneId": "fantasy-peoples-03",
+          "occupiedFraction": 0.4643
+        },
+        {
+          "sceneId": "fantasy-peoples-04",
+          "occupiedFraction": 0.498
+        },
+        {
+          "sceneId": "fantasy-peoples-05",
+          "occupiedFraction": 0.5528
+        },
+        {
+          "sceneId": "fantasy-peoples-06",
+          "occupiedFraction": 0.5343
+        }
+      ]
+    },
+    {
+      "id": "voyages-discovery",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "dd953083cc108103e669e19fa71766c37c5c20741e86490223c23f8e317add6e",
+      "cells": [
+        {
+          "sceneId": "voyages-discovery-01",
+          "occupiedFraction": 0.4738
+        },
+        {
+          "sceneId": "voyages-discovery-02",
+          "occupiedFraction": 0.5266
+        },
+        {
+          "sceneId": "voyages-discovery-03",
+          "occupiedFraction": 0.5773
+        },
+        {
+          "sceneId": "voyages-discovery-04",
+          "occupiedFraction": 0.592
+        },
+        {
+          "sceneId": "voyages-discovery-05",
+          "occupiedFraction": 0.5369
+        },
+        {
+          "sceneId": "voyages-discovery-06",
+          "occupiedFraction": 0.5825
+        }
+      ]
+    },
+    {
+      "id": "global-trials",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "de76345aff9f8e80080410205e123a8c5ad425ce9f7733946f38acf95a821b0b",
+      "cells": [
+        {
+          "sceneId": "global-trials-01",
+          "occupiedFraction": 0.4407
+        },
+        {
+          "sceneId": "global-trials-02",
+          "occupiedFraction": 0.4504
+        },
+        {
+          "sceneId": "global-trials-03",
+          "occupiedFraction": 0.4838
+        },
+        {
+          "sceneId": "global-trials-04",
+          "occupiedFraction": 0.5656
+        },
+        {
+          "sceneId": "global-trials-05",
+          "occupiedFraction": 0.582
+        },
+        {
+          "sceneId": "global-trials-06",
+          "occupiedFraction": 0.6258
+        }
+      ]
+    },
+    {
+      "id": "fairytale-fables",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "90caba8bac098835c4c82fe68c81969aca7720e793f7862adc068e3e672722ff",
+      "cells": [
+        {
+          "sceneId": "fairytale-fables-01",
+          "occupiedFraction": 0.4675
+        },
+        {
+          "sceneId": "fairytale-fables-02",
+          "occupiedFraction": 0.5424
+        },
+        {
+          "sceneId": "fairytale-fables-03",
+          "occupiedFraction": 0.4636
+        },
+        {
+          "sceneId": "fairytale-fables-04",
+          "occupiedFraction": 0.4909
+        },
+        {
+          "sceneId": "fairytale-fables-05",
+          "occupiedFraction": 0.4785
+        },
+        {
+          "sceneId": "fairytale-fables-06",
+          "occupiedFraction": 0.5352
+        }
+      ]
+    },
+    {
+      "id": "digital-worlds",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 9,
+      "sha256": "d55eb330a850453ab7779fae80ad0154f42ef87d127a155d76e59c3142bf74e2",
+      "cells": [
+        {
+          "sceneId": "digital-worlds-01",
+          "occupiedFraction": 0.4521
+        },
+        {
+          "sceneId": "digital-worlds-02",
+          "occupiedFraction": 0.5198
+        },
+        {
+          "sceneId": "digital-worlds-03",
+          "occupiedFraction": 0.4979
+        },
+        {
+          "sceneId": "digital-worlds-04",
+          "occupiedFraction": 0.4789
+        },
+        {
+          "sceneId": "digital-worlds-05",
+          "occupiedFraction": 0.5262
+        },
+        {
+          "sceneId": "digital-worlds-06",
+          "occupiedFraction": 0.616
         }
       ]
     }
