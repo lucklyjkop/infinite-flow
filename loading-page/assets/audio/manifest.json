@@ -423,6 +423,78 @@
       "seed": 704177,
       "sha256": "2c30c2f90e49ac945e22eca17ca1ebcd90156d2951c6071cfbf7eaef3ee9ddf8",
       "masterSha256": "2b34662547289720c1744ff1ab6b60884df886c8ab143b30c1f0ccccff49c99a"
+    },
+    {
+      "name": "world-tectonic-rise",
+      "file": "world-tectonic-rise.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-world-map-audio.py"
+      ],
+      "design": "Single left-to-right low mineral pressure ridge, sparse rounded seams, and a gentle fine-sediment release; 2.35 seconds.",
+      "loop": false,
+      "duration": 2.35,
+      "bytes": 25537,
+      "peakDbfs": -12.15,
+      "truePeakDbfs": -12.14,
+      "rmsDbfs": -27.78,
+      "boundaryStep": 0.0,
+      "seed": 911091,
+      "sha256": "b5f078110eb64c99d1d2ebab41651fb46d28631870669b47ceff95758cb492db",
+      "masterSha256": "8a7b9cea07cbb9a6520ed5ad9bf7b24e616a88e905ae7f5df34b24acf1af45db"
+    },
+    {
+      "name": "world-tectonic-fold",
+      "file": "world-tectonic-fold.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-world-map-audio.py"
+      ],
+      "design": "Independent inward settling gesture with lower-energy folded stone and a soft close; 1.35 seconds, not reversed opening audio.",
+      "loop": false,
+      "duration": 1.35,
+      "bytes": 14484,
+      "peakDbfs": -12.75,
+      "truePeakDbfs": -12.75,
+      "rmsDbfs": -29.63,
+      "boundaryStep": 0.0,
+      "seed": 911092,
+      "sha256": "0802d8c701ed891edb026af1261774993ab14c8e288206eef682a0736d2eee61",
+      "masterSha256": "0fb4e9c0a77217b38db5e0f84e3fd0b9fb41b1ae4eb55897325a6a830889cc4f"
+    },
+    {
+      "name": "world-node-focus",
+      "file": "world-node-focus.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-world-map-audio.py"
+      ],
+      "design": "Continuous quiet fibre movement and barely audible damped jade resonance; no hard strike or click train; 0.22 seconds.",
+      "loop": false,
+      "duration": 0.22,
+      "bytes": 3466,
+      "peakDbfs": -25.51,
+      "truePeakDbfs": -25.49,
+      "rmsDbfs": -39.14,
+      "boundaryStep": 0.0,
+      "seed": 911093,
+      "sha256": "be16068017b8183e0f3d2c33401e7e7c4d3a8bba746de4be2c73e650b7a6be37",
+      "masterSha256": "eed59caa4af977ff5b8fe40b126e9ee25fab251b068fb1b70fbea4778ed3e959"
+    },
+    {
+      "name": "world-node-select",
+      "file": "world-node-select.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-world-map-audio.py"
+      ],
+      "design": "Warm damped jade body and a restrained paper seating contact; stronger than focus but without a bright chime; 0.32 seconds.",
+      "loop": false,
+      "duration": 0.32,
+      "bytes": 4432,
+      "peakDbfs": -17.65,
+      "truePeakDbfs": -17.63,
+      "rmsDbfs": -31.18,
+      "boundaryStep": 0.0,
+      "seed": 911094,
+      "sha256": "74ae567cde783833e1cbaf0e6c986370cac20e72a3c4b0c4c80898f5f52a3b5b",
+      "masterSha256": "f8230acd64277eddae7b46069d05bdcf7bf164aadbd8ae1a6c39c2288ff39c1a"
     }
   ]
 }

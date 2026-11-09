@@ -140,3 +140,8 @@ print(json.dumps({'files':len(records),'bytes':sum(x['bytes'] for x in records),
 deity_builder = runpy.run_path(str(ROOT / 'scripts/build-deity-audio.py'))
 deity_records = deity_builder['build'](ffmpeg=FF)
 print(json.dumps({'independentDeityCues':len(deity_records), 'bytes':sum(x['bytes'] for x in deity_records)}))
+
+# Retain the independent world-map score when rebuilding the shared sound bank.
+world_builder = runpy.run_path(str(ROOT / 'scripts/build-world-map-audio.py'))
+world_records = world_builder['build'](ffmpeg=FF)
+print(json.dumps({'independentWorldCues':len(world_records), 'bytes':sum(x['bytes'] for x in world_records)}))

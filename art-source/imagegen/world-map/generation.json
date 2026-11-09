@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-09",
+  "entry": "built-in image_gen",
+  "model": "未披露",
+  "quality": "未披露（提示词要求最高精度）",
+  "prompts": {
+    "landmarks": "Use case: stylized-concept. Production asset: transparent game level landmark sprite atlas, maximum detail and finish. Create SIX separate miniature isometric Chinese dark-fantasy environment dioramas, in an EXACT spacious 3-column by 2-row regular grid, on a genuinely transparent background. All six cells equal size, centered, fully separated, generous transparent padding. This is original art for a restrained Chinese reincarnation fantasy game's lateral chapter map, with narrative miniature landmarks inspired by the sophistication of modern cinematic RPG chapter maps. No characters, no letters, no numbers, no frames. Camera same for all: low isometric, front and top visible, view from southeast. Each landmark has a small irregular layered stone footprint and delicate matte PBR details. Top row left: misty wooden ferry jetty, crooked roofed gate and one dim red lantern. Top row middle: small ancient Chinese red timber inn, hanging red silk and warm window. Top row right: mysterious miniature walled paper city, pale folded-paper roofs and tall ink towers. Bottom row left: narrow snowy mountain gate on a dark rocky ridge with sparse bare pines. Bottom row middle: small mirror lake shrine, one semicircular moon gate and a still reflective pool, red maple. Bottom row right: ruined sanctuary with a broken circular stone portal, floating small rock fragments and a single red tree. Sophisticated miniature scenic realism, slate charcoal, moss jade, weathered ivory, muted cinnabar red, subtle aged brass; subdued lighting, warm accents only, beautiful silhouettes, grounded architecture, fine material details. Not chibi, not mobile candy icons, not cartoon outlines. No enormous scenic backgrounds; each small footprint isolated with real alpha transparency. Atlas landscape aspect ratio 3:2.",
+    "pigment": "Use case: stylized-concept. Production asset: landscape terrain albedo texture for a realtime voxel mountain map. Create a full-bleed near-orthographic overhead view of one quiet, ancient Chinese mountain landscape, wide 16:9. A sinuous natural mountain ridge stretches from left to right through the central half. Dark slate stone, muted moss jade, weathered blue-grey cliff strata, restrained red maple and cherry foliage only in tiny scattered clusters, pale stone mist trails and a narrow dark river. Subdued low-saturation material color, premium cinematic game detail, restrained elegant dark fantasy. This is a color pigment map to be sampled on 3D cubes, so no UI, NO text, NO paths made of dots, no symbols, no buildings, no giant trees or identifiable foreground objects, no sky, no horizon. Even diffuse overhead light with very soft occlusion, rich readable rock grain, no harsh baked lighting, no film grain or noise. Upper and lower edges transition to charcoal rock with quiet texture. No cartoon outlines, no glossy plastic. Maximum high-detail finish.",
+    "seal": "Use case: ui-mockup. Production asset: a SINGLE isolated game level selection medallion with truly transparent background. Square image. One restrained circular antique bronze and dark-red lacquer ring, seen exactly front-on with no perspective. Very slender irregular worn brass double rim with subtle stone-carved fragments, a small red plum blossom tucked at the bottom-right, an incredibly thin red silk thread winding a short section at the lower left. Center is EMPTY, transparent (for a level number), roughly 70% of overall ring diameter. Beautiful crisp matte three-dimensional metal details, high precision clean game UI sprite, muted warm gold/bronze highlights, charcoal shadows, cinnabar red accent, original Chinese dark-fantasy art, elegant and understated. No text, no lettering, no numeral, no giant flowers, no background tile, no black rectangle, no checkerboard baked into pixels. Large transparent padding all around. Highest finish.",
+    "title": "Use case: ui-mockup. Production asset: original Chinese fantasy game title lettering texture, on truly transparent background, wide horizontal 3:1 composition. Render ONLY the exact four Chinese characters 『世界入口』 as one refined expressive flowing Chinese brush calligraphy title, big and perfectly legible, natural tapered brush strokes, warm ivory ink with subtle aged-gold flecks and a tiny restrained cinnabar-red tint at brush tips. Beneath the characters one exceptionally thin elegant plum blossom twig sweeps horizontally, with ONLY two very small dark-red blossoms, enough breathing space. Texture art style matches a premium restrained Chinese dark-fantasy RPG with red silk and ivory calligraphy; organic hand-brushed strokes, sophisticated, not a generic typed font. No other text, no English, no panel, no border, no image background, no square fill, no glow cloud. True alpha around and between characters and below branch. Maximum precision game UI asset."
+  },
+  "outputs": {
+    "landmarks": {
+      "source": "art-source/imagegen/world-map/landmarks-source-v1.png",
+      "runtime": "loading-page/assets/world-map/landmarks.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "transparent_background": true,
+      "sha256": "9fb4cc245d7b87c7d0c3c338e84c5fc436a556cf23743e36a4e988f4111826b6"
+    },
+    "pigment": {
+      "source": "art-source/imagegen/world-map/terrain-pigment.png",
+      "runtime": "loading-page/assets/world-map/terrain-pigment.png",
+      "size": [
+        1672,
+        941
+      ],
+      "transparent_background": false,
+      "sha256": "aff0ac5b6e135f90f43823cc14cfa0d37fbf5f169d43c66ffb579b8d3de83069"
+    },
+    "seal": {
+      "source": "art-source/imagegen/world-map/node-seal.png",
+      "runtime": "loading-page/assets/world-map/node-seal.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "transparent_background": true,
+      "sha256": "ca017a7cd75f1324d85abc7f618d4b24025b8047bcc6ffa2e41a53985c40dae5"
+    },
+    "title": {
+      "source": "art-source/imagegen/world-map/title.png",
+      "runtime": "loading-page/assets/world-map/title.png",
+      "size": [
+        2172,
+        724
+      ],
+      "transparent_background": true,
+      "sha256": "4e67cb9e400fb78003e709b86856ba4f5065042ba0baac4fbf8edcd0778d9d99"
+    }
+  }
+}

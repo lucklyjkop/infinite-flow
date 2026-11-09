@@ -33,6 +33,11 @@
     'deity-select': {bus: 'effects', gain: 1, interval: 100, vary: .018},
     'deity-confirm': {bus: 'effects', gain: .9, interval: 200, vary: 0},
     'deity-back': {bus: 'effects', gain: 1, interval: 100, vary: 0},
+    // The world map has its own mineral/fibre gestures, never aliases of the title tide.
+    'world-tectonic-rise': {bus: 'effects', gain: .95, interval: 250, vary: 0},
+    'world-tectonic-fold': {bus: 'effects', gain: .9, interval: 250, vary: 0},
+    'world-node-focus': {bus: 'effects', gain: .85, interval: 220, vary: 0},
+    'world-node-select': {bus: 'effects', gain: .9, interval: 100, vary: .015},
   };
   const clamp = (x, min, max) => Math.max(min, Math.min(max, x));
   const finite = (value, fallback) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -324,7 +329,7 @@
   }
   function controlSound(name, element, options = {}) {
     // Scene controllers explicitly own their hover, selection and action cues.
-    if (element?.closest?.('#deity-space, #system-space')) return;
+    if (element?.closest?.('#deity-space, #system-space, #world-map')) return;
     play(name, {group: 'ui', pan: positionPan(element), ...options});
   }
   document.addEventListener('click', event => {

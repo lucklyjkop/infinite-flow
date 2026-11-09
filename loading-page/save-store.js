@@ -3,6 +3,7 @@
   'use strict';
   const KEY='infinite.saves.v1', VERSION=1, MAX_SAVES=100, MAX_MESSAGES=200, MAX_CHAT_CHARS=200000;
   const choices=new Set(['world','records','inventory','covenant']);
+  const worldStageIds=Object.freeze(['mist-ferry','red-inn','paper-city','snow-pass','mirror-lake','return-peak']);
   let activeId=null;
   const clone=value=>value==null?value:JSON.parse(JSON.stringify(value));
   const error=message=>Object.assign(new Error(message),{userMessage:message});
@@ -31,12 +32,20 @@
     while(kept.length>2&&count>MAX_CHAT_CHARS){count-=kept[0].content.length+kept[1].content.length;kept.splice(0,2);}
     return kept;
   }
+  function worldOf(value){
+    // Only a continuous prefix is explored. A saved later-stage ID alone must
+    // never unlock the intervening terrain when importing an old/corrupt slot.
+    const supplied=new Set(Array.isArray(value?.completed)?value.completed:[]),completed=[];
+    for(const id of worldStageIds){if(!supplied.has(id))break;completed.push(id);}
+    const selected=worldStageIds.includes(value?.selected)?value.selected:worldStageIds[Math.min(completed.length,worldStageIds.length-1)];
+    return {completed,selected};
+  }
   function normalize(value){
     if(!value||typeof value.id!=='string'||!/^[-_a-zA-Z0-9]{1,80}$/.test(value.id))throw error('存档数据不完整，请保留浏览器数据后重试。');
     const createdAt=Number(value.createdAt),updatedAt=Number(value.updatedAt);
     if(!Number.isFinite(createdAt)||!Number.isFinite(updatedAt)||createdAt<=0||updatedAt<createdAt)throw error('存档时间数据无效。');
     return {id:value.id,name:nameOf(value.name),deity:deityOf(value.deity),createdAt,updatedAt,location:'system',
-      chat:chatOf(value.chat),progress:{selected:choices.has(value.progress?.selected)?value.progress.selected:'world'}};
+      chat:chatOf(value.chat),progress:{selected:choices.has(value.progress?.selected)?value.progress.selected:'world',world:worldOf(value.progress?.world)}};
   }
   function read(){
     let raw;
@@ -58,7 +67,7 @@
     const name=nameOf(value?.name),deity=deityOf(value?.deity),document=read();
     if(document.saves.length>=MAX_SAVES)throw error('存档数量已达上限，请继续已有的旅程。');
     let id;do{id='save_'+(crypto.randomUUID?crypto.randomUUID().replace(/-/g,''):Date.now().toString(36)+Math.random().toString(36).slice(2));}while(document.saves.some(save=>save.id===id));
-    const now=Date.now(),save={id,name,deity,createdAt:now,updatedAt:now,location:'system',chat:[],progress:{selected:'world'}};
+    const now=Date.now(),save={id,name,deity,createdAt:now,updatedAt:now,location:'system',chat:[],progress:{selected:'world',world:worldOf(null)}};
     document.saves.push(save);write(document);return clone(save);
   }
   function activate(id){
@@ -76,6 +85,13 @@
   function update(id,patch={}){return change(id,save=>{
     if(Object.prototype.hasOwnProperty.call(patch,'name'))save.name=nameOf(patch.name);
     if(patch.progress&&choices.has(patch.progress.selected))save.progress.selected=patch.progress.selected;
+    if(patch.progress?.world&&typeof patch.progress.world==='object'&&!Array.isArray(patch.progress.world)){
+      const before=worldOf(save.progress.world),next=worldOf({...before,...patch.progress.world});
+      // A stale navigation patch from another tab must not erase a clear that
+      // has already been persisted. Progress reset is not a navigation action.
+      next.completed=worldStageIds.slice(0,Math.max(before.completed.length,next.completed.length));
+      save.progress.world=next;
+    }
     // Other fields, including credentials, endpoints and conversation IDs, are ignored.
   });}
   function appendMessagePair(id,user,assistant){
@@ -87,5 +103,5 @@
     if(activeId){try{if(!get(activeId))clearActive();}catch{clearActive();}}
     emit('infinite:saveschange',{external:true,id:activeId});
   });
-  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,clearActive});
+  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,clearActive,worldStageIds});
 })();
