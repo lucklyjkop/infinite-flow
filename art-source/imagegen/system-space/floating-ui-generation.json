@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-09",
+  "tool": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "quality": "具体画质档位未披露；提示词请求最高可用质量",
+  "assets": [
+    {
+      "file": "floating-medallion.png",
+      "prompt": "Create one production-ready game UI texture, a single floating circular medallion BUTTON BASE for an elegant Chinese fantasy game with a friendly chibi red-hanfu deity. Perfectly front-facing orthographic UI asset, square canvas, fully transparent surrounding background. One small thin antique brushed gold ring around a matte charcoal lacquer round surface, subtle dark oxblood silk inset ring, one tiny delicate plum blossom at lower right and a very short crimson cord knot beneath. Large clean empty flat circular center for an icon to be placed programmatically. Fine restrained craftsmanship, warm grey-gold trim, matte and tactile, gently bevelled 3D edge, soft painted shading, smooth silhouette, matching dark Chinese ink/red silk fantasy menu, high precision. Circle fills 80% of square with padding and short knot stays inside. NO text, no letters, no numbers, no pictogram in center, no scene, no rectangle, no background plate, no opaque background, no glow spreading outside, no heavy filigree, no shiny jewel. Highest available visual quality. Genuine alpha transparency.",
+      "transparent_background": true,
+      "runtime": "loading-page/assets/system-space/floating-medallion.webp",
+      "export": "WebP quality 94 method 6; original 1254 × 1254 alpha preserved"
+    },
+    {
+      "file": "composer.png",
+      "prompt": "Create one production-ready horizontally elongated chat input UI texture for a Chinese fantasy game with a friendly chibi red-hanfu goddess. One SINGLE EMPTY wide low-height front-facing horizontal strip, approximately 5:1 width-to-height, isolated with genuine transparent background, wide landscape canvas, minimal vertical padding. The strip is dark charcoal-grey matte silk-paper inset with subtly imperfect organic paper edges, a very thin warm antique gold line along edges, a delicate crimson silk thread loosely runs along lower edge with a tiny dark-red plum blossom on the FAR LEFT and a miniature knot at the FAR RIGHT. Middle 85 percent completely empty and dark so cream user input text can be legible. Smooth quietly elegant tactile craft, gentle 3D bevel, low contrast detail, visually light and refined, not a thick box. End corners slightly softly tapered. Small soft contact shade only close to edges, no external opaque backing. Matching Chinese dark ink/gold/red hanfu interface. NO text, NO glyphs, NO icons, NO placeholder, NO text cursor, NO separate send button, no glowing red lights, no grid, no scene. Highest available visual quality. Output with alpha transparency.",
+      "revisionPrompt": "Edit the supplied UI strip. Remove the ENTIRE illustrated girl including ALL hair, face, hands, sleeves, headdress. The final asset must contain absolutely NO people, NO character, NO face. Where the girl was, continue the empty dark charcoal silk-paper input surface cleanly. Retain only a SMALL plum blossom at the extreme lower left, the fine antique-gold perimeter and thin red thread along the bottom, with a tiny red knot at far right. A SINGLE long low rectangular dark text-entry strip with very subtly tapered tips. Center and left area blank and clean. Maximum height including decorations about 1/6 total width. Trim excessive transparent top/bottom padding so strip nearly fills canvas height with 8% safety margin. Front-facing orthographic flat UI. Genuine transparent background surrounding the strip. No text, symbols, handwriting, white panel, glow, scenery, human figures. Highest available quality, keep current matte dark charcoal/red/gold material.",
+      "editReference": "discarded first composer attempt; removed unintended character",
+      "transparent_background": true,
+      "runtime": "loading-page/assets/system-space/composer.webp",
+      "export": "Crop transparent padding only: x0 y282 width2172 height248; WebP quality 95 method 6; alpha preserved"
+    }
+  ]
+}

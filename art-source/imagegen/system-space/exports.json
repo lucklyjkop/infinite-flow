@@ -1,0 +1,62 @@
+{
+  "conversion": "PNG to WebP with alpha preserved. First three assets: original dimensions, quality 94 method 6. Floating UI trimming and encoding: floating-ui-generation.json.",
+  "assets": [
+    {
+      "source": "hongzhuang-chibi-front.png",
+      "runtime": "hongzhuang.webp",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "source_sha256": "2abf4da8285197fcd3c7b60c0d80900e31035089c69a3d8b6b77144b9995d021",
+      "runtime_sha256": "4220f7a655ccb172d096454ea0a5783e54ff5b647fc5acd799a45ff738e6e1c7"
+    },
+    {
+      "source": "sanctuary.png",
+      "runtime": "sanctuary.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "source_sha256": "d30b5bd899588921e32c9e1729d3e15d1a2d94eb6b361d9f1bdd265087e8d3bf",
+      "runtime_sha256": "edae370ccffeb70f7d4c2876690bdde68cbb2f92d89c82845c417cfd5f8a539d"
+    },
+    {
+      "source": "panel.png",
+      "runtime": "panel.webp",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "source_sha256": "4480e5ca9b14dd4e7e2cfc3d489ea7c3edbdff96fd6e382f8d3d51bb508adabb",
+      "runtime_sha256": "7cfa29f28552812d6b8e7da8cc4dd84bef6b8f5348ae6e4812dcf6a22af31b33"
+    },
+    {
+      "source": "floating-medallion.png",
+      "runtime": "floating-medallion.webp",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "source_sha256": "9770b9f867e8d43b832b65dcd25d5bdd62653fca02a572ecbae020ef87b9a6f1",
+      "runtime_sha256": "a29d1ddc12df2a6e2f043f9fce59968da88ef8fb2144b2e68004901c05664154",
+      "processing": "See floating-ui-generation.json"
+    },
+    {
+      "source": "composer.png",
+      "runtime": "composer.webp",
+      "size": [
+        2172,
+        248
+      ],
+      "mode": "RGBA",
+      "source_sha256": "5df23591b651382c19eedfa16e5070def7b231a318d75f2e6cacb421b6921595",
+      "runtime_sha256": "fd3a34e941821febafd236184d6dfd85315ef9ef505990c3f0a03ff01379f738",
+      "processing": "See floating-ui-generation.json"
+    }
+  ]
+}

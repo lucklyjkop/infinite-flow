@@ -95,7 +95,7 @@ window.InfiniteTitle.returnToTitle();
 
 返回时，`deity-return-capture.js` 同步保存当前空间视角与完整 UI，并合成标题页的原背景、书法、樱枝及菜单贴图；`deity-return-wave.js` 在约 2200 ms 内以单道左→右哑光立体方块浪峰切换两幅画面。浪峰经过的左侧已经组成标题，右侧仍保留主神画面。每块只抬升、倾转、落定一次，首尾恢复完整平面；此时不再叠加设置页返回用的书写动画或旧声音。约 460 个方块批量提交，活动范围约屏宽三分之一，并提供 Canvas 2D 降级。返回期间仅冻结标题相机并阻止重复操作，雨、花瓣、屏幕水滴与溅射继续更新；`deity-return-weather.js` 按每行方块落定时刻裁剪四层动态天气，已经拼好的区域马上恢复动态，未拼好的区域继续遮住，目标快照不再包含静态天气。完成或中断会释放快照、GPU 资源与事件监听，并还原天气层的遮罩和层级。Esc、切后台、窗口缩放、减少动态和取消都有收尾路径。
 
-`InfiniteDeitySpace.open()`、`.close()`、`.getState()`、`.preload()` 可用于调试；角色确认时派发 `infinite:deityselected`，正式游戏可接管此事件：
+`InfiniteDeitySpace.open()`、`.close()`、`.getState()`、`.preload()` 可用于调试。选中头像时，`deity-selection.js/.css` 沿实际贴图轮廓描亮边框，减少动态模式立即完成；重复点击同一已选头像不重播。角色确认时派发 `infinite:deityselected`，默认由 `system-space-flow.js` 接入系统空间。正式游戏可在该流程脚本之前注册监听接管此事件：
 
 ```js
 window.addEventListener('infinite:deityselected', event => {
@@ -104,6 +104,14 @@ window.addEventListener('infinite:deityselected', event => {
   // 在这里创建实际角色与世界；真正保存后再调用 InfiniteTitle.setSave。
 });
 ```
+
+### 系统空间
+
+`system-space.js/.css` 使用中央正面 Q 版红妆、左右六个悬浮徽记与底部固定输入框。世界入口、轮回记录、行囊、主神契约点击后才展开详情；系统设置与返回主神是实际入口。空档案和行囊如实显示为空，不创建虚假存档。徽记错落展开并轻微浮动，输入框保持稳定；减少动态、弹窗与页面隐藏时暂停动态。返回时先准备好主神场景，再收起当前界面。
+
+当前角色是透明插画动态预览，并非已绑定的 Live2D 模型。`InfiniteSystemSpace.getCharacterMount()` 与 `.setCharacterRenderer(renderer)` 为未来渲染器预留挂载点、视线及暂停接口。大肥鱼项目只作为 Q 版比例与画风参考，没有复制其模型。新贴图、完整提示词和导出记录位于 `../art-source/imagegen/system-space/`；使用内置生图工具，工具未披露具体模型版本和质量档位。
+
+底部输入支持 Enter 发送、Shift+Enter 换行及中文输入法。发送派发可取消的 `infinite:systemmessage`，尚无对话服务时保留输入并提示“对话尚未连接”，不模拟 AI 应答。正式对话模块可接管该事件；世界入口的 `infinite:journeyrequest` 同理，未接入时仅显示未启程状态。
 
 ### 项目检查
 

@@ -323,8 +323,8 @@
     return clamp(((bounds.left + bounds.width / 2) / innerWidth - .5) * .6, -.3, .3);
   }
   function controlSound(name, element, options = {}) {
-    // The deity screen explicitly owns its hover, selection and action recordings.
-    if (element?.closest?.('#deity-space')) return;
+    // Scene controllers explicitly own their hover, selection and action cues.
+    if (element?.closest?.('#deity-space, #system-space')) return;
     play(name, {group: 'ui', pan: positionPan(element), ...options});
   }
   document.addEventListener('click', event => {

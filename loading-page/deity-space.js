@@ -49,6 +49,7 @@
   world.appendChild(root);
 
   const choices = [...root.querySelectorAll('.deity-choice')];
+  const selectionTrace = window.createDeitySelection?.(root);
   const backdrop = root.querySelector('.deity-backdrop');
   const occlusion = window.createDeityOcclusion?.(root, root.querySelector('.deity-location-plane'),
     backdrop, 'assets/deity-space/nai-portrait.webp');
@@ -123,7 +124,7 @@
       loads = results.filter(Boolean).length;
       failures = results.length - loads;
       root.classList.toggle('has-title-art', titleArt.naturalWidth > 0);
-      return Promise.all([window.DeityReturnCapture?.ready, occlusion?.ready]).then(() => ({loaded: loads, failed: failures}));
+      return Promise.all([window.DeityReturnCapture?.ready, occlusion?.ready, selectionTrace?.ready]).then(() => ({loaded: loads, failed: failures}));
     });
     return preloadJob;
   }
@@ -151,6 +152,10 @@
       button.classList.toggle('is-selected', active);
       button.setAttribute('aria-pressed', String(active));
       button.querySelector('.deity-choice-state').textContent = active ? '已选择' : '待选择';
+    });
+    if (reset || !selected) selectionTrace?.reset();
+    else if (changed) selectionTrace?.select(choices.find(button => button.dataset.deityId === selected), {
+      animate: phase === 'ready' && motionAllowed(),
     });
     confirm.disabled = !selected || phase !== 'ready' || confirmed;
     confirm.querySelector('span').textContent = !selected ? '请选择主神' : confirmed ? '已确认' : '确认主神';
@@ -286,7 +291,7 @@
     run.guard = setTimeout(finish, 1800);
     return run.finished;
   }
-  async function open() {
+  async function open({immediate = false, selectedId = null} = {}) {
     if (isOpen()) return false;
     const token = ++generation;
     cancelHandoff();
@@ -309,6 +314,17 @@
     root.focus({preventScroll: true});
     await preload();
     if (token !== generation || !isOpen()) return false;
+    if (immediate) {
+      // Prepare a complete destination beneath the system scene before it fades.
+      root.classList.add('location-written');
+      await ready(token);
+      if (token !== generation || phase !== 'ready') return false;
+      if (selectedId && roster.some(item => item.id === selectedId)) {
+        setSelection(selectedId);
+        selectionTrace?.finish();
+      }
+      return true;
+    }
     const animated = motionAllowed() && !document.hidden;
     if (animated) { cue('deity-inscribe', {variation:false}); cue('deity-branch', {delay:.65, variation:false}); }
     const writing = window.playDeityLocationReveal?.(root, titleArt, locationBranch, {motion:animated});
@@ -353,6 +369,7 @@
     finally { restoringTitle = false; }
   }
   function finishClose(immediate = false) {
+    selectionTrace?.reset();
     cancelHandoff();
     const run = closing;
     closing = null;
@@ -395,6 +412,8 @@
     cancelWaiting();
     locationReveal?.cancel(); locationReveal = null;
     assembly?.cancel(); assembly = null;
+    // The return compositor captures the ordinary active bitmap after the trace settles.
+    selectionTrace?.finish();
     window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail: {group: 'deity-space', fade: .1}}));
     let from = null;
     if (animated) {
@@ -478,6 +497,7 @@
     button.addEventListener('click', () => {
       if (phase !== 'ready') return;
       cancelAvatarFeedback();
+      if (selected === button.dataset.deityId) return;
       cue('deity-select', {group:'deity-ui', pan:-.2});
       setSelection(button.dataset.deityId);
     });
@@ -499,11 +519,19 @@
     cue('deity-back', {group:'deity-ui'});
     close();
   }
+  function recoverConfirmation(message = '') {
+    if (phase !== 'ready' || !selected) return false;
+    confirmed = false;
+    setSelection(selected);
+    status.textContent = message;
+    return true;
+  }
   back.addEventListener('click', requestReturn);
   root.addEventListener('contextmenu', event => event.preventDefault());
   root.addEventListener('dragstart', event => event.preventDefault());
   document.addEventListener('keydown', event => {
-    if ((!isOpen() && !launching) || event.altKey || event.ctrlKey || event.metaKey) return;
+    if ((!isOpen() && !launching) || root.inert || event.defaultPrevented || event.isComposing
+      || event.altKey || event.ctrlKey || event.metaKey) return;
     if (event.key === 'Escape') { event.preventDefault(); requestReturn(); }
     else if (phase === 'ready' && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home'].includes(event.key)) {
       event.preventDefault();
@@ -531,6 +559,7 @@
   function updateMotion() {
     root.classList.toggle('motion-reduced', !motionAllowed());
     if (!motionAllowed()) {
+      selectionTrace?.finish();
       if (closing) {finishClose(true); return;}
       window.dispatchEvent(new CustomEvent('infinite:soundstop', {detail:{group:'deity-space',fade:.08}}));
       locationReveal?.finish();
@@ -565,12 +594,13 @@
     } finally { if (token === generation) launching = false; }
   });
   window.InfiniteDeitySpace = Object.freeze({
-    open, close, preload,
+    open, close, preload, recoverConfirmation,
     getState: () => ({phase, visible: !root.hidden, selected,
       confirmed, launching, loaded: loads, failed: failures, locked: 0, available: roster.map(item => item.id),
       assembly: assembly?.getState?.() ?? null, pointerFrame: Boolean(spatial?.getState().moving),
       spatial: spatial?.getState() ?? null, closing:Boolean(closing), handoff:Boolean(handoff), returnWave:closing?.player?.getState() ?? null,
-      returnWeather:closing?.weather?.getState() ?? null, occlusion:occlusion?.getState() ?? null, writing:Boolean(locationReveal)}),
+      returnWeather:closing?.weather?.getState() ?? null, occlusion:occlusion?.getState() ?? null, writing:Boolean(locationReveal),
+      selectionTrace:selectionTrace?.getState() ?? null}),
   });
   preload();
 })();

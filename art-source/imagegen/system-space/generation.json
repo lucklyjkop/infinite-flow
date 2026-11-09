@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-09",
+  "tool": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "quality": "具体画质档位未披露；提示词请求最高可用质量",
+  "use": "系统空间首版界面与角色动态预览；不是已绑定Live2D模型",
+  "assets": [
+    {
+      "file": "hongzhuang-chibi-front.png",
+      "transparent_background": true,
+      "prompt": "Use case: style-transfer. Create a brand-new CHIBI HONGZHUANG character for a Live2D front-view master illustration. Image 1 (blue chibi whale maid) is the PRIMARY STYLE, BODY-PROPORTION, LINEWORK, SHADING and FRONT-VIEW pose reference. Match its cute super-deformed 2.5-head-tall proportions: very large round head, huge expressive sparkling eyes, tiny rounded torso, short arms and legs, soft friendly face, neat smooth dark outlines, delicate clean 2D anime cel shading. Image 2 (realistic woman in red) is ONLY a reference for color scheme and her recognizable black hair / red eyes / gold plum hairpin / red embroidered clothing. Do NOT copy Image 2's realistic body proportions, mature figure, 3D rendering, realistic skin or long face. Design this chibi with long fluffy black hair curling down both sides, little curved ahoge, red-brown jewel eyes, soft tiny smile, gold plum blossom hairpin with a short red tassel on one side. She wears a cute modest loose deep-red Chinese hanfu with broad sleeves, ivory-red inner collar, thin refined golden plum embroidery, a black-gold sash tied with a small red knot, long skirt covering legs to ankles, little red embroidered rounded shoes just visible. NO body emphasis, NO skin exposure except face and small hands, NO cleavage, NO slit. Both tiny hands visible and slightly extended at sides with palms gently open, a short delicate red thread drapes between them. STRICT SYMMETRICAL FRONTAL VIEW, face looking directly at viewer, no head tilt, shoulders level, whole body straight toward camera. One clean complete character from hair tip to shoes, centred with blank margins. Actual transparent alpha background, no scenery, no smoke, no light halo, no floor, no board, no text, no UI. Highest quality clean Live2D source concept. Should look like the same charming Q-version design family as Image 1, dressed as Hongzhuang, not a realistic doll.",
+      "references": [
+        "references/dafeiyu-front.png",
+        "../deity-space/hongzhuang.png"
+      ],
+      "roles": [
+        "用户指定大肥鱼Q版风格与正视比例参考",
+        "红妆配色服装身份参考"
+      ]
+    },
+    {
+      "file": "sanctuary.png",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Production background plate for the 'system space' hub of an elegant Chinese infinite-world fantasy game. Landscape 16:9, high-end matte 3D cinematic environment, restrained and quiet, believable depth. An empty vast dark sanctuary with a SINGLE thin aged-bronze circular halo centred at 50% horizontal / 43% vertical, standing behind an empty central character position; soft cool charcoal blue-green wall planes, fine atmospheric haze, a low broad oval dark stone floor beneath the centre catching a very subtle warm reflection. Extremely sparse architecture, soft side light, no busy scenery. Central 40% for a full-height red-clothed character to be composited later; left 24% and right 24% kept dark and calm with usable negative space for game UI. The halo must be circular and elegant, dim and not luminous sci-fi. Muted charcoal, ink black, bronze, tiny dark-crimson accents in distant haze only. No character, no silhouette, no people, no UI, no panels, no text, no symbols, no watermark, no decorative border. Crisp physically based matte materials with soft depth of field in the far background. Highest available detail and quality."
+    },
+    {
+      "file": "panel.png",
+      "transparent_background": true,
+      "prompt": "Use case: ui-mockup. Create ONE isolated blank vertical game UI information panel texture, front view, portrait aspect ratio approximately 3:4. High-end understated Chinese fantasy game, quiet dark blue-black textured silk-paper surface with very restrained warm antique gold and dark crimson edge details. Panel should be a simple generously empty rectangular vellum/silk plaque with slightly organic handmade edges, tiny muted red plum blossoms and a thin red cord only at the top-right and lower-left corners. No giant flowers. No character, no room, no scenery. Centre 80% completely blank, dark matte surface intended for live cream-gold text to be placed by the game later. Shallow tactile bevel and delicate paper fibre detail, not shiny metal, no heavy border, no neon, no sci-fi, no button grid. Small fine red thread knot at bottom edge. TRUE TRANSPARENT background outside the panel, including natural soft edge shadow; do not add a white/grey rectangle or checkerboard. No letters, labels, symbols, text, watermark. Production-ready single UI asset at highest quality, visually consistent with charcoal-bronze sanctuary and red-and-gold chibi hanfu character."
+    }
+  ]
+}

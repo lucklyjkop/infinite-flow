@@ -1,0 +1,18 @@
+/* Only the original generated alpha frame is revealed; there is no extra box. */
+.deity-selection-trace {
+  position: absolute;
+  inset: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.deity-choice.is-selection-drawing .deity-selection-trace { display: block; }
+.deity-choice.is-selection-drawing .deity-avatar-border { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .deity-choice.is-selection-drawing .deity-selection-trace { display: none; }
+  .deity-choice.is-selection-drawing .deity-avatar-border { visibility: visible; }
+}
