@@ -29,7 +29,7 @@
   const emit=(name,detail={})=>window.dispatchEvent(new CustomEvent(name,{detail}));
   function cue(name){if(!document.hidden)emit('infinite:soundcue',{name,group:'system-ui'});}
   function selectControl(key){selected=['world','records','inventory','covenant'].includes(key)?key:'world';for(const button of buttons){const active=button.dataset.systemControl===selected;button.classList.toggle('is-selected',active);if(active)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current');}if(phase==='ready'&&!transitionPaused){const save=window.InfiniteSaves?.active?.();if(save&&save.progress?.selected!==selected){try{window.InfiniteSaves.update(save.id,{progress:{selected}});}catch{messageStatus.textContent='未能保存当前进度，请检查浏览器存储空间。';}}}}
-  function focusCue(button){const now=performance.now();if(phase!=='ready'||blocked()||button.disabled||now-lastFocusCue<180||(lastFocusControl===button&&now-lastFocusCue<650))return;lastFocusControl=button;lastFocusCue=now;emit('infinite:soundcue',{name:'ui-focus',group:'system-ui',gain:.56,pan:Math.max(-.25,Math.min(.25,(button.getBoundingClientRect().left/innerWidth-.5)*.5))});}
+  function focusCue(button){const now=performance.now();if(phase!=='ready'||blocked()||button.disabled||now-lastFocusCue<180||(lastFocusControl===button&&now-lastFocusCue<650))return;lastFocusControl=button;lastFocusCue=now;emit('infinite:soundcue',{name:'system-ui-focus',group:'system-ui',gain:1,pan:Math.max(-.25,Math.min(.25,(button.getBoundingClientRect().left/innerWidth-.5)*.5))});}
   function pulseControl(button){if(!animated())return;const flare=button.querySelector('.system-nav-flare');flare.getAnimations().forEach(value=>value.cancel());flare.animate([{opacity:0,transform:'scaleX(.35)'},{opacity:.65,offset:.28,transform:'scaleX(.88)'},{opacity:0,transform:'scaleX(1.12)'}],{duration:520,easing:'cubic-bezier(.2,.7,.25,1)'});}
   function say(text,{persistent=false}={}){clearTimeout(whisperTimer);(persistent?root:root.querySelector('.system-character-area')).append(whisper);whisper.querySelector('.system-whisper-text').textContent=text;whisper.querySelector('.system-whisper-close').hidden=!persistent;whisper.classList.toggle('system-whisper-reply',persistent);whisper.hidden=false;if(!persistent)whisperTimer=setTimeout(()=>{whisper.hidden=true;},4800);}
   function syncComposer(){const busy=phase!=='ready'||sending||transitionPaused;input.disabled=busy;send.disabled=busy||!input.value.trim();form.setAttribute('aria-busy',String(sending));}
@@ -46,7 +46,7 @@
     if(phase!=='ready'||!['records','inventory','covenant'].includes(key))return;
     detailsAnimation?.cancel();detailsAnimation=null;selectControl(key);opener=trigger;details.dataset.side=key==='covenant'?'right':'left';content.innerHTML=panelMarkup(key);
     for(const label of content.querySelectorAll('[data-system-deity-name]'))label.textContent=deity.name;
-    trigger.setAttribute('aria-expanded','true');if(!details.open)details.showModal();syncMotion();closeDetailsButton.focus({preventScroll:true});cue('ui-tab');
+    trigger.setAttribute('aria-expanded','true');if(!details.open)details.showModal();syncMotion();closeDetailsButton.focus({preventScroll:true});cue('system-ui-select');
     if(animated()&&!document.hidden)detailsAnimation=details.animate([{opacity:0,translate:'0 10px'},{opacity:1,translate:'0 0'}],{duration:260,easing:'cubic-bezier(.2,.7,.25,1)'});
   }
   function closeDetails({immediate=false,focus=true}={}){
@@ -87,9 +87,9 @@
       leave();
     });
   }
-  function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('ui-tap');renderer?.greet?.();say(lines[spoken++%lines.length]);}
+  function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('system-ui-select');renderer?.greet?.();say(lines[spoken++%lines.length]);}
   async function sendMessage(event){
-    event.preventDefault();const text=input.value.trim();if(!text||sending||composing||phase!=='ready')return;cue('ui-tap');const token=++messageSerial,waiting=[];
+    event.preventDefault();const text=input.value.trim();if(!text||sending||composing||phase!=='ready')return;cue('system-ui-send');const token=++messageSerial,waiting=[];
     const request=new CustomEvent('infinite:systemmessage',{cancelable:true,detail:{text,deity:{...deity},waitUntil(promise){waiting.push(Promise.resolve(promise));},respond(value){if(token===messageSerial&&phase==='ready'&&typeof value==='string'){say(value,{persistent:true});emit('infinite:systemreply',{text:value});}}}});
     if(window.dispatchEvent(request)){messageStatus.textContent='对话尚未连接';return;}sending=true;syncComposer();messageStatus.textContent=waiting.length?'红妆正在回应…':'已发送';
     try{const results=await Promise.all(waiting);if(token!==messageSerial||phase!=='ready')return;if(results.some(result=>result===false))throw new Error('Message not accepted');input.value='';resizeInput();messageStatus.textContent='';}
@@ -99,19 +99,19 @@
   async function openWorld(trigger){
     if(worldOpening||transitionPaused||phase!=='ready')return;
     if(!window.InfiniteWorldMap?.open){messageStatus.textContent='地图尚未准备好。';return;}
-    const token=++worldOpenSerial;worldOpening=true;selectControl('world');cue('ui-tap');
+    const token=++worldOpenSerial;worldOpening=true;selectControl('world');cue('system-ui-select');
     try{await window.InfiniteWorldMap.open(trigger);}
     catch(failure){if(token===worldOpenSerial)messageStatus.textContent=failure?.userMessage||'地图未能打开，请重试。';}
     finally{if(token===worldOpenSerial)worldOpening=false;}
   }
   window.addEventListener('infinite:worldmapclosed',()=>{worldOpening=false;});
-  root.querySelector('.system-floating-navigation').addEventListener('click',event=>{const button=event.target.closest('[data-system-control]');if(!button||phase!=='ready'||transitionPaused||blocked())return;pulseControl(button);const key=button.dataset.systemControl;if(key==='back'){cue('ui-tap');close();}else if(key==='settings'){cue('ui-tap');if(window.InfiniteSettings?.open)window.InfiniteSettings.open(button);else say('设置页面尚未准备好。');}else if(key==='world')openWorld(button);else openDetails(key,button);});
+  root.querySelector('.system-floating-navigation').addEventListener('click',event=>{const button=event.target.closest('[data-system-control]');if(!button||phase!=='ready'||transitionPaused||blocked())return;pulseControl(button);const key=button.dataset.systemControl;if(key==='back'){cue('system-ui-back');close();}else if(key==='settings'){cue('system-ui-select');if(window.InfiniteSettings?.open)window.InfiniteSettings.open(button);else say('设置页面尚未准备好。');}else if(key==='world')openWorld(button);else openDetails(key,button);});
   root.querySelector('.system-floating-navigation').addEventListener('keydown',event=>{if(phase!=='ready'||event.altKey||event.metaKey||event.ctrlKey)return;const index=buttons.indexOf(event.target);if(index<0||!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();let next;if(event.key==='Home')next=index<4?0:5;else if(event.key==='End')next=index<4?3:4;else if(event.key==='ArrowUp')next=index<2?5:4;else if(event.key==='ArrowDown')next=index===5?0:index===4?3:index;else if(index<4)next=(index+(event.key==='ArrowLeft'?-1:1)+4)%4;else next=index===4?5:4;buttons[next].focus({preventScroll:true});});
   for(const button of buttons){button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'||event.pointerType==='pen')focusCue(button);});button.addEventListener('focus',()=>{if(button.matches(':focus-visible'))focusCue(button);});}
-  closeDetailsButton.addEventListener('click',()=>{cue('ui-tap');closeDetails();});details.addEventListener('cancel',event=>{event.preventDefault();closeDetails();});
-  details.addEventListener('click',event=>{if(event.target!==details)return;const b=details.getBoundingClientRect();if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom)closeDetails();});
+  closeDetailsButton.addEventListener('click',()=>{cue('system-ui-back');closeDetails();});details.addEventListener('cancel',event=>{event.preventDefault();cue('system-ui-back');closeDetails();});
+  details.addEventListener('click',event=>{if(event.target!==details)return;const b=details.getBoundingClientRect();if(event.clientX<b.left||event.clientX>b.right||event.clientY<b.top||event.clientY>b.bottom){cue('system-ui-back');closeDetails();}});
   content.addEventListener('click',async event=>{if(phase!=='ready')return;if(event.target.closest('[data-system-talk]')){await closeDetails();talk();}});
-  whisper.querySelector('.system-whisper-close').addEventListener('click',()=>{window.InfiniteTTS?.stop?.();whisper.hidden=true;input.focus({preventScroll:true});});
+  whisper.querySelector('.system-whisper-close').addEventListener('click',()=>{cue('system-ui-back');window.InfiniteTTS?.stop?.();whisper.hidden=true;input.focus({preventScroll:true});});
   characterTouch.addEventListener('click',talk);form.addEventListener('submit',sendMessage);input.addEventListener('input',()=>{syncComposer();resizeInput();messageStatus.textContent='';});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;syncComposer();});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();form.requestSubmit();}});
   root.addEventListener('pointermove',event=>{if(!['mouse','pen'].includes(event.pointerType)||phase!=='ready'||blocked()||!animated())return;const box=root.getBoundingClientRect();aim(Math.max(-1,Math.min(1,(event.clientX-box.left)/box.width*2-1))*6,Math.max(-1,Math.min(1,(event.clientY-box.top)/box.height*2-1))*4);},{passive:true});root.addEventListener('pointerleave',()=>aim());root.addEventListener('pointercancel',()=>aim());
   for(const name of ['dragstart','contextmenu'])root.addEventListener(name,event=>{if(!event.target.closest('textarea,input'))event.preventDefault();});

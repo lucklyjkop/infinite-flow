@@ -6,8 +6,10 @@
 | --- | --- | --- |
 | `world-tectonic-rise` | 单次低沉岩层压力推进，零散石缝滑动与细石落定 | 2.35 秒 |
 | `world-tectonic-fold` | 独立的内收岩层与柔和归拢接触 | 1.35 秒 |
-| `world-node-focus` | 连续轻纤维摩擦，极轻玉质余韵 | 0.22 秒 |
-| `world-node-select` | 温暖阻尼玉质接触与纸面落定 | 0.32 秒 |
+| `world-node-focus` | 轻而短的玉石共振，用于移到世界节点时的反馈 | 0.18 秒 |
+| `world-node-select` | 低石质触点叠加短玉鸣，确认选中世界 | 0.34 秒 |
+
+节点悬停与选中声已在 2026-11-09 改为纯阻尼共振：以非整数倍振动模态和短空间反射形成玉石材质，不使用纸张、纤维、摩擦或噪声层。地图展开和收拢的岩层声音保持原样。
 
 所有成品为 48 kHz 双声道 Ogg Opus，带独立首尾渐变，不含 BGM。运行时走现有音效总线，受总音量与音效音量控制。焦点事件限速，地图退出时停止 `world-map` 分组；浏览器隐藏和页面退出沿用统一停止逻辑。
 
@@ -15,6 +17,10 @@
 
 ```powershell
 python scripts/build-world-map-audio.py
+# 仅重建节点反馈，保留展开、收拢及其他声音的文件字节
+python scripts/build-world-map-audio.py --only world-node-focus world-node-select
 ```
 
-可通过 `FFMPEG_BIN` 指定 FFmpeg。交付贴图同级音效在 `loading-page/assets/audio/world-*.ogg`；未压缩母带与连续试听在忽略目录 `output/audio-design/world-map/`。`design.json` 保存参数、种子、哈希、解码电平与 4 倍过采样真峰值。
+可通过 `FFMPEG_BIN` 指定 FFmpeg。交付音效在 `loading-page/assets/audio/world-*.ogg`；未压缩母带与连续试听在忽略目录 `output/audio-design/world-map/`。`design.json` 保存参数、种子、哈希、解码电平与 4 倍过采样真峰值。
+
+单独重建节点时，试听文件为 `output/audio-design/world-map/world-node-preview.wav`；设计记录合并更新，保留未重建的条目。

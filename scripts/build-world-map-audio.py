@@ -4,6 +4,7 @@ Uses the project's procedural material primitives, never existing sound files.
 Run independently; no installed game sound outside this set is re-encoded.
 """
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import runpy
@@ -61,31 +62,30 @@ def fold(rng):
     return soften(space(x,.045),.085,.25)
 
 
+def modal_strike(rng, duration, fundamental, decay=20, attack=.004):
+    """A small solid body ringing in inharmonic modes, without a friction layer."""
+    t = np.arange(round(duration*SR))/SR
+    x = np.zeros(len(t))
+    # Non-harmonic modes distinguish jade/light metal from a synthesized beep.
+    for i, (ratio, level) in enumerate([(1,1), (2.31,.29), (3.77,.11), (5.43,.035)]):
+        frequency = fundamental*ratio*rng.uniform(.995,1.005)
+        phase = 2*np.pi*frequency*(t+.003*(1-np.exp(-34*t))/34)
+        x += level*np.sin(phase+rng.uniform(-.025,.025))*np.exp(-t*(decay+i*21))
+    return soften(x,attack,min(.075,duration*.4))
+
+
 def focus(rng):
-    duration = .22
-    x = canvas(duration)
-    t = np.arange(len(x))/SR
-    # A smooth fibre contact rather than a hard pluck or bright notification ping.
-    envelope = np.sin(np.linspace(0,np.pi,len(t)))**1.7
-    fibre = noise(rng,duration,650,2150)*envelope
-    jade = (np.sin(2*np.pi*610*t)*np.exp(-t*23)
-            + .13*np.sin(2*np.pi*1378*t)*np.exp(-t*48))
-    jade *= np.sin(np.minimum(t/.025,1)*np.pi/2)**2
-    lay(x,pan(fibre,-.04),gain=.040)
-    lay(x,pan(jade,.04),gain=.012)
-    return soften(x,.027,.085)
+    x = canvas(.18)
+    lay(x,pan(modal_strike(rng,.18,830,29),-.03),gain=.05)
+    return soften(space(x,.025),.005,.065)
 
 
 def select(rng):
-    x = canvas(.32)
-    t = np.arange(len(x))/SR
-    body = (np.sin(2*np.pi*329*t)*np.exp(-t*20)
-            + .20*np.sin(2*np.pi*718*t)*np.exp(-t*39)
-            + .07*np.sin(2*np.pi*1411*t)*np.exp(-t*62))
-    body *= np.sin(np.minimum(t/.015,1)*np.pi/2)**2
-    lay(x,pan(body),gain=.060)
-    lay(x,pan(friction(rng,.24,370,2450,11),.09),.025,.032)
-    return soften(space(x,.035),.015,.10)
+    x = canvas(.34)
+    # A grounded stone contact under a clear, quickly damped jade resonance.
+    lay(x,pan(modal_strike(rng,.16,295,34),-.04),gain=.025)
+    lay(x,pan(modal_strike(rng,.32,635,17),.04),.008,.065)
+    return soften(space(x,.06),.004,.09)
 
 
 CUES = [
@@ -93,24 +93,31 @@ CUES = [
      'Single left-to-right low mineral pressure ridge, sparse rounded seams, and a gentle fine-sediment release; 2.35 seconds.'),
     ('world-tectonic-fold',911092,fold,-27.0,-13.0,
      'Independent inward settling gesture with lower-energy folded stone and a soft close; 1.35 seconds, not reversed opening audio.'),
-    ('world-node-focus',911093,focus,-38.5,-26.0,
-     'Continuous quiet fibre movement and barely audible damped jade resonance; no hard strike or click train; 0.22 seconds.'),
-    ('world-node-select',911094,select,-31.0,-18.0,
-     'Warm damped jade body and a restrained paper seating contact; stronger than focus but without a bright chime; 0.32 seconds.'),
+    ('world-node-focus',911093,focus,-38.0,-26.0,
+     'Quiet, short jade overtone for node focus; only damped solid-body modes, no paper, fibre or noise layer; 0.18 seconds.'),
+    ('world-node-select',911094,select,-30.5,-17.5,
+     'Grounded stone contact and clear, briefly ringing jade modes for world selection; no paper or friction layer; 0.34 seconds.'),
 ]
 
 
-def build(ffmpeg=None):
+def build(ffmpeg=None, names=None):
+    all_names = {cue[0] for cue in CUES}
+    selected = all_names if names is None else set(names)
+    if not selected or selected-all_names:
+        raise ValueError(f'Unknown or empty cue selection: {names}')
     ffmpeg = ffmpeg or MATERIAL['find_ffmpeg']()
     for path in [OUT,MASTERS,RECORD]:
         path.mkdir(parents=True,exist_ok=True)
     records = []
     preview = []
     for name,seed,generate,rms_db,peak_db,description in CUES:
+        if name not in selected:
+            continue
         raw = generate(np.random.default_rng(seed))
-        x = soften(band(raw,55,4200),.012,.07)
+        attack = .004 if name.startswith('world-node-') else .012
+        x = soften(band(raw,55,4200),attack,.07)
         x -= x.mean(axis=0)
-        x = soften(x,.012,.07)
+        x = soften(x,attack,.07)
         rms,peak = np.sqrt(np.mean(x*x)),np.max(np.abs(x))
         x *= min(10**(rms_db/20)/max(rms,1e-9),10**(peak_db/20)/max(peak,1e-9))
         master,dest = MASTERS/(name+'.wav'),OUT/(name+'.ogg')
@@ -132,13 +139,19 @@ def build(ffmpeg=None):
             raise ValueError(f'Unexpected peak or edge discontinuity: {record}')
         records.append(record)
         preview.extend([pcm,np.zeros((round(.45*SR),2),dtype=np.int16)])
-    assert len({record['masterSha256'] for record in records})==len(CUES)
-    write(MASTERS/'world-map-preview.wav',SR,np.concatenate(preview))
-    report = {'created':'2026-11-09','authoring':'Original procedural synthesis. No input recording, API, sampled UI sound, or musical phrase.',
-              'sampleRate':SR,'channels':2,'preview':'output/audio-design/world-map/world-map-preview.wav',
-              'truePeakMeasurement':'4x polyphase oversampling of decoded delivery Opus; dBFS.',
-              'assets':records}
-    (RECORD/'design.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+    assert len({record['masterSha256'] for record in records})==len(selected)
+    preview_name = 'world-map-preview.wav' if names is None else 'world-node-preview.wav'
+    write(MASTERS/preview_name,SR,np.concatenate(preview))
+    report_path = RECORD/'design.json'
+    report = json.loads(report_path.read_text(encoding='utf-8')) if report_path.exists() else {
+        'created':'2026-11-09','authoring':'Original procedural synthesis. No input recording, API, sampled UI sound, or musical phrase.',
+        'sampleRate':SR,'channels':2,'preview':'output/audio-design/world-map/world-map-preview.wav',
+        'truePeakMeasurement':'4x polyphase oversampling of decoded delivery Opus; dBFS.','assets':[]}
+    by_name = {record['name']:record for record in report['assets']}
+    by_name.update({record['name']:record for record in records})
+    report['assets'] = [by_name[cue[0]] for cue in CUES if cue[0] in by_name]
+    report['interactionRevision'] = 'jade-stone-2026-11-09'
+    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     manifest_path = OUT/'manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8')) if manifest_path.exists() else {'format':'Ogg Opus, 48 kHz stereo','assets':[]}
     updates = {item['name']:item for item in records}
@@ -149,5 +162,7 @@ def build(ffmpeg=None):
 
 
 if __name__=='__main__':
-    records=build()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--only', nargs='+', choices=[cue[0] for cue in CUES], help='Rebuild only these cues; preserve all other asset bytes and records.')
+    records=build(names=parser.parse_args().only)
     print(json.dumps({'files':len(records),'bytes':sum(item['bytes'] for item in records),'assets':records},indent=2))

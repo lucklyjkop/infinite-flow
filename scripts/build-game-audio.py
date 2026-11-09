@@ -145,3 +145,8 @@ print(json.dumps({'independentDeityCues':len(deity_records), 'bytes':sum(x['byte
 world_builder = runpy.run_path(str(ROOT / 'scripts/build-world-map-audio.py'))
 world_records = world_builder['build'](ffmpeg=FF)
 print(json.dumps({'independentWorldCues':len(world_records), 'bytes':sum(x['bytes'] for x in world_records)}))
+
+# Keep the system-space jade/light-metal gestures in complete sound-bank rebuilds.
+system_builder = runpy.run_path(str(ROOT / 'scripts/build-system-ui-audio.py'))
+system_records = system_builder['build'](ffmpeg=FF)
+print(json.dumps({'independentSystemUICues':len(system_records), 'bytes':sum(x['bytes'] for x in system_records)}))

@@ -48,17 +48,17 @@
       "source": [
         "Original procedural synthesis / scripts/build-world-map-audio.py"
       ],
-      "design": "Continuous quiet fibre movement and barely audible damped jade resonance; no hard strike or click train; 0.22 seconds.",
+      "design": "Quiet, short jade overtone for node focus; only damped solid-body modes, no paper, fibre or noise layer; 0.18 seconds.",
       "loop": false,
-      "duration": 0.22,
-      "bytes": 3466,
-      "peakDbfs": -25.51,
-      "truePeakDbfs": -25.49,
-      "rmsDbfs": -39.14,
-      "boundaryStep": 0.0,
+      "duration": 0.18,
+      "bytes": 3700,
+      "peakDbfs": -25.98,
+      "truePeakDbfs": -25.95,
+      "rmsDbfs": -40.55,
+      "boundaryStep": 6.1e-05,
       "seed": 911093,
-      "sha256": "be16068017b8183e0f3d2c33401e7e7c4d3a8bba746de4be2c73e650b7a6be37",
-      "masterSha256": "eed59caa4af977ff5b8fe40b126e9ee25fab251b068fb1b70fbea4778ed3e959"
+      "sha256": "f9f0d5175b643793dae6e906527cb3a82dabf83b144eeada4e463c8ede69967d",
+      "masterSha256": "d540397a016f655b924c9e75847e6cba2f94c1a79a3d7e90dc2c290deb618e3b"
     },
     {
       "name": "world-node-select",
@@ -66,17 +66,18 @@
       "source": [
         "Original procedural synthesis / scripts/build-world-map-audio.py"
       ],
-      "design": "Warm damped jade body and a restrained paper seating contact; stronger than focus but without a bright chime; 0.32 seconds.",
+      "design": "Grounded stone contact and clear, briefly ringing jade modes for world selection; no paper or friction layer; 0.34 seconds.",
       "loop": false,
-      "duration": 0.32,
-      "bytes": 4432,
-      "peakDbfs": -17.65,
-      "truePeakDbfs": -17.63,
-      "rmsDbfs": -31.18,
-      "boundaryStep": 0.0,
+      "duration": 0.34,
+      "bytes": 6467,
+      "peakDbfs": -17.51,
+      "truePeakDbfs": -17.51,
+      "rmsDbfs": -33.24,
+      "boundaryStep": 6.1e-05,
       "seed": 911094,
-      "sha256": "74ae567cde783833e1cbaf0e6c986370cac20e72a3c4b0c4c80898f5f52a3b5b",
-      "masterSha256": "f8230acd64277eddae7b46069d05bdcf7bf164aadbd8ae1a6c39c2288ff39c1a"
+      "sha256": "a7dff1f1462348a7cbb728f15e6f7724f648736c4843fc7c039fed12b22695f5",
+      "masterSha256": "2c9f234f6a8c86e2cde0092a9fd310f8cf4e9bb456dfef933a9eb958696be2df"
     }
-  ]
+  ],
+  "interactionRevision": "jade-stone-2026-11-09"
 }

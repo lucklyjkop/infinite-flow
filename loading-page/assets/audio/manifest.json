@@ -466,17 +466,17 @@
       "source": [
         "Original procedural synthesis / scripts/build-world-map-audio.py"
       ],
-      "design": "Continuous quiet fibre movement and barely audible damped jade resonance; no hard strike or click train; 0.22 seconds.",
+      "design": "Quiet, short jade overtone for node focus; only damped solid-body modes, no paper, fibre or noise layer; 0.18 seconds.",
       "loop": false,
-      "duration": 0.22,
-      "bytes": 3466,
-      "peakDbfs": -25.51,
-      "truePeakDbfs": -25.49,
-      "rmsDbfs": -39.14,
-      "boundaryStep": 0.0,
+      "duration": 0.18,
+      "bytes": 3700,
+      "peakDbfs": -25.98,
+      "truePeakDbfs": -25.95,
+      "rmsDbfs": -40.55,
+      "boundaryStep": 6.1e-05,
       "seed": 911093,
-      "sha256": "be16068017b8183e0f3d2c33401e7e7c4d3a8bba746de4be2c73e650b7a6be37",
-      "masterSha256": "eed59caa4af977ff5b8fe40b126e9ee25fab251b068fb1b70fbea4778ed3e959"
+      "sha256": "f9f0d5175b643793dae6e906527cb3a82dabf83b144eeada4e463c8ede69967d",
+      "masterSha256": "d540397a016f655b924c9e75847e6cba2f94c1a79a3d7e90dc2c290deb618e3b"
     },
     {
       "name": "world-node-select",
@@ -484,17 +484,89 @@
       "source": [
         "Original procedural synthesis / scripts/build-world-map-audio.py"
       ],
-      "design": "Warm damped jade body and a restrained paper seating contact; stronger than focus but without a bright chime; 0.32 seconds.",
+      "design": "Grounded stone contact and clear, briefly ringing jade modes for world selection; no paper or friction layer; 0.34 seconds.",
+      "loop": false,
+      "duration": 0.34,
+      "bytes": 6467,
+      "peakDbfs": -17.51,
+      "truePeakDbfs": -17.51,
+      "rmsDbfs": -33.24,
+      "boundaryStep": 6.1e-05,
+      "seed": 911094,
+      "sha256": "a7dff1f1462348a7cbb728f15e6f7724f648736c4843fc7c039fed12b22695f5",
+      "masterSha256": "2c9f234f6a8c86e2cde0092a9fd310f8cf4e9bb456dfef933a9eb958696be2df"
+    },
+    {
+      "name": "system-ui-focus",
+      "file": "system-ui-focus.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-system-ui-audio.py"
+      ],
+      "design": "Quiet high jade overtone for moving between system controls; short inharmonic decay with no paper or noise; 0.16 seconds.",
+      "loop": false,
+      "duration": 0.16,
+      "bytes": 3453,
+      "peakDbfs": -26.0,
+      "truePeakDbfs": -25.99,
+      "rmsDbfs": -40.34,
+      "boundaryStep": 9.2e-05,
+      "seed": 911095,
+      "sha256": "714da3af5a18a5f4f05541ddc45e9cfc87e643b1a1856d90432fad7de64291de",
+      "masterSha256": "96e5c81ab18f47f486cfe7babe24bd47e855d659454c87cf93df0a1468deaff6"
+    },
+    {
+      "name": "system-ui-select",
+      "file": "system-ui-select.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-system-ui-audio.py"
+      ],
+      "design": "Small jade/light-metal contact with a warm grounded body for system activation; distinct from hover and paper folio sounds; 0.27 seconds.",
+      "loop": false,
+      "duration": 0.27,
+      "bytes": 5278,
+      "peakDbfs": -16.49,
+      "truePeakDbfs": -16.49,
+      "rmsDbfs": -32.01,
+      "boundaryStep": 0.000122,
+      "seed": 911096,
+      "sha256": "a708f1ca2177ba9cc46dcc1f888ae48bf2997e4b3823134f50f5037b6fcb1ab7",
+      "masterSha256": "6c9e4e3cff1d0a495d145195a10e3f6d58c55d9adaf8f4751240cc5eb5e9927b"
+    },
+    {
+      "name": "system-ui-back",
+      "file": "system-ui-back.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-system-ui-audio.py"
+      ],
+      "design": "Lower, softly damped jade resonance for closing a system panel or returning; no sliding or rubbing texture; 0.23 seconds.",
+      "loop": false,
+      "duration": 0.23,
+      "bytes": 4414,
+      "peakDbfs": -20.03,
+      "truePeakDbfs": -20.03,
+      "rmsDbfs": -35.06,
+      "boundaryStep": 9.2e-05,
+      "seed": 911097,
+      "sha256": "1cbe02d2e68920828179b53e2f5dabe7f1ad8c367314261fc3557c948932f51b",
+      "masterSha256": "fc90cd0912476abc707a257d12fa5579adad78799894c6090d2a37d81fac78e2"
+    },
+    {
+      "name": "system-ui-send",
+      "file": "system-ui-send.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-system-ui-audio.py"
+      ],
+      "design": "A restrained upward pair of jade resonances for sending a message; no musical phrase or sampled notification sound; 0.32 seconds.",
       "loop": false,
       "duration": 0.32,
-      "bytes": 4432,
-      "peakDbfs": -17.65,
-      "truePeakDbfs": -17.63,
-      "rmsDbfs": -31.18,
-      "boundaryStep": 0.0,
-      "seed": 911094,
-      "sha256": "74ae567cde783833e1cbaf0e6c986370cac20e72a3c4b0c4c80898f5f52a3b5b",
-      "masterSha256": "f8230acd64277eddae7b46069d05bdcf7bf164aadbd8ae1a6c39c2288ff39c1a"
+      "bytes": 7201,
+      "peakDbfs": -17.49,
+      "truePeakDbfs": -17.46,
+      "rmsDbfs": -31.51,
+      "boundaryStep": 0.000122,
+      "seed": 911098,
+      "sha256": "3c250674dab412c7a416ff647ec32ee2c1e877c84559e0908c61acde864b7555",
+      "masterSha256": "c3c40ac47e530adb92dc14a80964ccd739831a905a94144581acfe8ffb8be95a"
     }
   ]
 }
