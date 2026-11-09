@@ -45,6 +45,14 @@ python loading-page/serve.py --host 0.0.0.0
 
 在 Codespaces 的 Source Control 中提交并推送后，本地使用 `git pull --ff-only` 同步。
 
+## GitHub Pages 网页预览
+
+`.github/workflows/pages.yml` 会在 `main` 的网站文件更新时发布静态预览，也可从 Actions 手动运行。首次使用需在仓库 Settings → Pages 将 Source 设为 GitHub Actions；私有仓库还需账号套餐支持 Pages。发布只包含 `loading-page/` 中的浏览器文件及校验过的 Cubism Core，保留相关许可和来源记录。
+
+预览支持加载、标题、场景、Live2D 和地图等浏览器功能。GitHub Pages 不运行 Python，因此模型列表、AI 对话和语音合成仍需使用带 Python 后端的部署。网页设置与存档保存在当前浏览器，不会从本机预览自动迁移。
+
+本地打包命令为 `python scripts/build-pages.py`，输出位于 `output/pages/`。
+
 ## 开发与验证
 
 页面是原生 HTML / CSS / JavaScript。修改后刷新浏览器即可；静态图片、音效、Live2D 模型和渲染器封装均包含在仓库中。Cubism Core 按上面的首次启动步骤缓存，浏览器从本机预览服务加载。
