@@ -32,4 +32,10 @@
 .world-map-actions>[data-world-position]{font-family:inherit;font-size:12px;min-width:46px;text-align:center;letter-spacing:.1em}.world-map-chapter[data-preview="true"]>span{color:#8c8580}.world-map-chapter[data-preview="true"] h2{color:#b8ae9b}.world-chapter-boundary{position:absolute;left:0;top:39%;height:29%;width:1px;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:calc(var(--interface)*.4);pointer-events:none;z-index:4}.world-chapter-boundary i{width:1px;flex:1;background:linear-gradient(transparent,#b79c73,transparent)}.world-chapter-boundary span{writing-mode:vertical-rl;letter-spacing:.3em;font-size:11px;color:#b6a58b}.world-chapter-scene[data-chapter="0"] .world-chapter-boundary{display:none}
 .world-color-bloom .world-level[data-status="completed"] .world-clear-seal{animation:world-clear-bloom .75s ease-out both}@keyframes world-clear-bloom{from{opacity:.2;transform:scale(.65);filter:brightness(1.8)}to{opacity:1;transform:scale(1);filter:brightness(1)}}
 @media(max-width:800px){.world-map-viewport{bottom:0}.world-map-actions>[data-world-position]{min-width:45px}.world-map-reading h2{font-size:23px}.world-map-kind{display:none}}
+/* Explored scenery retains its natural pigment; locked scenery keeps its ink silhouette. */
+.world-scenery-prop[data-lighted="true"]{filter:saturate(1.2) brightness(1.14) drop-shadow(0 7px 4px #0007)}
+.world-level:is([data-status="completed"],[data-status="available"]) .world-landmark{filter:saturate(1.1) brightness(1.09) drop-shadow(0 13px 6px #02050890)}
+.world-level:is(:hover,:focus-visible,.is-selected):is([data-status="completed"],[data-status="available"]) .world-landmark{filter:saturate(1.16) brightness(1.2) drop-shadow(0 13px 6px #02050890)}
+.world-level-detail[data-lighted="true"] .world-detail-landmark{filter:saturate(1.1) brightness(1.1)}
+.world-map-weather{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}.world-map-weather canvas{display:block;width:100%;height:100%;pointer-events:none}
 @media(prefers-reduced-motion:reduce){#world-map *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

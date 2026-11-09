@@ -9,12 +9,14 @@
   const hash=(u,v)=>{const value=Math.sin(u*127.1+v*311.7+29.36)*43758.5453;return value-Math.floor(value);};
   const profiles=new Map();
   const chapterNumber=value=>Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(Number.isFinite(value)?value:0)));
+  // Meadow, pale rock, river, sand path, forest and summit snow. These are
+  // surface pigments, not a global exposure adjustment for the locked map.
   const palettes=[
-    [[.16,.24,.20],[.43,.45,.40],[.15,.27,.28],[.39,.30,.20]],
-    [[.24,.20,.16],[.48,.43,.35],[.16,.23,.23],[.46,.32,.21]],
-    [[.18,.23,.25],[.44,.49,.50],[.14,.28,.32],[.42,.38,.30]],
-    [[.16,.23,.16],[.39,.42,.31],[.12,.23,.21],[.39,.30,.20]],
-    [[.20,.23,.26],[.55,.57,.57],[.18,.27,.32],[.38,.34,.29]],
+    [[.48,.62,.27],[.62,.64,.59],[.16,.49,.59],[.70,.59,.39],[.17,.35,.20],[.86,.89,.85]],
+    [[.56,.64,.30],[.67,.64,.56],[.17,.49,.56],[.74,.59,.37],[.22,.37,.19],[.88,.87,.80]],
+    [[.42,.59,.32],[.62,.67,.66],[.16,.51,.64],[.68,.60,.44],[.16,.34,.25],[.87,.92,.92]],
+    [[.44,.62,.25],[.60,.64,.56],[.14,.48,.53],[.70,.59,.39],[.14,.35,.19],[.84,.88,.82]],
+    [[.49,.60,.37],[.66,.69,.69],[.19,.51,.63],[.68,.61,.47],[.21,.36,.29],[.90,.94,.94]],
   ];
   function profileFor(chapter=0){
     chapter=chapterNumber(chapter);if(profiles.has(chapter))return profiles.get(chapter);
@@ -73,6 +75,20 @@
     let terrace=0;for(const stop of STOPS)terrace=Math.max(terrace,1-smooth(.65,1.4,Math.hypot((u-stop.u)/.037,(v-stop.v)/.087)));
     return {water:river*(1-terrace),path:path*(1-river*.65),moss:noise(u*9,v*11,profileFor(chapter).seed)};
   }
+  function materialColors(chapter,height,habitat,seed=0,colored=true){
+    if(!colored){
+      const light=height*70+seed*8,rgb=[12+light*.30,16+light*.32,18+light*.32];
+      return {top:rgb.map(v=>v*1.25/255),side:rgb.map(v=>v/255)};
+    }
+    const [meadow,rock,water,road,forest,snow]=profileFor(chapter).palette,elevation=clamp(height*1.55);
+    let top=meadow.map((value,i)=>mix(value,forest[i],smooth(.36,.78,habitat.moss)*.76));
+    top=top.map((value,i)=>mix(value,rock[i],smooth(.43,.77,elevation)));
+    top=top.map((value,i)=>mix(value,snow[i],smooth(.74,.97,elevation)*.82));
+    const side=rock.map(value=>value*(.89+.11*elevation)*(.94+seed*.10));
+    top=top.map((value,i)=>mix(value,water[i]*.96,habitat.water*.95));
+    top=top.map((value,i)=>mix(value,road[i],habitat.path*.85));
+    return {top:top.map(value=>value*(.94+seed*.10)),side};
+  }
   function decorationsFor(chapter=0){
     const p=profileFor(chapter);if(p.decorations)return p.decorations.map(item=>({...item}));const items=[];
     function add(u,v,type,scale,nearPath=false){
@@ -125,6 +141,80 @@
   function sourceLayout(width,height,imageWidth,imageHeight,state){
     const cssWidth=state.sourceViewportWidth>0?state.sourceViewportWidth:Math.min(width,height*imageWidth/Math.max(1,imageHeight));
     return {width:Math.max(1,cssWidth),scale:width/Math.max(1,cssWidth),offset:(state.sourceOffsetX||0)/Math.max(1,cssWidth)};
+  }
+  const geometryCache=new Map(),geometryJobs=new Map(),GEOMETRY_LIMIT=4;
+  const clock=()=>typeof performance==='object'?performance.now():Date.now();
+  const geometryKey=(chapter,columns,rows,backend)=>`${backend}:${chapterNumber(chapter)}:${columns}x${rows}`;
+  function cachedGeometry(key){
+    const value=geometryCache.get(key);if(value){geometryCache.delete(key);geometryCache.set(key,value);}return value;
+  }
+  function rememberGeometry(value){
+    geometryCache.delete(value.key);geometryCache.set(value.key,value);
+    while(geometryCache.size>GEOMETRY_LIMIT)geometryCache.delete(geometryCache.keys().next().value);return value;
+  }
+  function geometryBuilder(chapter,columns,rows,backend){
+    chapter=chapterNumber(chapter);
+    const key=geometryKey(chapter,columns,rows,backend),cells=[],values=[],count=columns*rows,layerSize=.035;
+    let index=0,phase=0,buildMs=0,maxSliceMs=0,result=null;
+    function step(until=Infinity){
+      if(result)return true;
+      const started=clock();let operations=0;
+      while(phase<2){
+        if(phase===0){
+          const col=index%columns,row=Math.floor(index/columns),u=(col+.5)/columns,v=(row+.5)/rows;
+          cells.push({u,v,h:heightAt(u,v,chapter),seed:hash(col+chapter%100003,row),alpha:silhouetteAt(u,v,chapter),habitat:habitatAt(u,v,chapter)});
+          if(++index===count){phase=backend==='webgl'?1:2;index=0;}
+        }else{
+          const cell=cells[index],column=index%columns,row=Math.floor(index/columns);
+          const left=column>0?cells[index-1]:null,right=column<columns-1?cells[index+1]:null;
+          const back=row>0?cells[index-columns]:null,front=row<rows-1?cells[index+columns]:null;
+          const floor=Math.min(left&&left.alpha>=.4?left.h:0,right&&right.alpha>=.4?right.h:0,back&&back.alpha>=.4?back.h:0,front&&front.alpha>=.4?front.h:0);
+          const layers=Math.ceil(cell.h/layerSize);
+          for(let layer=0;layer<layers;layer++){
+            const base=layer*layerSize,top=Math.min(cell.h,base+layerSize),isTop=layer===layers-1;
+            if(!isTop&&top<floor-.001)continue;
+            values.push(cell.u,cell.v,top,cell.seed,cell.alpha,base,isTop?1:0,cell.h,cell.habitat.water,cell.habitat.path,cell.habitat.moss);
+          }
+          if(++index===count)phase=2;
+        }
+        if(++operations%16===0&&clock()>=until)break;
+      }
+      if(phase===2){
+        result={key,cells,ordered:backend==='webgl'?null:cells.slice().sort((a,b)=>a.v-b.v||b.h-a.h),values:backend==='webgl'?new Float32Array(values):null,instances:values.length/11};
+      }
+      const elapsed=clock()-started;buildMs+=elapsed;maxSliceMs=Math.max(maxSliceMs,elapsed);
+      if(result){result.buildMs=buildMs;result.maxSliceMs=maxSliceMs;}return Boolean(result);
+    }
+    return {step,get result(){return result;}};
+  }
+  function scheduleGeometry(job){
+    const run=()=>{
+      job.handle=null;if(job.done)return;
+      if(job.builder.step(clock()+3))finishGeometry(job);else scheduleGeometry(job);
+    };
+    if(typeof requestIdleCallback==='function'){job.idle=true;job.handle=requestIdleCallback(run,{timeout:120});}
+    else{job.idle=false;job.handle=setTimeout(run,0);}
+  }
+  function finishGeometry(job,cancelled=false){
+    if(job.done)return;job.done=true;
+    if(job.handle!==null){if(job.idle&&typeof cancelIdleCallback==='function')cancelIdleCallback(job.handle);else clearTimeout(job.handle);}
+    geometryJobs.delete(job.key);job.resolve(cancelled?null:rememberGeometry(job.builder.result));
+  }
+  function getGeometry(chapter,columns,rows,backend){
+    const key=geometryKey(chapter,columns,rows,backend),cached=cachedGeometry(key);if(cached)return {geometry:cached,cached:true};
+    const pending=geometryJobs.get(key),builder=pending?.builder||geometryBuilder(chapter,columns,rows,backend);
+    builder.step();if(pending)finishGeometry(pending);else rememberGeometry(builder.result);
+    return {geometry:builder.result,cached:false};
+  }
+  function prepareGeometry(chapter,columns,rows,backend){
+    const key=geometryKey(chapter,columns,rows,backend),cached=cachedGeometry(key);if(cached)return Promise.resolve(cached);
+    if(geometryJobs.has(key))return geometryJobs.get(key).promise;
+    // Fast navigation can request many chapters; stale idle work is bounded
+    // along with the finished LRU rather than queuing an unbounded backlog.
+    if(geometryJobs.size>=GEOMETRY_LIMIT)finishGeometry(geometryJobs.values().next().value,true);
+    let resolve;const promise=new Promise(done=>{resolve=done;});
+    const job={key,promise,resolve,builder:geometryBuilder(chapter,columns,rows,backend),done:false,handle:null,idle:false};
+    geometryJobs.set(key,job);scheduleGeometry(job);return promise;
   }
   function localPhase(u,v,progress){return smooth(0,.90,progress*1.65-u*.64-v*.08);}
   function position(u,v,elevation,width,height,state,progress=state.progress){
@@ -182,7 +272,7 @@
     uniform sampler2D source,pigment;
     uniform vec2 sourceScale,selected;
     uniform float sourceOffset;
-    uniform vec3 lowTone,highTone,waterTone,roadTone;
+    uniform vec3 lowTone,highTone,waterTone,roadTone,forestTone,snowTone;
     uniform float progress,pass,lit,hasSource,hasPigment,time;
     varying vec2 photoUV,mapUV;
     varying vec3 surface,localPoint;
@@ -205,27 +295,33 @@
       float light=.47+.69*diffuse;
       float top=step(.5,-n.y);
       float elevation=clamp(materialHeight*1.55,0.,1.);
-      vec3 earth=mix(lowTone,highTone,elevation);
-      earth=mix(earth,texture2D(pigment,mapUV).rgb,.62*hasPigment);
-      earth=mix(earth,lowTone*1.10,habitatInfo.z*.15*(1.-elevation));
+      vec3 meadow=mix(lowTone,forestTone,ease(.36,.78,habitatInfo.z)*.76);
+      meadow=mix(meadow,highTone,ease(.43,.77,elevation));
+      meadow=mix(meadow,snowTone,ease(.74,.97,elevation)*.82);
+      vec3 earth=mix(highTone*(.89+.11*elevation),meadow,top);
+      vec3 pigmentColor=texture2D(pigment,mapUV).rgb;
+      float pigmentLuma=dot(pigmentColor,vec3(.2126,.7152,.0722));
+      earth*=mix(1.,mix(.88,1.13,clamp(pigmentLuma*1.5,0.,1.)),.42*hasPigment);
+      earth=mix(earth,pigmentColor,mix(.07,.16,top)*hasPigment);
       vec3 creek=waterTone*(.94+.045*sin(mapUV.x*180.+mapUV.y*41.+time*.24));
-      earth=mix(earth,creek,habitatInfo.x*top*.92);
-      earth=mix(earth,roadTone,habitatInfo.y*top*.67);
-      earth*=.88+values.y*.19;
+      earth=mix(earth,creek,habitatInfo.x*top*.95);
+      earth=mix(earth,roadTone,habitatInfo.y*top*.85);
+      earth*=.94+values.y*.10;
       vec3 ink=mix(vec3(.035,.044,.047),vec3(.105,.115,.115),elevation);
       ink*=.90+values.y*.12;
       float explored=lit>=5.999?1.:lit<.001?0.:1.-ease(lit/6.-.014,lit/6.+.014,mapUV.x);
       vec3 stone=mix(ink,earth,explored);
       float seam=abs(fract(materialHeight/.018+.015)-.5)*2.;
       float strata=mix(1.,.79,ease(.85,1.,seam))*(.92+.08*top);
-      stone*=light*mix(strata,1.,top);
+      float naturalStrata=mix(1.,.95,ease(.85,1.,seam))*(.98+.02*top);
+      stone*=mix(light,.68+.44*diffuse,explored)*mix(mix(strata,naturalStrata,explored),1.,top);
       float rim=max(abs(localPoint.x),abs(localPoint.z));
-      stone*=1.-ease(.425,.5,rim)*.12*top;
+      stone*=1.-ease(.425,.5,rim)*mix(.12,.035,explored)*top;
       float halo=exp(-dot((mapUV-selected)*vec2(15.,8.),(mapUV-selected)*vec2(15.,8.)));
       stone+=vec3(.014,.016,.016)*halo*(.8+.2*sin(time*.65));
       float face=max(values.w,0.)*(1.-ease(.045,.67,t))*hasSource*topVoxel;
       vec3 color=mix(stone,photograph,face);
-      color=mix(color,vec3(.033,.044,.049),ease(.52,.05,mapUV.y)*.22*t);
+      color=mix(color,vec3(.033,.044,.049),ease(.52,.05,mapUV.y)*mix(.22,.07,explored)*t);
       gl_FragColor=vec4(color*alpha,alpha);
     }`;
   function mesh(){
@@ -240,6 +336,7 @@
     if(!canvas||typeof canvas.getContext!=='function')throw new TypeError('A canvas is required.');
     const state={progress:0,completedCount:0,litCount:1,chapterIndex:0,selectedIndex:0,pointerX:0,pointerY:0,time:0,sourceOffsetX:0,sourceViewportWidth:0};
     let width=1,height=1,columns=96,rows=54,cellData=[],instanceCount=0,sourceImage=null,pigmentImage=null;
+    let currentGeometry=null,geometryCached=false,geometryBuildMs=0,geometryUploadMs=0;
     let gl=null,extension=null,program=null,meshBuffer=null,cellBuffer=null,sourceTexture=null,pigmentTexture=null,uniforms={},attributes={};
     let fallbackCanvas=null,ctx=null,lost=false,disposed=false,backend='canvas2d',error='',frames=0;
     const shaders=[];const originalVisibility=canvas.style.visibility;
@@ -258,10 +355,10 @@
       extension=gl.getExtension('ANGLE_instanced_arrays');if(!extension)return false;
       program=gl.createProgram();gl.attachShader(program,compile(gl.VERTEX_SHADER,vertex));gl.attachShader(program,compile(gl.FRAGMENT_SHADER,fragment));gl.linkProgram(program);
       if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
-      for(const key of ['size','pointer','grid','progress','pass','lit','selected','sourceScale','sourceOffset','hasSource','hasPigment','time','source','pigment','lowTone','highTone','waterTone','roadTone'])uniforms[key]=gl.getUniformLocation(program,key);
+      for(const key of ['size','pointer','grid','progress','pass','lit','selected','sourceScale','sourceOffset','hasSource','hasPigment','time','source','pigment','lowTone','highTone','waterTone','roadTone','forestTone','snowTone'])uniforms[key]=gl.getUniformLocation(program,key);
       for(const key of ['corner','normal','cell','detail','habitat'])attributes[key]=gl.getAttribLocation(program,key);
       meshBuffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,meshBuffer);gl.bufferData(gl.ARRAY_BUFFER,mesh(),gl.STATIC_DRAW);
-      cellBuffer=gl.createBuffer();sourceTexture=gl.createTexture();pigmentTexture=gl.createTexture();
+      cellBuffer=gl.createBuffer();currentGeometry=null;sourceTexture=gl.createTexture();pigmentTexture=gl.createTexture();
       upload(sourceTexture,sourceImage,[6,9,12,255]);upload(pigmentTexture,pigmentImage,[60,74,65,255]);backend='webgl';return true;
     }
     function useFallback(){
@@ -275,39 +372,21 @@
       const spacing=backend==='webgl'?15:27;
       columns=clamp(Math.round(width/spacing),backend==='webgl'?64:34,backend==='webgl'?110:65);
       rows=clamp(Math.round(columns*height/width),24,backend==='webgl'?76:40);
-      cellData=[];
-      for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
-        const u=(col+.5)/columns,v=(row+.5)/rows;
-        cellData.push({u,v,h:heightAt(u,v,state.chapterIndex),seed:hash(col+state.chapterIndex%100003,row),alpha:silhouetteAt(u,v,state.chapterIndex),habitat:habitatAt(u,v,state.chapterIndex)});
-      }
-      if(backend==='webgl'){
-        const values=[],layerSize=.035;
-        for(let index=0;index<cellData.length;index++){
-          const cell=cellData[index],column=index%columns,row=Math.floor(index/columns);
-          const neighbors=[[-1,0],[1,0],[0,-1],[0,1]].map(([x,y])=>{
-            const col=column+x,r=row+y,neighbor=col>=0&&col<columns&&r>=0&&r<rows?cellData[r*columns+col]:null;
-            return !neighbor||neighbor.alpha<.4?0:neighbor.h;
-          });
-          const floor=Math.min(...neighbors),layers=Math.ceil(cell.h/layerSize);
-          for(let layer=0;layer<layers;layer++){
-            const base=layer*layerSize,top=Math.min(cell.h,base+layerSize),isTop=layer===layers-1;
-            // Fully buried cubes are omitted. Visible cliffs remain true cubes,
-            // rather than tall columns masquerading as a voxel landscape.
-            if(!isTop&&top<floor-.001)continue;
-            values.push(cell.u,cell.v,top,cell.seed,cell.alpha,base,isTop?1:0,cell.h,cell.habitat.water,cell.habitat.path,cell.habitat.moss);
-          }
-        }
-        instanceCount=values.length/11;
-        gl.bindBuffer(gl.ARRAY_BUFFER,cellBuffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(values),gl.STATIC_DRAW);
-      }
+      const key=geometryKey(state.chapterIndex,columns,rows,backend);
+      if(currentGeometry?.key===key){geometryCached=true;geometryBuildMs=geometryUploadMs=0;return;}
+      const started=clock(),result=getGeometry(state.chapterIndex,columns,rows,backend);
+      currentGeometry=result.geometry;cellData=currentGeometry.cells;instanceCount=currentGeometry.instances;
+      geometryCached=result.cached;geometryBuildMs=clock()-started;geometryUploadMs=0;
+      if(backend==='webgl'){const uploadStart=clock();gl.bindBuffer(gl.ARRAY_BUFFER,cellBuffer);gl.bufferData(gl.ARRAY_BUFFER,currentGeometry.values,gl.STATIC_DRAW);geometryUploadMs=clock()-uploadStart;}
     }
     function resize(){
       if(disposed)return;
       const rect=canvas.getBoundingClientRect();width=Math.max(1,rect.width||canvas.clientWidth||innerWidth);height=Math.max(1,rect.height||canvas.clientHeight||innerHeight);
       const max=backend==='webgl'?Math.min(4096,gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)):2800;
       const dpr=Math.max(.5,Math.min(window.devicePixelRatio||1,backend==='webgl'?1.5:1.2,max/width,max/height));
-      const target=fallbackCanvas||canvas;target.width=Math.max(1,Math.round(width*dpr));target.height=Math.max(1,Math.round(height*dpr));
-      if(backend==='webgl'){canvas.width=target.width;canvas.height=target.height;gl.viewport(0,0,canvas.width,canvas.height);}
+      const target=fallbackCanvas||canvas,pixelWidth=Math.max(1,Math.round(width*dpr)),pixelHeight=Math.max(1,Math.round(height*dpr));
+      if(target.width!==pixelWidth)target.width=pixelWidth;if(target.height!==pixelHeight)target.height=pixelHeight;
+      if(backend==='webgl')gl.viewport(0,0,canvas.width,canvas.height);
       buildCells();
     }
     function bindAttribute(name,count,stride,offset,divisor){const location=attributes[name];if(location<0)return;gl.enableVertexAttribArray(location);gl.vertexAttribPointer(location,count,gl.FLOAT,false,stride*4,offset*4);extension.vertexAttribDivisorANGLE(location,divisor);}
@@ -319,7 +398,7 @@
       gl.uniform2f(uniforms.size,width,height);gl.uniform2f(uniforms.pointer,state.pointerX,state.pointerY);gl.uniform2f(uniforms.grid,columns,rows);
       gl.uniform1f(uniforms.progress,state.progress);gl.uniform1f(uniforms.lit,state.litCount);gl.uniform1f(uniforms.time,state.time*.001);
       const palette=profileFor(state.chapterIndex).palette;
-      for(const [i,key] of ['lowTone','highTone','waterTone','roadTone'].entries())gl.uniform3fv(uniforms[key],palette[i]);
+      for(const [i,key] of ['lowTone','highTone','waterTone','roadTone','forestTone','snowTone'].entries())gl.uniform3fv(uniforms[key],palette[i]);
       const stop=STOPS[state.selectedIndex]||STOPS[0];gl.uniform2f(uniforms.selected,stop.u,stop.v);
       const sourceRect=sourceLayout(width,height,sourceImage?(sourceImage.naturalWidth||sourceImage.width):width,sourceImage?(sourceImage.naturalHeight||sourceImage.height):height,state);
       gl.uniform2f(uniforms.sourceScale,sourceRect.scale,1);gl.uniform1f(uniforms.sourceOffset,sourceRect.offset);
@@ -335,7 +414,7 @@
       const target=fallbackCanvas||canvas;ctx.setTransform(target.width/width,0,0,target.height/height,0,0);ctx.clearRect(0,0,width,height);
       if(sourceImage&&state.progress<1){const sourceRect=sourceLayout(width,height,sourceImage.naturalWidth||sourceImage.width,sourceImage.naturalHeight||sourceImage.height,state);ctx.drawImage(sourceImage,-state.sourceOffsetX,0,sourceRect.width,height);ctx.fillStyle=`rgba(7,11,14,${smooth(0,.72,state.progress)})`;ctx.fillRect(0,0,width,height);}
       if(state.progress<=0&&sourceImage)return;
-      const ordered=cellData.slice().sort((a,b)=>a.v-b.v||b.h-a.h);
+      const ordered=currentGeometry.ordered;
       function polygon(points,color,alpha){ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.beginPath();points.forEach((point,i)=>ctx[i?'lineTo':'moveTo'](point.x,point.y));ctx.closePath();ctx.fill();}
       for(const cell of ordered){
         const t=localPhase(cell.u,cell.v,state.progress),alpha=mix(1,cell.alpha,smooth(.37,1,t))*smooth(0,.12,t);if(alpha<.005)continue;
@@ -343,14 +422,11 @@
         const top=[[-du,-dv],[du,-dv],[du,dv],[-du,dv]].map(([u,v])=>position(cell.u+u,cell.v+v,cell.h,width,height,state));
         const bottom=[[-du,-dv],[du,-dv],[du,dv],[-du,dv]].map(([u,v])=>position(cell.u+u,cell.v+v,0,width,height,state));
         const colored=state.litCount>=6||cell.u<state.litCount/6;
-        const light=cell.h*70+cell.seed*8;
-        const tones=profileFor(state.chapterIndex).palette;
-        let rgb=colored?tones[0].map((value,i)=>value*255+light*(i===1?1:.85)):[12+light*.30,16+light*.32,18+light*.32];
-        if(colored){rgb=rgb.map((value,i)=>mix(value,tones[2][i]*255,cell.habitat.water*.85));rgb=rgb.map((value,i)=>mix(value,tones[3][i]*255,cell.habitat.path*.65));}
-        const color=f=>`rgb(${rgb.map(v=>Math.round(v*f)).join(',')})`;
-        polygon([top[1],top[2],bottom[2],bottom[1]],color(.60),alpha);
-        polygon([top[2],top[3],bottom[3],bottom[2]],color(.78),alpha);
-        polygon(top,color(1.25),alpha);
+        const tones=materialColors(state.chapterIndex,cell.h,cell.habitat,cell.seed,colored);
+        const color=(rgb,f)=>`rgb(${rgb.map(v=>Math.round(clamp(v*f)*255)).join(',')})`;
+        polygon([top[1],top[2],bottom[2],bottom[1]],color(tones.side,colored?.73:.60),alpha);
+        polygon([top[2],top[3],bottom[3],bottom[2]],color(tones.side,colored?.88:.78),alpha);
+        polygon(top,color(tones.top,colored?1.04:1),alpha);
       }
       ctx.globalAlpha=1;
     }
@@ -363,15 +439,19 @@
     function setState(value={}){
       const before=state.chapterIndex;updateState(state,value);if(before!==state.chapterIndex&&!disposed)buildCells();return state;
     }
+    function prepareChapter(chapterIndex){
+      if(disposed)return Promise.resolve(false);
+      return prepareGeometry(chapterIndex,columns,rows,backend).then(geometry=>Boolean(geometry)&&!disposed);
+    }
     function project({u=0,v=0,lift=0}={}){u=clamp(Number(u)||0);v=clamp(Number(v)||0);const point=position(u,v,heightAt(u,v,state.chapterIndex),width,height,state);point.y-=Number(lift)||0;return point;}
     function contextLost(event){event.preventDefault();if(disposed)return;lost=true;useFallback();resize();render();report(new Error('WebGL context lost; using the 2D terrain.'));}
     function contextRestored(){if(disposed)return;try{lost=false;if(setupGL()){error='';fallbackCanvas?.remove();fallbackCanvas=null;ctx=null;canvas.style.visibility=originalVisibility;resize();render();}}catch(problem){report(problem);useFallback();resize();render();}}
-    function dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);fallbackCanvas?.remove();canvas.style.visibility=originalVisibility;if(gl&&!gl.isContextLost()){[meshBuffer,cellBuffer].forEach(value=>value&&gl.deleteBuffer(value));[sourceTexture,pigmentTexture].forEach(value=>value&&gl.deleteTexture(value));shaders.forEach(value=>gl.deleteShader(value));if(program)gl.deleteProgram(program);}sourceImage=pigmentImage=null;cellData=[];}
+    function dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);fallbackCanvas?.remove();canvas.style.visibility=originalVisibility;if(gl&&!gl.isContextLost()){[meshBuffer,cellBuffer].forEach(value=>value&&gl.deleteBuffer(value));[sourceTexture,pigmentTexture].forEach(value=>value&&gl.deleteTexture(value));shaders.forEach(value=>gl.deleteShader(value));if(program)gl.deleteProgram(program);}sourceImage=pigmentImage=null;currentGeometry=null;cellData=[];}
     try{if(!setupGL())useFallback();}catch(problem){report(problem);useFallback();}
     canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);resize();
-    return Object.freeze({prepare,setState,render,project,resize,dispose,getDecorations:()=>decorationsFor(state.chapterIndex),getState:()=>({backend,progress:state.progress,completedCount:state.completedCount,litCount:state.litCount,chapterIndex:state.chapterIndex,sourceOffsetX:state.sourceOffsetX,sourceViewportWidth:state.sourceViewportWidth,selectedIndex:state.selectedIndex,columns,rows,instances:backend==='webgl'?instanceCount:cellData.length,width,height,frames,lost,disposed,error})});
+    return Object.freeze({prepare,prepareChapter,setState,render,project,resize,dispose,getDecorations:()=>decorationsFor(state.chapterIndex),getState:()=>({backend,progress:state.progress,completedCount:state.completedCount,litCount:state.litCount,chapterIndex:state.chapterIndex,sourceOffsetX:state.sourceOffsetX,sourceViewportWidth:state.sourceViewportWidth,selectedIndex:state.selectedIndex,columns,rows,instances:backend==='webgl'?instanceCount:cellData.length,width,height,frames,lost,disposed,error,geometryCached,geometryBuildMs,geometryUploadMs,geometryMaxSliceMs:currentGeometry?.maxSliceMs||0,geometryCacheEntries:geometryCache.size,geometryPending:geometryJobs.size})});
   }
   const api=Object.freeze({create,stops:STOPS.map(value=>Object.freeze({...value})),heightAt});
-  if(typeof module==='object'&&module.exports)module.exports={heightAt,silhouetteAt,localPhase,position,pathAt,riverAt,habitatAt,decorationsFor,updateState,sourceLayout,stops:STOPS};
+  if(typeof module==='object'&&module.exports)module.exports={heightAt,silhouetteAt,localPhase,position,pathAt,riverAt,habitatAt,materialColors,decorationsFor,updateState,sourceLayout,getGeometry,prepareGeometry,geometryKey,stops:STOPS};
   else window.InfiniteWorldTerrain=api;
 })();

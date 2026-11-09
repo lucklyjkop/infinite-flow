@@ -9,6 +9,7 @@
   root.innerHTML=`
     <div class="world-map-void" aria-hidden="true"></div>
     <div class="world-map-viewport"><div class="world-map-stage"></div></div>
+    <div class="world-map-weather" aria-hidden="true"></div>
     <div class="world-map-haze" aria-hidden="true"></div>
     <div class="world-map-dust" aria-hidden="true"></div>
     <header class="world-map-header">
@@ -27,9 +28,10 @@
   document.body.append(root);
   const viewport=root.querySelector('.world-map-viewport'),stage=root.querySelector('.world-map-stage'),hold=root.querySelector('.world-map-hold');
   const detail=root.querySelector('dialog'),errorNode=root.querySelector('.world-map-error');
-  const artUrls={landmarks:'assets/world-map/landmarks.png',bamboo:'assets/world-map/landmarks-bamboo.png',snow:'assets/world-map/landmarks-snow.png',props:'assets/world-map/scenery-props.png',clear:'assets/world-map/cleared-seal.png',texture:'assets/world-map/terrain-pigment.png',seal:'assets/world-map/node-seal.png',title:'assets/world-map/title.png'};
-  let phase='hidden',serial=0,assets=null,preloadJob=null,opener=null,snapshot=null,state=null;
+  const artUrls={landmarks:'assets/world-map/landmarks.png',bamboo:'assets/world-map/landmarks-bamboo.png',snow:'assets/world-map/landmarks-snow.png',props:'assets/world-map/scenery-props.png',clear:'assets/world-map/cleared-seal.png',texture:'assets/world-map/terrain-pigment-natural.png',seal:'assets/world-map/node-seal.png',title:'assets/world-map/title.png'};
+  let phase='hidden',serial=0,assets=null,preloadJob=null,opener=null,snapshot=null,state=null,weather=null;
   let frame=0,lastTime=0,progress=0,pointerX=0,pointerY=0,aimX=0,aimY=0,transition=null,pan=null,lastFocus=0,lastFocusId=null,drag=null,ignoreClickUntil=0,pageWidth=1320,camera=0,lastError='',revision=0,shownChapter=-1;
+  let warmTimer=0,lastWarmKey='';
   const pages=[];
   const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
   const smooth=v=>{const a=clamp(v);return a*a*(3-2*a);};
@@ -40,6 +42,7 @@
   const volume=i=>'第'+(i<9?'一二三四五六七八九'[i]:i+1)+'卷';
   const statusName=s=>s==='completed'?'已通关':s==='available'?'待探索':'未解锁';
   const waitFor=(promise,ms,message)=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),ms);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});
+  const yieldPreparation=()=>new Promise(resolve=>setTimeout(resolve,16));
   const buttonFor=id=>root.querySelector('[data-world-stage="'+id+'"]');
   const maxCamera=()=>Math.max(0,((state?.maxPreviewChapterIndex||0)+1)*pageWidth-innerWidth);
   const selectedStage=()=>state?store().getChapter(state.selectedChapterIndex).stages.find(s=>s.id===state.selectedId):null;
@@ -90,6 +93,11 @@
     for(const index of needed){let page=pages.find(p=>p.index===index);if(!page){page=pages.find(p=>!needed.includes(p.index))||createPage();mountPage(page,index);}else if(page.revision!==revision)mountPage(page,index);}
     for(const page of pages){const visible=needed.includes(page.index),wasHidden=page.el.hidden;if(!visible&&page.el.contains(document.activeElement))root.focus({preventScroll:true});page.el.hidden=!visible;page.el.inert=!visible;if(!visible)continue;if(wasHidden||page.needsResize){page.renderer.resize();page.needsResize=false;}page.el.style.transform='translate3d('+(page.index*pageWidth-camera).toFixed(2)+'px,0,0)';}
   }
+  function warmNearby(){
+    if(phase!=='ready'||pan||drag||transition||document.hidden||!pages.length)return;
+    const index=Math.floor(camera/pageWidth),key=[index,state.maxPreviewChapterIndex,pageWidth,innerHeight].join(':');if(key===lastWarmKey||warmTimer)return;
+    warmTimer=setTimeout(()=>{warmTimer=0;if(phase!=='ready'||pan||drag||document.hidden)return;lastWarmKey=key;const renderer=pages.find(p=>!p.el.hidden)?.renderer;for(const next of [index+1,index-1])if(next>=0&&next<=state.maxPreviewChapterIndex)renderer?.prepareChapter?.(next).catch(()=>{lastWarmKey='';});},90);
+  }
   function syncChrome(){
     if(!state)return;
     const visibleIndex=Math.min(state.maxPreviewChapterIndex,Math.floor((camera+innerWidth*.5)/pageWidth)),chapter=store().getChapter(visibleIndex);
@@ -111,7 +119,7 @@
   function resize(){
     const fraction=camera/pageWidth;pageWidth=Math.max(1320,innerWidth);camera=clamp(fraction*pageWidth,0,maxCamera());pan=null;
     stage.style.width=innerWidth+'px';stage.style.height=innerHeight+'px';
-    for(const page of pages){page.el.style.width=pageWidth+'px';page.el.style.height=innerHeight+'px';if(page.el.hidden)page.needsResize=true;else page.renderer.resize();}requestDraw();
+    for(const page of pages){page.el.style.width=pageWidth+'px';page.el.style.height=innerHeight+'px';page.renderKey='';if(page.el.hidden)page.needsResize=true;else page.renderer.resize();}lastWarmKey='';weather?.resize();requestDraw();
   }
   function positionPage(page){
     const points=[];page.routes.setAttribute('viewBox','0 0 '+pageWidth+' '+innerHeight);page.routes.setAttribute('width',pageWidth);page.routes.setAttribute('height',innerHeight);
@@ -130,8 +138,16 @@
     if(pan){const t=motion()?clamp((now-pan.start)/pan.duration):1;camera=pan.from+(pan.to-pan.from)*(1-Math.pow(1-t,3));if(t>=1){camera=pan.to;pan=null;}}
     if(transition){const t=motion()?clamp((now-transition.start)/transition.duration):1,e=smooth(t);progress=transition.from+(transition.to-transition.from)*e;if(transition.to===0)camera=transition.camera+(transition.cameraEnd-transition.camera)*e;if(t>=1){const done=transition;transition=null;progress=done.to;queueMicrotask(()=>done.resolve(true));}}
     ensurePages();
-    for(const page of pages){if(page.el.hidden)continue;page.renderer.setState({progress,chapterIndex:page.index,sourceOffsetX:page.index*pageWidth-camera,completedCount:page.data.completedCount,litCount:page.data.stages.filter(s=>s.lighted).length,selectedIndex:page.data.stages.find(s=>s.id===state.selectedId)?.index??-1,pointerX:motion()?pointerX:0,pointerY:motion()?pointerY:0,time:now});page.renderer.render();positionPage(page);}
+    for(const page of pages){
+      if(page.el.hidden)continue;
+      const selectedIndex=page.data.stages.find(s=>s.id===state.selectedId)?.index??-1,litCount=page.data.litCount;
+      const renderKey=[page.index,progress,page.data.completedCount,litCount,selectedIndex,motion()?pointerX:0,motion()?pointerY:0,pageWidth,innerHeight,progress<1?page.index*pageWidth-camera:0].join(':');
+      if(page.renderKey!==renderKey){page.renderer.setState({progress,chapterIndex:page.index,sourceOffsetX:page.index*pageWidth-camera,completedCount:page.data.completedCount,litCount,selectedIndex,pointerX:motion()?pointerX:0,pointerY:motion()?pointerY:0,time:now});page.renderer.render();positionPage(page);page.renderKey=renderKey;}
+      else for(const node of page.nodes.children){const screenX=page.index*pageWidth-camera+parseFloat(node.style.left);node.tabIndex=screenX>50&&screenX<innerWidth-50?0:-1;}
+    }
     syncChrome();root.style.setProperty('--interface',smooth((progress-.54)/.37).toFixed(3));root.style.setProperty('--mist',smooth((progress-.32)/.5).toFixed(3));
+    weather?.setState({progress,camera,pageWidth,chapterIndex:shownChapter,active:!root.hidden,motion:motion()});
+    if(!pan&&!transition)warmNearby();
     if(transition||pan||motion()&&phase==='ready'&&(Math.abs(aimX-pointerX)>.0002||Math.abs(aimY-pointerY)>.0002))frame=requestAnimationFrame(draw);
   }
   function requestDraw(){if(!frame&&!root.hidden&&!document.hidden&&snapshot)frame=requestAnimationFrame(draw);}
@@ -141,11 +157,11 @@
     if(!motion()||document.hidden||Math.abs(progress-value)<.0001){progress=value;if(value===0)camera=cameraEnd;draw();return Promise.resolve(true);}
     return new Promise(resolve=>{transition={from:progress,to:value,start:performance.now(),duration,resolve,camera,cameraEnd};requestDraw();});
   }
-  function cancelAnimation(){cancelAnimationFrame(frame);frame=0;lastTime=0;transition?.resolve(false);transition=null;pan=null;}
-  function releaseRenderers(){for(const p of pages){p.renderer.dispose();p.el.remove();}pages.length=0;if(snapshot?.image)snapshot.image.width=snapshot.image.height=1;snapshot=null;hold.width=hold.height=1;}
+  function cancelAnimation(){cancelAnimationFrame(frame);clearTimeout(warmTimer);warmTimer=0;lastWarmKey='';frame=0;lastTime=0;transition?.resolve(false);transition=null;pan=null;}
+  function releaseRenderers(){weather?.dispose();weather=null;emit('infinite:worldweatherchange',{rain:0,active:false});for(const p of pages){p.renderer.dispose();p.el.remove();}pages.length=0;if(snapshot?.image)snapshot.image.width=snapshot.image.height=1;snapshot=null;hold.width=hold.height=1;}
   function focusSelected(){const node=buttonFor(state?.selectedId),b=node?.getBoundingClientRect();if(b&&b.right>0&&b.left<innerWidth)node.focus({preventScroll:true});else root.focus({preventScroll:true});}
-  function panTo(value,{instant=false}={}){const target=clamp(value,0,maxCamera());if(instant||!motion()){pan=null;camera=target;draw();}else{pan={from:camera,to:target,start:performance.now(),duration:620};requestDraw();}}
-  function moveMap(delta){if(phase!=='ready')return;const from=pan?.to??camera;panTo(from+delta*Math.min(pageWidth,innerWidth));}
+  function panTo(value,{instant=false}={}){const target=clamp(value,0,maxCamera());aimX=pointerX;aimY=pointerY;if(instant||!motion()){pan=null;camera=target;draw();}else{pan={from:camera,to:target,start:performance.now(),duration:620};requestDraw();}}
+  function moveMap(delta){if(phase!=='ready')return;aimX=pointerX;aimY=pointerY;const from=pan?.to??camera;panTo(from+delta*Math.min(pageWidth,innerWidth));}
   function showSelected({instant=false}={}){const item=selectedStage();if(!item)return;const target=item.chapterIndex*pageWidth+Math.max(0,pageWidth*(.05+.90*item.u)-innerWidth*.45);panTo(target,{instant});}
   async function open(trigger){
     if(phase!=='hidden'||system()?.getState().phase!=='ready')return false;
@@ -156,8 +172,15 @@
       if(system()?.getState().phase!=='ready'||!system()?.getState().visible)throw new Error('请从系统空间重新打开地图。');
       snapshot=window.captureSceneReturnFrame?.(document.getElementById('system-space'));if(!snapshot?.image)throw new Error('当前画面尚未准备好，请重试。');
       root.hidden=false;root.inert=false;root.style.setProperty('--interface','0');root.style.setProperty('--mist','0');root.dataset.motion=motion()?'full':'reduced';progress=0;aimX=aimY=pointerX=pointerY=0;shownChapter=-1;
-      state=store().getState();resize();camera=state.selectedChapterIndex*pageWidth;revision++;ensurePages();
       hold.width=snapshot.image.width;hold.height=snapshot.image.height;hold.getContext('2d').drawImage(snapshot.image,0,0);hold.hidden=false;
+      // Let the held scene paint between snapshot work and GPU preparation.
+      await yieldPreparation();if(token!==serial)return false;
+      state=store().getState();resize();camera=state.selectedChapterIndex*pageWidth;revision++;ensurePages();
+      const first=pages[0],adjacent=Math.min(state.maxPreviewChapterIndex,state.selectedChapterIndex+1);
+      await first.renderer.prepareChapter?.(adjacent);if(token!==serial)return false;
+      await yieldPreparation();if(token!==serial)return false;
+      const spare=createPage();spare.el.hidden=true;spare.el.inert=true;
+      weather=window.InfiniteWorldWeather?.create(root.querySelector('.world-map-weather'),{onChange:values=>{const active=!root.hidden&&phase!=='closing';emit('infinite:worldweatherchange',{...values,active,rain:active?values.rain*smooth((progress-.34)/.5):0});}});
       syncState();world.dataset.state='world-map';setPhase('entering');draw();hold.hidden=true;opener?.setAttribute('aria-expanded','true');opener?.removeAttribute('aria-busy');opener?.classList.remove('world-map-pending');root.focus({preventScroll:true});cue(motion()?'world-tectonic-rise':'world-node-select');
       const finished=await animateTo(1,2450);if(token!==serial||!finished)return false;
       setPhase('ready');syncState();focusSelected();requestDraw();emit('infinite:worldmapready',{saveId:state?.saveId});return true;
@@ -170,7 +193,7 @@
   async function close({immediate=false,focus=true}={}){
     if(phase==='hidden'||phase==='closing')return false;const token=++serial;
     if(phase==='preparing'||immediate||!pages.length){cleanup({focus});return true;}
-    if(detail.open)detail.close();releaseDrag();setPhase('closing');root.inert=true;emit('infinite:soundstop',{group:'world-map',fade:.1});cue('world-tectonic-fold');await animateTo(0,1350);if(token!==serial)return false;cleanup({focus});return true;
+    if(detail.open)detail.close();releaseDrag();setPhase('closing');root.inert=true;emit('infinite:worldweatherchange',{rain:0,active:false});emit('infinite:soundstop',{group:'world-map',fade:.1});cue('world-tectonic-fold');await animateTo(0,1350);if(token!==serial)return false;cleanup({focus});return true;
   }
   function select(id,{focus=false}={}){
     if(phase!=='ready')return;
@@ -184,8 +207,8 @@
   function inspect(){if(phase!=='ready')return;fillDetail(selectedStage());detail.showModal();cue('world-node-select');detail.querySelector('button').focus({preventScroll:true});}
   root.addEventListener('click',event=>{if(performance.now()<ignoreClickUntil)return;const node=event.target.closest('[data-world-stage]');if(node)select(node.dataset.worldStage);else if(event.target.closest('[data-world-back]'))void close();else if(event.target.closest('[data-world-inspect]'))inspect();else if(event.target.closest('[data-world-prev]'))moveMap(-1);else if(event.target.closest('[data-world-next]'))moveMap(1);});
   stage.addEventListener('pointerover',event=>{const node=event.target.closest('[data-world-stage]');if(node&&!node.contains(event.relatedTarget))focusCue(node);});stage.addEventListener('focusin',event=>{const node=event.target.closest('[data-world-stage]');if(node)focusCue(node);});
-  root.addEventListener('pointermove',event=>{if(phase!=='ready'||!motion()||drag?.moved)return;aimX=(event.clientX/innerWidth-.5)*2;aimY=(event.clientY/innerHeight-.5)*2;requestDraw();});root.addEventListener('pointerleave',()=>{aimX=aimY=0;requestDraw();});
-  viewport.addEventListener('pointerdown',event=>{if(phase==='ready'&&event.button===0){pan=null;drag={id:event.pointerId,start:event.clientX,camera,moved:false};}});
+  root.addEventListener('pointermove',event=>{if(phase!=='ready'||!motion()||pan||drag?.moved)return;aimX=(event.clientX/innerWidth-.5)*2;aimY=(event.clientY/innerHeight-.5)*2;requestDraw();});root.addEventListener('pointerleave',()=>{if(!pan){aimX=aimY=0;requestDraw();}});
+  viewport.addEventListener('pointerdown',event=>{if(phase==='ready'&&event.button===0){pan=null;aimX=pointerX;aimY=pointerY;drag={id:event.pointerId,start:event.clientX,camera,moved:false};}});
   viewport.addEventListener('pointermove',event=>{if(!drag||drag.id!==event.pointerId)return;const delta=event.clientX-drag.start;if(Math.abs(delta)>7&&!drag.moved){drag.moved=true;viewport.setPointerCapture(event.pointerId);root.classList.add('is-dragging');}if(drag.moved){camera=clamp(drag.camera-delta,0,maxCamera());ignoreClickUntil=performance.now()+250;requestDraw();}});
   function releaseDrag(){const active=drag;drag=null;if(active&&viewport.hasPointerCapture(active.id))viewport.releasePointerCapture(active.id);root.classList.remove('is-dragging');}
   viewport.addEventListener('pointerup',releaseDrag);viewport.addEventListener('pointercancel',releaseDrag);viewport.addEventListener('lostpointercapture',event=>{if(event.target===viewport&&event.pointerId===drag?.id)releaseDrag();});
@@ -203,5 +226,5 @@
   window.addEventListener('keydown',event=>{if(phase==='preparing'&&event.key==='Escape'){event.preventDefault();event.stopPropagation();void close({immediate:true});}},true);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;if(transition){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan){camera=pan.to;pan=null;}}else{lastTime=0;requestDraw();}});
   for(const name of ['infinite:title','pagehide'])window.addEventListener(name,()=>{if(phase!=='hidden')void close({immediate:true,focus:false});});
-  window.InfiniteWorldMap=Object.freeze({open,close,preload,getState:()=>({phase,visible:!root.hidden,progress,completedCount:state?.completedCount||0,selectedId:state?.selectedId||null,saveId:state?.saveId||null,detailOpen:detail.open,moving:Boolean(frame),lastError,camera,pageWidth,viewChapterIndex:shownChapter,activeChapterIndex:state?.activeChapterIndex??0,maxPreviewChapterIndex:state?.maxPreviewChapterIndex??1,renderedChapters:pages.filter(p=>!p.el.hidden).map(p=>p.index),renderer:pages.find(p=>!p.el.hidden)?.renderer.getState?.()||null})});
+  window.InfiniteWorldMap=Object.freeze({open,close,preload,getState:()=>({phase,visible:!root.hidden,progress,completedCount:state?.completedCount||0,selectedId:state?.selectedId||null,saveId:state?.saveId||null,detailOpen:detail.open,moving:Boolean(frame),lastError,camera,pageWidth,viewChapterIndex:shownChapter,activeChapterIndex:state?.activeChapterIndex??0,maxPreviewChapterIndex:state?.maxPreviewChapterIndex??1,renderedChapters:pages.filter(p=>!p.el.hidden).map(p=>p.index),renderer:pages.find(p=>!p.el.hidden)?.renderer.getState?.()||null,weather:weather?.getState()||null})});
 })();

@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-09",
+  "entry": "built-in image_gen",
+  "model": "未披露",
+  "quality": "未披露（提示词要求最高精度）",
+  "prompts": {
+    "terrain-pigment-natural": "Production asset: one full-bleed 16:9 natural fantasy terrain albedo/pigment map for a realtime 3D miniature voxel terrain. Use the supplied reference strictly for its NATURAL DAYLIGHT COLORS, not its layout, locations, city icons, labels, or lettering. A high-precision near-orthographic overhead view of gentle yellow-green meadows with fine soft grass texture, irregular deep forest-green woodland patches with tiny refined tree canopy detail, beautiful pale grey and off-white rocky mountain ridges running broadly left-to-right through the middle distance, soft sand-colored slender natural trails, a clear clean blue-cyan winding river with delicate branching tributaries and one small lake. Balanced distribution of grassland, forest, stone, and water, exquisite readable geographical detail and finely shaped landforms, classical fantasy geography with sophisticated realistic miniature surface textures. Bright yet restrained natural day palette, softly lit warm green plains contrasting cool white-grey stone and blue-green water. Even diffuse overhead light, very gentle crevice shading, matte surfaces, no deep black shadows. This is a flat full-surface color texture to sample onto an existing terrain mesh: no sky, no horizon, no foreground perspective objects, no scenic border, no frame, no vignette, NO black edges, no text, no letters, no symbols, no city markers, no buildings or towns, no user interface, no legend, no compass rose, no contour-line labels. No noisy painterly oil strokes or film grain. Rich fine natural detail, not photoreal satellite imagery, not cartoon, not a busy illustration. Highest detail and quality finish. Fill every edge with continuous natural terrain, no blank margins."
+  },
+  "reference": {
+    "file": "codex-clipboard-474e30fc-4172-4824-930a-f7fb79e39f5e.png",
+    "role": "User reference used for natural terrain colors only, not labels, cities, or layout."
+  },
+  "outputs": {
+    "terrain-pigment-natural": {
+      "source": "art-source/imagegen/world-map/natural-color/terrain-pigment-natural.png",
+      "runtime": "loading-page/assets/world-map/terrain-pigment-natural.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 3981022,
+      "transparent_background": false,
+      "sha256": "aefbacae932aa32b51dbb15b419f5aea8c3b7ccc43a826bf9962d75c6f4a68a7"
+    }
+  },
+  "postprocessing": "None. Original generated pixels copied unchanged to source and runtime.",
+  "validation": "Terrain visually inspected: full-bleed without labels, buildings or vignette. Source and runtime files are byte-identical. Dynamic clouds use procedural voxel geometry, not an image texture."
+}

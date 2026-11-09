@@ -46,7 +46,7 @@
   const counts = Object.fromEntries(Object.keys(bank).map(name => [name, 0]));
   const scheduledCounts = {...counts}, recent = [];
   let context = null, master = null, compressor = null, ambient = null, resumeJob = null, suspendJob = null;
-  let pageAway = false;
+  let pageAway = false, mapRain = 0;
   let buses = null, unlocked = false, epoch = 0, dropped = 0;
   let values = {master: 80, ambience: 25, effects: 70, dice: 100};
   const maxVoices = 12;
@@ -264,10 +264,16 @@
   }
 
   function ambientLevel() {
-    if (!foreground() || !['loading','ready','title'].includes(world.dataset.state)) return 0;
+    if (!foreground()) return 0;
     const modal = document.querySelector('dialog[open]');
+    if (world.dataset.state === 'world-map') return bank['rain-loop'].gain * mapRain * (modal ? .47 : .8);
+    if (!['loading','ready','title'].includes(world.dataset.state)) return 0;
     return bank['rain-loop'].gain * (modal ? .47 : 1);
   }
+  window.addEventListener('infinite:worldweatherchange', event => {
+    mapRain = event.detail?.active === false ? 0 : clamp(finite(event.detail?.rain, 0), 0, 1);
+    updateAmbience();
+  });
   let ambientLoading = false;
   function updateAmbience() {
     if (!context || context.state !== 'running' || !unlocked) return;

@@ -1,6 +1,6 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const {heightAt,silhouetteAt,localPhase,position,stops,pathAt,habitatAt,decorationsFor,updateState,sourceLayout}=require('../loading-page/world-map-terrain.js');
+const {heightAt,silhouetteAt,localPhase,position,stops,pathAt,habitatAt,materialColors,decorationsFor,updateState,sourceLayout,getGeometry,prepareGeometry}=require('../loading-page/world-map-terrain.js');
 
 test('terrain remains finite and bounded across the whole relief',()=>{
   let highest=0;
@@ -105,4 +105,53 @@ test('neighbour pages sample one screen-anchored photograph without duplication 
   }
   const explicit=sourceLayout(1320,844,780,1688,{sourceOffsetX:100,sourceViewportWidth:600});
   assert.equal(explicit.width,600);assert.equal(explicit.offset,1/6);
+});
+
+test('lit relief separates green meadows, pale summits, blue rivers and sand paths without bleaching locks',()=>{
+  const luminance=rgb=>rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;
+  for(const chapter of [0,1,2,3,4,1003]){
+    const habitat={moss:.1,water:0,path:0},meadow=materialColors(chapter,.12,habitat,.5);
+    const forest=materialColors(chapter,.12,{...habitat,moss:.95},.5);
+    const summit=materialColors(chapter,.65,habitat,.5);
+    const river=materialColors(chapter,.06,{...habitat,water:1},.5);
+    const road=materialColors(chapter,.12,{...habitat,path:1},.5);
+    assert.ok(meadow.top[1]>meadow.top[0]&&meadow.top[1]>meadow.top[2]);
+    assert.ok(luminance(forest.top)<luminance(meadow.top)*.8);
+    assert.ok(luminance(summit.top)>luminance(meadow.top)*1.3);
+    assert.ok(river.top[2]>river.top[0]*2&&river.top[1]>river.top[0]*2);
+    assert.ok(road.top[0]>road.top[1]&&road.top[1]>road.top[2]);
+    const locked=materialColors(chapter,.12,habitat,.5,false);
+    assert.ok(luminance(locked.top)<.15);
+    assert.deepEqual(locked,materialColors(0,.12,{moss:1,water:1,path:1},.5,false));
+    for(const result of [meadow,forest,summit,river,road,locked])for(const rgb of Object.values(result)){
+      assert.ok(rgb.every(value=>Number.isFinite(value)&&value>=0&&value<1));
+    }
+  }
+});
+
+test('geometry is shared by chapter and grid, with four-entry LRU eviction',()=>{
+  const first=getGeometry(70,24,16,'webgl');assert.equal(first.cached,false);
+  const second=getGeometry(70,24,16,'webgl');assert.equal(second.cached,true);assert.equal(second.geometry,first.geometry);
+  assert.equal(first.geometry.cells.length,24*16);assert.equal(first.geometry.values.length,first.geometry.instances*11);
+  for(const cell of first.geometry.cells)assert.equal(cell.h,heightAt(cell.u,cell.v,70));
+  const resized=getGeometry(70,25,16,'webgl');assert.notEqual(resized.geometry,first.geometry);
+  for(let chapter=71;chapter<=75;chapter++)getGeometry(chapter,24,16,'webgl');
+  assert.equal(getGeometry(70,24,16,'webgl').cached,false,'oldest chapter is evicted instead of growing indefinitely');
+});
+
+test('idle preparation and an early synchronous swap share one immutable geometry result',async()=>{
+  const prepared=await prepareGeometry(180,48,30,'webgl');
+  assert.ok(prepared);const hit=getGeometry(180,48,30,'webgl');assert.equal(hit.cached,true);assert.equal(hit.geometry,prepared);
+  const inFlight=prepareGeometry(181,48,30,'webgl');
+  assert.equal(prepareGeometry(181,48,30,'webgl'),inFlight,'duplicate requests share pending work');
+  const early=getGeometry(181,48,30,'webgl');assert.equal(await inFlight,early.geometry);
+  const fallback=await prepareGeometry(181,34,24,'canvas2d');
+  assert.equal(fallback.values,null);assert.equal(fallback.ordered.length,34*24);
+  for(let i=1;i<fallback.ordered.length;i++)assert.ok(fallback.ordered[i].v>=fallback.ordered[i-1].v);
+});
+
+test('rapid chapter prefetch cancels stale jobs instead of creating an unbounded queue',async()=>{
+  const results=await Promise.all(Array.from({length:7},(_,i)=>prepareGeometry(200+i,24,16,'webgl')));
+  assert.equal(results.filter(Boolean).length,4);assert.deepEqual(results.slice(0,3),[null,null,null]);
+  for(let i=3;i<results.length;i++)assert.equal(getGeometry(200+i,24,16,'webgl').geometry,results[i]);
 });

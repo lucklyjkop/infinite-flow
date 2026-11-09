@@ -6,6 +6,18 @@
 
 新存档第一关及其周边默认点亮，通关数仍为零。已完成关卡显示独立的梅花金勾印记，当前可探索关保留原色，其余关卡及对应地形为炭黑色。河谷、山道、错落台地和树石、瀑布、桥梁、石阶、灯柱等装饰与地形共享投影和点亮状态。选中、悬停不会解锁。
 
+点亮区域使用黄绿草地、深绿林地、灰白山石和青蓝河流的自然配色；高处偏浅色岩层，坡面保留岩石层次。地形按卷号使用确定性种子生成，同卷反复进入保持一致，不随存档重新随机。
+
+## 方块云与天气
+
+顶部云团由程序生成的三维小立方体构成，不使用云贴图。五组云团缓慢漂移、聚散，阴雨时厚度与明暗逐步变化；天空薄雾、山间雾带、阳光及雨滴同步过渡。天气是游戏内循环：晴 32 秒、阴 30 秒、雨 36 秒、雾 28 秒，每段末尾 8 秒平滑衔接下一段。雨声随雨势淡入淡出，沿用环境音量设置。
+
+`world-map-weather.js` 独立更新天气，不带动静止地形重绘。WebGL 路径使用固定实例缓冲的 180 个立方体，Canvas 2D 回退为 90 个投影方块；雨滴固定为 90 个。天气画布 DPR 上限 1、刷新上限 24 fps。隐藏标签页、关闭地图时停止更新，关闭后释放画布和 GPU 资源；减少动态时保留静态天空，不播放雨滴运动。
+
+## 切卷开销
+
+整卷移动使用图层位移，地形、路线和装饰仅在进度、选择、视角、尺寸或章节改变时重绘。进入动画前准备两块复用画布；相邻章节提前分段生成，单段目标 3 毫秒。几何数据共享缓存最多四卷、预热任务最多四个，重复预热合并，同尺寸 resize 不重建地形。长期浏览不会累计画布或无限保留章节几何。
+
 ## 进度接口
 
 每六关组成一卷，完成当前卷的全部六关才解锁下一卷。可探索关与已完成关点亮，但只有 `status === 'completed'` 才是通关记录；新档第一关点亮，通关数仍为零。`select(stageId)` 只保存选择；真实玩法结算后调用 `complete(stageId)`，仅允许按全局顺序推进，重复完成已通关关卡不重复写入。地图没有通关按钮，也尚未实现关卡内的战斗与叙事玩法。
@@ -42,6 +54,7 @@
 - `world-map.js` 管理进出、关卡布局、焦点、横向浏览和详情。最多复用两块章节画布，随相机移出复用；不会随着章节增长扩大画布或增加常驻节点。`world-progress.js` 管理关卡状态。
 - `world-map-terrain.js` 使用 WebGL 实例化立方体，具备 Canvas 2D 回退及上下文恢复。闲置且鼠标停止时不持续重绘；隐藏页面和减少动态偏好均有对应处理。移动端使用宽地图，源画面首帧仍按实际视口匹配。
 - 新贴图均由内置 image_gen 生成，首批记录在 `../art-source/imagegen/world-map/generation.json`，新增十二个关卡、十二种装饰与通关印记的记录在 `../art-source/imagegen/world-map/expansion/generation.json`，均包含完整提示词与哈希。内置工具没有披露具体模型版本与质量档位。运行贴图在 `assets/world-map/`，原始透明通道保留，小景使用 3×2、装饰使用 4×3 CSS 图集定位。
+- 自然地形色彩源图与生成记录保存在 `../art-source/imagegen/world-map/natural-color/`，运行纹理为 `assets/world-map/terrain-pigment-natural.png`。以用户参考的自然色彩为依据，不复制参考中的城市、文字或布局；云团与天气完全由程序生成。
 - 地形翻涌、收拢、关卡悬停与选中使用四份独立合成音效，制作参数在 `../audio-source/world-map/design.json`，脚本 `../scripts/build-world-map-audio.py`。没有新增 BGM。
 
 ## 验证
@@ -49,7 +62,7 @@
 ```sh
 python scripts/check-project.py
 python -m unittest discover -s tests
-node --test tests/world-progress.test.cjs tests/world-map-terrain.test.cjs
+node --test tests/world-progress.test.cjs tests/world-map-terrain.test.cjs tests/world-map-weather.test.cjs
 ```
 
 浏览器实测使用独立测试存档，覆盖零通关、两关已通关、锁定预览、切档与重载、手机与横屏、入场中断、返回焦点、减少动态、TTS 中断和 Live2D 恢复；测试截图与录屏不进入仓库。
