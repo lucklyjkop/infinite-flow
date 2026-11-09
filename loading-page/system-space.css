@@ -52,7 +52,7 @@
 .system-details[data-side="left"] { inset:50% auto auto 7%; }
 .system-details::backdrop { background:#03090e6b; }
 .system-details::-webkit-scrollbar { display:none; }
-.system-detail-close { position:absolute; top:34px; right:26px; display:grid; place-items:center; width:36px; height:36px; padding:0; border:0; background:none; color:#e0cdb4; font-size:27px; line-height:1; }
+.system-detail-close { position:absolute; top:66px; right:38px; display:grid; place-items:center; width:36px; height:36px; padding:0; border:0; background:none; color:#e0cdb4; font-size:27px; line-height:1; }
 .system-detail-close:hover,.system-detail-close:focus-visible { color:#f8ddbf; outline:0; text-shadow:0 0 8px #d79b55; }
 .system-panel-kicker { color:#ad8977; font-size:10px; letter-spacing:.3em; margin:0 0 11px; }
 .system-details h2 { margin:0; color:#e0ceb2; font-size:30px; font-weight:400; line-height:1.4; letter-spacing:.12em; }
