@@ -11,7 +11,7 @@ import sys
 import threading
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "loading-page"))
 import models_api
@@ -146,6 +146,69 @@ class CatalogueTests(unittest.TestCase):
                 models_api.target_addresses("api.evil.example", 80)
         with patch.object(socket, "getaddrinfo", return_value=[(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("127.0.0.1", 80))]):
             self.assertEqual(models_api.target_addresses("localhost", 80), ["127.0.0.1"])
+
+    def test_proxy_fake_ip_pool_is_only_allowed_for_resolved_domains(self):
+        for ip in ("198.18.0.1", "198.18.255.254"):
+            answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, 443))]
+            with self.subTest(ip=ip), patch.object(socket, "getaddrinfo", return_value=answers):
+                self.assertEqual(models_api.target_addresses("gateway.example", 443), [ip])
+                for host in (ip, "localhost"):
+                    with self.subTest(host=host), self.assertRaises(models_api.CatalogueError):
+                        models_api.target_addresses(host, 443)
+
+    def test_fake_ip_exception_does_not_expand_to_other_reserved_ranges(self):
+        for ip in ("198.19.0.1", "192.0.2.1", "0.0.0.0", "169.254.169.254", "100.100.100.200"):
+            answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, 443))]
+            with self.subTest(ip=ip), patch.object(socket, "getaddrinfo", return_value=answers), self.assertRaises(models_api.CatalogueError):
+                models_api.target_addresses("gateway.example", 443)
+
+    def test_mixed_fake_ip_and_reserved_dns_is_rejected_before_connection(self):
+        for ip in ("10.0.0.1", "127.0.0.1", "169.254.169.254", "::1", "::ffff:127.0.0.1"):
+            answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (address, 443))
+                       for address in ("198.18.0.11", ip)]
+            with self.subTest(ip=ip), patch.object(socket, "getaddrinfo", return_value=answers), \
+                 patch.object(models_api.http.client, "HTTPSConnection") as connection:
+                with self.assertRaises(models_api.CatalogueError):
+                    fetch("https://gateway.example/v1")
+                connection.assert_not_called()
+
+    def test_catalogue_connects_to_fake_ip_with_original_host_and_no_domain_relookup(self):
+        real_dns, real_connect = socket.getaddrinfo, socket.create_connection
+        domain_lookups, destinations = [], []
+        fake_ip = "198.18.0.11"
+        def resolve(host, port, *args, **kwargs):
+            if host == "gateway.example":
+                domain_lookups.append((host, port))
+                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (fake_ip, port))]
+            return real_dns(host, port, *args, **kwargs)
+        def connect(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None):
+            destinations.append(address)
+            self.assertEqual(address[0], fake_ip)
+            return real_connect(("127.0.0.1", address[1]), timeout, source_address)
+        with upstream(lambda _: (200, {"data": [{"id": "proxy-model"}]}, {})) as (url, requests):
+            port = int(url.rsplit(":", 1)[1])
+            with patch.object(socket, "getaddrinfo", side_effect=resolve), patch.object(socket, "create_connection", side_effect=connect):
+                result = fetch(f"http://gateway.example:{port}/v1")
+        self.assertEqual(result["models"], [{"id": "proxy-model"}])
+        self.assertEqual(domain_lookups, [("gateway.example", port)])
+        self.assertEqual(destinations, [(fake_ip, port)])
+        self.assertEqual(requests[0]["headers"]["Host"], f"gateway.example:{port}")
+        self.assertEqual(requests[0]["headers"]["Authorization"], "Bearer " + FAKE_KEY)
+
+    def test_fake_ip_catalogue_keeps_tls_hostname_and_default_certificate_validation(self):
+        connection, response = Mock(), Mock(status=200)
+        response.read1.side_effect = [b'{"data":[]}', b""]
+        connection.getresponse.return_value = response
+        answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("198.18.0.11", 443))]
+        with patch.object(socket, "getaddrinfo", return_value=answers) as resolve, \
+             patch.object(models_api.http.client, "HTTPSConnection", return_value=connection) as create, \
+             patch.object(socket, "create_connection") as connect:
+            self.assertEqual(fetch("https://gateway.example/v1")["models"], [])
+            self.assertEqual(create.call_args.args, ("gateway.example", 443))
+            self.assertNotIn("context", create.call_args.kwargs)
+            connection._create_connection(("gateway.example", 443))
+            self.assertEqual(connect.call_args.args[0], ("198.18.0.11", 443))
+            resolve.assert_called_once_with("gateway.example", 443, type=socket.SOCK_STREAM)
 
 
 class PreviewBoundaryTests(unittest.TestCase):

@@ -64,21 +64,77 @@ class TransportTests(unittest.TestCase):
                     self.assertEqual(error.exception.code, "address")
                     connect.assert_not_called()
 
+    def test_mixed_fake_ip_and_private_dns_is_rejected_before_connection(self):
+        with dsh_transport.ProviderBridge(request()) as bridge:
+            for address in ("10.0.0.9", "127.0.0.1", "169.254.169.254", "198.19.0.1"):
+                answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (ip, 443))
+                           for ip in ("198.18.0.10", address)]
+                with self.subTest(address=address), patch.object(socket, "getaddrinfo", return_value=answers), \
+                     patch.object(dsh_transport.http.client, "HTTPSConnection") as connect:
+                    with self.assertRaises(models_api.CatalogueError) as error:
+                        bridge.open_upstream(b"{}")
+                    self.assertEqual(error.exception.code, "address")
+                    connect.assert_not_called()
+
     def test_tls_keeps_original_hostname_but_socket_pins_validated_ip(self):
-        connection = Mock()
-        connection.getresponse.return_value = Mock(status=200)
-        with dsh_transport.ProviderBridge(request()) as bridge, \
-             patch.object(dsh_transport, "target_addresses", return_value=["93.184.216.34"]) as resolve, \
-             patch.object(dsh_transport.http.client, "HTTPSConnection", return_value=connection) as create, \
-             patch.object(dsh_transport.socket, "create_connection") as socket_connect:
-            bridge.open_upstream(b"{}")
-            resolve.assert_called_once_with("gateway.example", 443)
-            self.assertEqual(create.call_args.args, ("gateway.example", 443))
-            self.assertNotIn("context", create.call_args.kwargs)
-            connection._create_connection(("gateway.example", 443))
-            self.assertEqual(socket_connect.call_args.args[0], ("93.184.216.34", 443))
-            self.assertEqual(connection.request.call_args.kwargs["headers"]["Authorization"], "Bearer test-only-secret")
+        for address in ("93.184.216.34", "198.18.0.10"):
+            connection = Mock()
+            connection.getresponse.return_value = Mock(status=200)
+            answers = [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (address, 443))]
+            with self.subTest(address=address), dsh_transport.ProviderBridge(request()) as bridge, \
+                 patch.object(socket, "getaddrinfo", return_value=answers) as resolve, \
+                 patch.object(dsh_transport.http.client, "HTTPSConnection", return_value=connection) as create, \
+                 patch.object(socket, "create_connection") as socket_connect:
+                bridge.open_upstream(b"{}")
+                self.assertEqual(create.call_args.args, ("gateway.example", 443))
+                self.assertNotIn("context", create.call_args.kwargs)
+                connection._create_connection(("gateway.example", 443))
+                self.assertEqual(socket_connect.call_args.args[0], (address, 443))
+                resolve.assert_called_once_with("gateway.example", 443, type=socket.SOCK_STREAM)
+                self.assertEqual(connection.request.call_args.kwargs["headers"]["Authorization"], "Bearer test-only-secret")
         self.assertEqual(dsh_transport.ProviderBridge.classify(ssl.SSLError("untrusted cert")), "tls")
+
+    def test_fake_ip_transport_reaches_socket_with_original_host(self):
+        received, domain_lookups, destinations = [], [], []
+        fake_ip = "198.18.0.10"
+        real_dns, real_connect = socket.getaddrinfo, socket.create_connection
+        class Handler(BaseHTTPRequestHandler):
+            def log_message(self, *_):
+                pass
+            def do_POST(self):
+                body = self.rfile.read(int(self.headers["Content-Length"]))
+                received.append((self.path, self.headers.get("Host"), body))
+                self.send_response(200)
+                self.send_header("Content-Length", "2")
+                self.end_headers()
+                self.wfile.write(b"{}")
+        upstream = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=upstream.serve_forever, daemon=True)
+        thread.start()
+        def resolve(host, port, *args, **kwargs):
+            if host == "gateway.example":
+                domain_lookups.append((host, port))
+                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (fake_ip, port))]
+            return real_dns(host, port, *args, **kwargs)
+        def connect(address, timeout=socket._GLOBAL_DEFAULT_TIMEOUT, source_address=None):
+            destinations.append(address)
+            self.assertEqual(address[0], fake_ip)
+            return real_connect(("127.0.0.1", address[1]), timeout, source_address)
+        port = upstream.server_port
+        try:
+            with dsh_transport.ProviderBridge(request(f"http://gateway.example:{port}/v1/chat/completions")) as bridge, \
+                 patch.object(socket, "getaddrinfo", side_effect=resolve), \
+                 patch.object(socket, "create_connection", side_effect=connect):
+                connection, response = bridge.open_upstream(b'{"model":"test"}')
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.read(), b"{}")
+            self.assertEqual(domain_lookups, [("gateway.example", port)])
+            self.assertEqual(destinations, [(fake_ip, port)])
+            self.assertEqual(received, [("/v1/chat/completions", f"gateway.example:{port}", b'{"model":"test"}')])
+        finally:
+            upstream.shutdown()
+            upstream.server_close()
+            thread.join()
 
     def test_relay_requires_ephemeral_auth_and_does_not_accept_tools(self):
         with dsh_transport.ProviderBridge(request()) as bridge, patch.object(bridge, "open_upstream") as upstream:

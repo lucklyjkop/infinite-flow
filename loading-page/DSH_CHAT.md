@@ -32,7 +32,7 @@ python loading-page/serve.py
 
 - `dsh_api.chat(payload)` 接收 `message`、`sessionId?`、`history?`、`protocol: "openai" | "anthropic"`、`baseUrl`、`apiKey`、`model`，返回 `reply`、`sessionId`、`provider: "dsh"`。协议默认 OpenAI 兼容。前端不需要将 DSH 作为第三种接口协议。
 - 密钥从服务器经标准输入进入单次 worker 的内存，只有该 worker 发起到配置目标的 HTTP 请求时使用。DSH SDK 只持有本次本机转发层的随机临时凭据，不接触真实 API 密钥。密钥不放入命令行、日志、提示词或配置文件，也不继承其他应用的密钥。
-- 请求沿用 `models_api.target_addresses` 的 DNS 校验，只连接校验后的固定地址，Host/SNI/证书验证仍使用原域名，禁止重定向与环境代理。显式 `localhost` 或回环地址允许自托管，公网域名解析到保留地址会被拒绝。
+- 请求沿用 `models_api.target_addresses` 的 DNS 校验，只连接校验后的固定地址，Host/SNI/证书验证仍使用原域名，禁止重定向与环境代理。显式 `localhost` 或回环地址允许自托管。兼容 Clash/Mihomo TUN 的默认 Fake-IP DNS 池 `198.18.0.0/16`（[官方 DNS 配置](https://wiki.metacubex.one/config/dns/)）：仅接受域名解析得到的虚拟地址，不接受直接填写虚拟 IP。其他保留地址限制保持不变。
 - 固定 `sdk-minimal` 加 `scripts/dsh-chat.patch.yml`，禁用官方单供应商插件并加载本项目的 `game-chat` 自定义 provider。关闭 shell、文件、图像读取、工作目录及 MCP 工具，不给予角色操作电脑的能力。转发层还会拒绝带工具的请求。工作目录及 home 固定在 `output/dsh-sessions/`。
 - DSH 会话日志上传、插件清单上传、文件会话及检查点关闭。当前 Windows native runtime 在实测持久化关闭时缺少原生依赖，服务器仅保留临时内存会话。浏览器将已完成的问答保存到当前命名存档，载入后每次请求提交最近 20 条、总计最多 16000 个 Unicode 码点的 `history`，因此服务重启后仍可从浏览器存档恢复上下文。这属于应用层恢复，不依赖 DSH 原生检查点。
 - `history` 只接受完整的 user/assistant 配对，不接受 system/tool 消息。显式提交时以它为准（包括空数组），省略则兼容临时内存历史。切换存档或离开系统空间会取消前端请求，迟到回复不写入其他存档；API 密钥、接口配置和临时会话 ID 不进入存档。

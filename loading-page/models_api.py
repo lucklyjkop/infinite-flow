@@ -13,6 +13,10 @@ REQUEST_TIMEOUT = 8
 TOTAL_TIMEOUT = 18
 ANTHROPIC_VERSION = "2026-10-21"
 ANTHROPIC_COMPAT_VERSION = "2023-06-01"
+# Mihomo/Clash's default DNS Fake-IP pool. A TUN adapter routes these
+# synthetic answers back to their original domains; they are not API hosts.
+# https://wiki.metacubex.one/config/dns/
+TUN_FAKE_IP_POOL = ipaddress.ip_network("198.18.0.0/16")
 
 
 class CatalogueError(Exception):
@@ -75,7 +79,11 @@ def target_addresses(host, port):
         ip = ipaddress.ip_address(address)
         if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
             ip = ip.ipv4_mapped
-        if not ((ip.is_global and not ip.is_multicast) or (explicit_loopback and ip.is_loopback)):
+        # Accept only DNS answers in the default proxy pool, never a literal
+        # Fake-IP URL. Keep the original hostname for Host/SNI/certificate
+        # validation and pin the socket to this answer, just as for public IPs.
+        tun_answer = literal is None and not explicit_loopback and ip in TUN_FAKE_IP_POOL
+        if not ((ip.is_global and not ip.is_multicast) or (explicit_loopback and ip.is_loopback) or tun_answer):
             raise CatalogueError("address", "不能连接该保留地址。自托管服务请明确填写 localhost 或回环地址。")
         if address not in addresses:
             addresses.append(address)
