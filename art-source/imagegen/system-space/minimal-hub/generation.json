@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-09",
+  "entry": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "qualityTier": "未披露；提示词请求最高可用视觉精度",
+  "refs": [
+    "E:/无限流/art-source/imagegen/system-space/ui-explorations/2026-11-09-layouts/g-minimal-dock.png"
+  ],
+  "assets": [
+    {
+      "slug": "moon-courtyard",
+      "transparent": false,
+      "prompt": "Use case: background-extraction / production game background. Use the supplied approved system-space concept as precise scene art reference. Create ONLY its clean background plate, without ANY character, text, UI, icons, input bar, menu, circle, borders or watermark. Preserve the composition: wide 16:10 quiet Chinese dark fantasy moonlit courtyard, moon at upper left behind thin clouds; two distant symmetrical-ish fogged ancient temple balconies along far left and far right with very few warm amber lamps; subtle low blue-gray fog; rich dark wet flagstone floor in foreground; one delicate cherry blossom branch entering naturally from upper-right edge with restrained dusty-pink blossoms. The middle 50% of the image is empty softly shaded air for a character to later be composited. Floor is unobstructed from bottom to center, continuous natural flagstone perspective where menu used to be. Dark ink-blue/gray palette, gentle warm window accents, cinematic convincing 3D environment, fine tactile stone, soft atmospheric depth and spacious negative space. Do not add a large moon gate or ring. Keep key background silhouettes and light direction close to the reference. All interface and heroine removed and their areas reconstructed seamlessly. Highest available visual fidelity.",
+      "file": "moon-courtyard.png",
+      "originalGeneratedFile": "C:/Users/63526/.codex/generated_images/01a1a47d-467a-7750-a7cf-c2886dfcc178/exec-5029a1a3-76b0-4a14-b1a6-a87c3bcab370.png"
+    },
+    {
+      "slug": "hub-symbols",
+      "transparent": true,
+      "prompt": "Use case: ui-mockup / production game UI sprite atlas. Make ONE image with TRUE TRANSPARENT BACKGROUND containing exactly EIGHT isolated symbols in a mathematically regular 4 COLUMN by 2 ROW GRID, equal square cells, no labels, no dividers, no backing cards, no atlas border, no shadow across cells, no checkerboard. The overall image should be landscape 2:1 (four square cells across, two square cells tall). Every symbol is centered on the exact center of its cell with at least 20% empty padding on all sides; all have consistent scale and fit inside 58% cell width/height. Read order: TOP ROW column1 elegant Chinese moon gate doorway icon; column2 flowing circular reincarnation/scroll emblem; column3 small drawstring pouch with a tiny plum mark; column4 symmetrical red-thread covenant knot with four lobes. BOTTOM ROW column1 gently sweeping curved LEFT return arrow; column2 elegant 8-tooth rounded settings gear with simple center hole; column3 small circular deep-red lacquer SEND seal with thin aged-gold rim and an inset simple paper-airplane symbol; column4 one small 5-petal cherry blossom with dusty coral pink petals and tiny warm gold stamens. Style match the selected game screenshot: refined aged warm gold and ivory lines, modest shallow metallic relief, clear coherent silhouettes, 3D material details restrained, sparse dark creases, no neon, no highly jeweled ornamentation. The top 4 and back/settings icons must be free-standing line-art shapes with transparent internal gaps, NO rectangular or circular medallion behind them. Only the send seal is circular. Make icons polished, useful at small size, high visual precision. Do NOT reproduce any part of screenshot's character, scene, title, navigation text or chatbox; reference is material and style only. True alpha transparency everywhere outside the 8 objects.",
+      "file": "hub-symbols.png",
+      "originalGeneratedFile": "C:/Users/63526/.codex/generated_images/01a1a47d-467a-7750-a7cf-c2886dfcc178/exec-53ff383a-ed59-4bb0-a9c6-e2b6b3324046.png"
+    },
+    {
+      "slug": "hub-title",
+      "transparent": true,
+      "prompt": "Generate a production UI lettering overlay on TRUE TRANSPARENT background, for the small TOP HEADER of the reference game screen. Exactly four characters: “系统空间”. Reproduce the reference's graceful SMALL, LIGHTWEIGHT Chinese running-script calligraphy: elegant sweeping fine brush strokes, thick-thin modulation and warm ivory ink with tiny gold variation, flat painted ink lettering. Absolutely NO 3D extruded lettering, NO stone or metal carving, NO bevel, NO drop shadow, NO outline, NO outer glow, NO haze, NO pink color cloud. Transparent gaps inside and between all strokes, zero colored background. One horizontal line of the four characters, naturally handwritten and readable, airy not blocky. A very thin brown-gold cherry twig beneath with THREE tiny dusty-rose blossoms. The twig is modest, thin as a pen line and shorter than text width. Composition wide 3:1, lettering width 82%, height about 54%, twig in bottom 15%; generous alpha padding around. Only those characters and that twig, no other text, no UI controls, no heroine, no scene. Subtle dry-brush variations and tapered tips; calm, refined, traditional game typography matching the provided screenshot. Highest available visual fidelity.",
+      "file": "hub-title.png",
+      "originalGeneratedFile": "C:/Users/63526/.codex/generated_images/01a1a47d-467a-7750-a7cf-c2886dfcc178/exec-d992e84c-2b51-48a6-95fa-8a85d52a19b9.png",
+      "revisionNote": "重新生成轻盈书法笔触，替换较厚的首版标题。"
+    }
+  ]
+}
