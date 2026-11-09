@@ -2,19 +2,46 @@
 
 系统空间点击「世界入口」，当前画面以一次从左向右推进的立方体隆起组成山脉。地图停留在实时 3D 场景，关卡小景与路线随同一投影轻微响应鼠标；返回时地形反向收拢至进入前的系统空间画面。
 
-六个关卡从左到右为：雾渡、红衣客栈、纸人旧城、寒山隘、镜湖、归墟。新存档没有通关记录，地形为炭黑色；当前可探索关卡保留可辨识的灰阶小景。只有已通关区域恢复原始石色、苔色与红色植被。选中与悬停不会染色或解锁。地图可水平拖动、触摸滑动及左右键导航，关卡详情展示对应世界小景与开启条件。
+每卷六个关卡横向串联，目前提供山海、竹海、雪域三套小景，共十八种。地图沿右侧按需延伸：可回看历史卷，最多预览下一未解锁卷。底部原有小箭头、左右键、拖动及触摸滑动都只平移整张地图，不改变关卡选择。点击小景才选关。
+
+新存档第一关及其周边默认点亮，通关数仍为零。已完成关卡显示独立的梅花金勾印记，当前可探索关保留原色，其余关卡及对应地形为炭黑色。河谷、山道、错落台地和树石、瀑布、桥梁、石阶、灯柱等装饰与地形共享投影和点亮状态。选中、悬停不会解锁。
 
 ## 进度接口
 
-`InfiniteWorldProgress.getState()` 读取当前存档的 `progress.world`。`select(stageId)` 保存选择；游戏真正结算通关后调用 `complete(stageId)`，它只允许推进下一关，重复完成已通关关卡不重复写入。地图本身只负责展示和选关，没有伪造的通关按钮，也尚未实现关卡内的战斗与叙事玩法。
+每六关组成一卷，完成当前卷的全部六关才解锁下一卷。可探索关与已完成关点亮，但只有 `status === 'completed'` 才是通关记录；新档第一关点亮，通关数仍为零。`select(stageId)` 只保存选择；真实玩法结算后调用 `complete(stageId)`，仅允许按全局顺序推进，重复完成已通关关卡不重复写入。地图没有通关按钮，也尚未实现关卡内的战斗与叙事玩法。
 
-旧存档缺少地图字段时默认零通关，现有对话与导航更新保留地图进度。各存档分别保存，不会将测试数据写入用户存档。
+`InfiniteWorldProgress.getState()` 返回固定大小的状态，不创建历史章节数组或已完成 ID 数组：
+
+```js
+{
+  saveId, completedCount,
+  activeChapterIndex,       // Math.floor(completedCount / 6)，从 0 开始
+  maxPreviewChapterIndex,   // activeChapterIndex + 1
+  selectedChapterIndex, selectedId, nextId
+}
+```
+
+`getChapter(index)` 按需创建该卷的六个关卡，返回 `{id,index,number,name,templateId,atlas,theme,unlocked,completed,completedCount,litCount,stages}`。卷内 `completedCount` 为 0–6，`litCount` 包含当前可探索关；`stages` 的 `index` 为卷内 0–5，另有 `globalIndex`、`chapterIndex`、`status`（`completed` / `available` / `locked`）、`lighted`、`kind`、`description` 和原有的 `id/name/title/number/u/v`。显示层一次只需取得当前浏览卷及邻接预览；数据层允许回看已解锁旧卷，禁止读取或选中下一预览卷以外的关卡。初始可以预览第二卷，但不能进入其第一关。
+
+首卷的六个 ID 保持为 `mist-ferry`、`red-inn`、`paper-city`、`snow-pass`、`mirror-lake`、`return-peak`。后续为 `chapter-2-stage-1` 至 `chapter-2-stage-6` 等，ID 中的卷号从 1 开始。完成首卷末关会自动将 `nextId` 与选择移至 `chapter-2-stage-1`。`InfiniteWorldProgress.stages` 仅保留首卷静态元数据以兼容旧调用；新界面应使用 `getChapter(index).stages`。
+
+内置三套内容模板依次为：
+
+| 模板 | 六个关卡 | 图集 |
+| --- | --- | --- |
+| 山海初醒 | 雾渡、红衣客栈、纸人旧城、寒山隘、镜湖、归墟 | `assets/world-map/landmarks.png` |
+| 竹海灯影 | 竹影长桥、灯火水镇、红叶书院、飞瀑栈道、云中禅寺、古树祭坛 | `assets/world-map/landmarks-bamboo.png` |
+| 雪域天门 | 雪驿、冰湖龙骨、雪岭石寨、风雪钟楼、悬崖索桥、天门云宫 | `assets/world-map/landmarks-snow.png` |
+
+后续卷轮换模板，并添加「第 2 重」等卷名变化。开发时可在首次打开地图前调用 `registerTemplate({id,name,atlas,theme,stages:[{name,kind,description}, ...]})` 追加模板，必须恰好提供六关、唯一模板 ID 及本地 PNG 图集路径。模板顺序决定后续场景轮换，修改内容不会改动章节 ID 或通关数；发布新模板时应同时检查已发布卷的内容连续性。
+
+存档使用 `progress.world = {completedCount,selected}`，大小不随章节数增长。旧版 `completed` 数组按首卷连续前缀迁移；缺少字段时零通关，只读不回写。写入时转成紧凑格式，并取已保存通关数与新值的较大者，避免陈旧导航补丁使进度倒退。各存档独立，未激活存档时只在内存预览，不能完成关卡。数值限定为 JavaScript 安全整数，不预分配无限章节。
 
 ## 实现与资源
 
-- `world-map.js` 管理进出、关卡布局、焦点、横向浏览和详情；`world-progress.js` 管理关卡状态。
+- `world-map.js` 管理进出、关卡布局、焦点、横向浏览和详情。最多复用两块章节画布，随相机移出复用；不会随着章节增长扩大画布或增加常驻节点。`world-progress.js` 管理关卡状态。
 - `world-map-terrain.js` 使用 WebGL 实例化立方体，具备 Canvas 2D 回退及上下文恢复。闲置且鼠标停止时不持续重绘；隐藏页面和减少动态偏好均有对应处理。移动端使用宽地图，源画面首帧仍按实际视口匹配。
-- 新贴图均由内置 image_gen 生成，提示词、入口、可核实参数和哈希保存在 `../art-source/imagegen/world-map/generation.json`。内置工具没有披露具体模型版本与质量档位。运行贴图在 `assets/world-map/`，原始透明通道保留，小景使用 CSS 图集定位。
+- 新贴图均由内置 image_gen 生成，首批记录在 `../art-source/imagegen/world-map/generation.json`，新增十二个关卡、十二种装饰与通关印记的记录在 `../art-source/imagegen/world-map/expansion/generation.json`，均包含完整提示词与哈希。内置工具没有披露具体模型版本与质量档位。运行贴图在 `assets/world-map/`，原始透明通道保留，小景使用 3×2、装饰使用 4×3 CSS 图集定位。
 - 地形翻涌、收拢、关卡悬停与选中使用四份独立合成音效，制作参数在 `../audio-source/world-map/design.json`，脚本 `../scripts/build-world-map-audio.py`。没有新增 BGM。
 
 ## 验证

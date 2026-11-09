@@ -4,6 +4,7 @@
   const KEY='infinite.saves.v1', VERSION=1, MAX_SAVES=100, MAX_MESSAGES=200, MAX_CHAT_CHARS=200000;
   const choices=new Set(['world','records','inventory','covenant']);
   const worldStageIds=Object.freeze(['mist-ferry','red-inn','paper-city','snow-pass','mirror-lake','return-peak']);
+  const WORLD_CHAPTER_SIZE=6, WORLD_PROGRESS_LIMIT=Number.MAX_SAFE_INTEGER-18;
   let activeId=null;
   const clone=value=>value==null?value:JSON.parse(JSON.stringify(value));
   const error=message=>Object.assign(new Error(message),{userMessage:message});
@@ -32,13 +33,27 @@
     while(kept.length>2&&count>MAX_CHAT_CHARS){count-=kept[0].content.length+kept[1].content.length;kept.splice(0,2);}
     return kept;
   }
+  function worldStageIdAt(index){
+    if(!Number.isSafeInteger(index)||index<0||index>WORLD_PROGRESS_LIMIT+12)return null;
+    return index<WORLD_CHAPTER_SIZE?worldStageIds[index]:`chapter-${Math.floor(index/WORLD_CHAPTER_SIZE)+1}-stage-${index%WORLD_CHAPTER_SIZE+1}`;
+  }
+  function worldStageIndexOf(id){
+    const first=worldStageIds.indexOf(id);if(first>=0)return first;
+    if(typeof id!=='string')return -1;
+    const match=/^chapter-([1-9]\d*)-stage-([1-6])$/.exec(id);if(!match)return -1;
+    const chapter=Number(match[1]),index=(chapter-1)*WORLD_CHAPTER_SIZE+Number(match[2])-1;
+    return chapter>=2&&Number.isSafeInteger(index)&&worldStageIdAt(index)===id?index:-1;
+  }
   function worldOf(value){
-    // Only a continuous prefix is explored. A saved later-stage ID alone must
-    // never unlock the intervening terrain when importing an old/corrupt slot.
-    const supplied=new Set(Array.isArray(value?.completed)?value.completed:[]),completed=[];
-    for(const id of worldStageIds){if(!supplied.has(id))break;completed.push(id);}
-    const selected=worldStageIds.includes(value?.selected)?value.selected:worldStageIds[Math.min(completed.length,worldStageIds.length-1)];
-    return {completed,selected};
+    // Legacy completed IDs describe only the original six stages. Keep their
+    // continuous prefix, then persist an O(1) count for all future chapters.
+    const supplied=new Set(Array.isArray(value?.completed)?value.completed:[]);let legacyCount=0;
+    for(const id of worldStageIds){if(!supplied.has(id))break;legacyCount++;}
+    const compactCount=Number.isSafeInteger(value?.completedCount)&&value.completedCount>=0&&value.completedCount<=WORLD_PROGRESS_LIMIT?value.completedCount:0;
+    const completedCount=Math.max(legacyCount,compactCount),selectedIndex=worldStageIndexOf(value?.selected);
+    const maxPreviewIndex=Math.floor(completedCount/WORLD_CHAPTER_SIZE)+1;
+    const selected=selectedIndex>=0&&Math.floor(selectedIndex/WORLD_CHAPTER_SIZE)<=maxPreviewIndex?value.selected:worldStageIdAt(completedCount);
+    return {completedCount,selected};
   }
   function normalize(value){
     if(!value||typeof value.id!=='string'||!/^[-_a-zA-Z0-9]{1,80}$/.test(value.id))throw error('存档数据不完整，请保留浏览器数据后重试。');
@@ -89,8 +104,8 @@
       const before=worldOf(save.progress.world),next=worldOf({...before,...patch.progress.world});
       // A stale navigation patch from another tab must not erase a clear that
       // has already been persisted. Progress reset is not a navigation action.
-      next.completed=worldStageIds.slice(0,Math.max(before.completed.length,next.completed.length));
-      save.progress.world=next;
+      next.completedCount=Math.max(before.completedCount,next.completedCount);
+      save.progress.world=worldOf({...next,selected:patch.progress.world.selected??before.selected});
     }
     // Other fields, including credentials, endpoints and conversation IDs, are ignored.
   });}
@@ -103,5 +118,5 @@
     if(activeId){try{if(!get(activeId))clearActive();}catch{clearActive();}}
     emit('infinite:saveschange',{external:true,id:activeId});
   });
-  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,clearActive,worldStageIds});
+  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,clearActive,worldStageIds,worldStageIdAt,worldStageIndexOf});
 })();

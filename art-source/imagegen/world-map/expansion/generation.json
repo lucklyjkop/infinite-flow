@@ -1,0 +1,148 @@
+{
+  "date": "2026-11-09",
+  "entry": "built-in image_gen",
+  "model": "未披露",
+  "quality": "未披露（提示词要求最高精度）",
+  "transparent_background": true,
+  "reference": {
+    "file": "art-source/imagegen/world-map/landmarks-source-v1.png",
+    "role": "Style reference only for the three new atlases; not an edit target. cleared-seal generated without an image reference."
+  },
+  "prompts": {
+    "landmarks-bamboo": "Production game asset for an original Chinese dark fantasy miniature chapter map. Use the attached image as STYLE REFERENCE ONLY, do not reproduce its six landmarks. Highest precision cinematic miniature 3D matte PBR, believable finely carved architecture, slate charcoal stone, moss jade, weathered ivory, muted cinnabar red, subtle old brass, quiet amber lantern light, restrained colors, sophisticated small silhouettes. NO cartoon outlines, NO toy plastic, NO text, NO labels, NO numbers, NO watermark, NO UI panels, NO scene backdrop. Genuine alpha transparency around and between all individual sprites, preserve detailed foliage edges. Low isometric camera looking from southeast, all sprites same perspective and scale. Create a SIX-sprite landmark atlas with EXACTLY 3 columns and 2 rows in a landscape 3:2 canvas. Every cell is square, centered at regular grid centers, with ample transparent padding on ALL four sides; no sprite touches or crosses any cell boundary. Top row left: a long old stone and timber bridge passing through a delicate bamboo grove on rocky banks; top row middle: a compact canal water town with glowing red lanterns, two curved roofs and a tiny boat; top row right: a graceful Chinese academy courtyard wrapped by dark red maple trees. Bottom row left: a winding cliffside wooden path around a rocky waterfall and small jade pool; bottom row middle: a small beautiful temple elevated on a rugged peak with sparse wisps of white cloud; bottom row right: an ancient giant sacred tree with twisting roots around a small circular stone altar and thin red prayer ribbons. Each is an isolated complete diorama on an irregular compact rocky footprint; high-quality natural scenery and intricate gentle material lighting. Exactly six separated scenes, no surrounding landscape.",
+    "landmarks-snow": "Production game asset for an original Chinese dark fantasy miniature chapter map. Use the attached image as STYLE REFERENCE ONLY, do not reproduce its six landmarks. Highest precision cinematic miniature 3D matte PBR, believable finely carved architecture, slate charcoal stone, moss jade, weathered ivory, muted cinnabar red, subtle old brass, quiet amber lantern light, restrained colors, sophisticated small silhouettes. NO cartoon outlines, NO toy plastic, NO text, NO labels, NO numbers, NO watermark, NO UI panels, NO scene backdrop. Genuine alpha transparency around and between all individual sprites, preserve detailed foliage edges. Low isometric camera looking from southeast, all sprites same perspective and scale. Create a SIX-sprite landmark atlas with EXACTLY 3 columns and 2 rows in a landscape 3:2 canvas. Every cell is square, centered at regular grid centers, with ample transparent padding on ALL four sides; no sprite touches or crosses any cell boundary. Theme is a muted snowy mountain journey, natural weathered stone and beautiful fine snow layers, small cinnabar and warm amber details. Top row left: a snow-covered ancient waystation pavilion with one warm lantern and a bent pine; top row middle: pale fossil dragon ribs curling beside a tiny dark frozen lake, rocky snow banks; top row right: an old fortified stone village nestled into a snowy ridge with three varied roofs. Bottom row left: a solitary aged Chinese bell tower with icicles and a hanging bronze bell; bottom row middle: a delicate suspension rope bridge between two small steep snowy cliffs and bent pine; bottom row right: a majestic but compact sky-gate palace on a peak, carved steps and floating pale cloud wisps. Each is an isolated complete diorama on an irregular compact rocky footprint; highly detailed and not cluttered. Exactly six separated scenes, no background terrain.",
+    "scenery-props": "Production game asset for an original Chinese dark fantasy miniature chapter map. Use the attached image as STYLE REFERENCE ONLY, do not reproduce its six landmarks. Highest precision cinematic miniature 3D matte PBR, believable finely carved architecture, slate charcoal stone, moss jade, weathered ivory, muted cinnabar red, subtle old brass, quiet amber lantern light, restrained colors, sophisticated small silhouettes. NO cartoon outlines, NO toy plastic, NO text, NO labels, NO numbers, NO watermark, NO UI panels, NO scene backdrop. Genuine alpha transparency around and between all individual sprites, preserve detailed foliage edges. Low isometric camera looking from southeast, all sprites same perspective and scale. Create a TWELVE-sprite landscape decoration atlas in EXACTLY 4 columns and 3 rows on a 4:3 canvas. Twelve equal SQUARE cells, wide transparent gutters, every prop completely isolated and centered, no overlap across cells. This is a set of small additive landscape props, not giant standalone game level dioramas. Top row left to right: (1) cluster of two graceful cinnabar red cherry trees with a mossy rock at their feet, (2) two slender windswept old dark-jade pine trees on small roots, (3) delicate natural bamboo cluster with two low stones, (4) small varied cluster of rugged moss-covered grey rocks and ferns. Middle row left to right: (5) narrow rocky cliff waterfall ending in a small jade pool, (6) small graceful curved weathered wooden footbridge with understated rails, (7) meandering broken ancient stone steps with patches of moss and grass, (8) two low weathered stone lantern pillars with small red hanging lanterns. Bottom row left to right: (9) a small ruined grey stone ceremonial arch with sparse red prayer ribbons, (10) tiny broken wooden boat with reeds beside a little still water patch, (11) cluster of three slim aged stone pagodas of different heights, (12) delicate snow-dusted pines and grey rock cluster. Beautiful detailed natural 3D matte surfaces, rich silhouettes, generous transparent negative space, soft lighting. No large scene base squares, no background colors.",
+    "cleared-seal": "Production asset for a restrained Chinese dark-fantasy chapter map: one SINGLE small elegant completed-level marker, perfectly frontal circular seal on genuinely transparent background. A very fine double antique-gold circular rim, small five-petal cinnabar-red plum blossom integrated at the lower right. In the empty center, a single natural flowing ivory-gold brush stroke shaped as a clear elegant CHECK MARK, dimensional brushed metal ink with tapered ends; not a printed font, not a tick inside a modern checkbox. Subtle aged brass edges and deep red lacquer, matte finish, delicate warm highlight, no glow cloud. Premium precisely rendered game UI, sophisticated and understated. Large transparent padding, center not a solid disk, no text, no letters, no numerals, no rectangular background, no actual scenery. One marker only, square canvas. Highest detail finish."
+  },
+  "outputs": {
+    "landmarks-bamboo": {
+      "source": "art-source/imagegen/world-map/expansion/landmarks-bamboo.png",
+      "runtime": "loading-page/assets/world-map/landmarks-bamboo.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        3,
+        2
+      ],
+      "cellSize": [
+        512,
+        512
+      ],
+      "sha256": "8ed98a9a4cff784ddd9fd9999c74809cc0fbefd5821f40d7860870aee619249e",
+      "bytes": 3125901,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "format": "PNG RGBA",
+      "postprocessing": "None; original generated alpha and pixels copied unchanged."
+    },
+    "landmarks-snow": {
+      "source": "art-source/imagegen/world-map/expansion/landmarks-snow.png",
+      "runtime": "loading-page/assets/world-map/landmarks-snow.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "grid": [
+        3,
+        2
+      ],
+      "cellSize": [
+        512,
+        512
+      ],
+      "sha256": "616b99830559a5c337739aed129d89739507608105a5d7b261756ef59791d7be",
+      "bytes": 2978698,
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "format": "PNG RGBA",
+      "postprocessing": "None; original generated alpha and pixels copied unchanged."
+    },
+    "scenery-props": {
+      "source": "art-source/imagegen/world-map/expansion/scenery-props.png",
+      "runtime": "loading-page/assets/world-map/scenery-props.png",
+      "size": [
+        1448,
+        1086
+      ],
+      "grid": [
+        4,
+        3
+      ],
+      "cellSize": [
+        362,
+        362
+      ],
+      "sha256": "bb9e0477b5bc66c78d4431282a2f43f5d0845aa910c815f085a54ec0cf868add",
+      "bytes": 2506966,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "format": "PNG RGBA",
+      "postprocessing": "None; original generated alpha and pixels copied unchanged."
+    },
+    "cleared-seal": {
+      "source": "art-source/imagegen/world-map/expansion/cleared-seal.png",
+      "runtime": "loading-page/assets/world-map/cleared-seal.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "grid": [
+        1,
+        1
+      ],
+      "cellSize": [
+        1254,
+        1254
+      ],
+      "sha256": "a859c12690e9e9ba5e715cec1b1fffdb82b6472d18e7c071048006b96d9cb88c",
+      "bytes": 988532,
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "format": "PNG RGBA",
+      "postprocessing": "None; original generated alpha and pixels copied unchanged."
+    }
+  },
+  "cells": {
+    "landmarks-bamboo": [
+      "竹林长桥",
+      "灯火水镇",
+      "红叶书院",
+      "瀑布栈道",
+      "云中寺",
+      "巨古树祭坛"
+    ],
+    "landmarks-snow": [
+      "雪中驿亭",
+      "冰湖龙骨",
+      "雪岭石寨",
+      "风雪钟楼",
+      "悬崖索桥",
+      "天门云宫"
+    ],
+    "scenery-props": [
+      "朱红樱树簇",
+      "苍松簇",
+      "竹簇",
+      "苔石簇",
+      "岩崖瀑布",
+      "弧形木桥",
+      "石阶路",
+      "红灯笼石柱",
+      "废石牌坊",
+      "破船芦苇池",
+      "石塔群",
+      "雪松石簇"
+    ]
+  },
+  "validation": "All outputs visually inspected. All are RGBA with real alpha; equal-size grid alignment verified. Landmark midpoint gutters are alpha 0. Some distant antialiased exterior pixels carry alpha 1/255; no opaque matte rectangles."
+}
