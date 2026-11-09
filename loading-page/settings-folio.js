@@ -17,6 +17,7 @@
     brightness: 100, motion: true, display: 'cover',
     model: { protocol: 'openai', baseUrl: '', name: '' },
     preferences: { details: 'expanded', diceMotion: true, narrativeSize: 'medium' },
+    tts: { enabled: true, voice: 'female', rate: 100, volume: 80 },
     audio: { master: 80, ambience: 25, effects: 70, dice: 100 },
   };
   const input = id => document.getElementById(id);
@@ -31,14 +32,15 @@
   let draft = clone(saved);
   let savedSecret = readSecret();
   let opener = null, art = null;
-  let activeTab = input('tab-preferences');
+  let activeTab = input('tab-tts');
   let session = 0, entranceTimer = 0, closeGuard = 0;
   let returnAnimations = [], closingRestoreFocus = true, returning = null;
   let beganOutside = false, restoring = false, fullscreenBusy = false;
+  let audition = 0, auditionPlaying = false;
 
   function normalize(value) {
     const data = value && typeof value === 'object' ? value : {};
-    const model = data.model || {}, preferences = data.preferences || {}, audio = data.audio || {};
+    const model = data.model || {}, preferences = data.preferences || {}, audio = data.audio || {}, tts = data.tts || {};
     return {
       brightness: numeric(data.brightness, defaults.brightness, 70, 120),
       motion: typeof data.motion === 'boolean' ? data.motion : defaults.motion,
@@ -48,6 +50,12 @@
         details: preferences.details === 'collapsed' ? 'collapsed' : 'expanded',
         diceMotion: typeof preferences.diceMotion === 'boolean' ? preferences.diceMotion : true,
         narrativeSize: ['small', 'medium', 'large'].includes(preferences.narrativeSize) ? preferences.narrativeSize : 'medium',
+      },
+      tts: {
+        enabled: typeof tts.enabled === 'boolean' ? tts.enabled : defaults.tts.enabled,
+        voice: tts.voice === 'male' ? 'male' : 'female',
+        rate: Math.round(numeric(tts.rate, defaults.tts.rate, 75, 125) / 5) * 5,
+        volume: numeric(tts.volume, defaults.tts.volume, 0, 100),
       },
       audio: Object.fromEntries(audioNames.map(name => [name, numeric(audio[name], defaults.audio[name], 0, 100)])),
     };
@@ -81,7 +89,9 @@
     const fill = `${100 * (amount - min) / (max - min)}%`;
     element.style.setProperty('--range-fill', fill);
     element.closest('.folio-range')?.style.setProperty('--range-fill', fill);
-    form.querySelectorAll(`output[for="${element.id}"]`).forEach(output => { output.textContent = `${amount}%`; });
+    form.querySelectorAll(`output[for="${element.id}"]`).forEach(output => {
+      output.textContent = element.id === 'tts-rate' ? `${(amount / 100).toFixed(2)}×` : `${amount}%`;
+    });
   }
 
   function setRadios(name, value) {
@@ -100,23 +110,13 @@
     input('model-api-key').value = savedSecret;
     input('model-api-key').type = 'password';
     input('toggle-api-key')?.setAttribute('aria-pressed', 'false');
-    setRadios('dice-details', draft.preferences.details);
-    setRadios('narrative-size', draft.preferences.narrativeSize);
-    input('dice-motion').checked = draft.preferences.diceMotion;
+    input('tts-enabled').checked = draft.tts.enabled;
+    setRadios('tts-voice', draft.tts.voice);
+    input('tts-rate').value = draft.tts.rate;
+    input('tts-volume').value = draft.tts.volume;
     audioNames.forEach(name => { input(`volume-${name}`).value = draft.audio[name]; });
     form.querySelectorAll('input[type="range"]').forEach(syncRange);
     syncFullscreen();
-    syncRecord();
-  }
-
-  function syncRecord() {
-    const preview = input('record-preview');
-    if (preview) {
-      preview.dataset.size = draft.preferences.narrativeSize;
-      preview.style.setProperty('--narrative-scale', {small: '.88', medium: '1', large: '1.18'}[draft.preferences.narrativeSize]);
-    }
-    const details = input('record-details');
-    if (details) details.hidden = draft.preferences.details !== 'expanded';
   }
 
   function applyScene(value) {
@@ -130,7 +130,6 @@
 
   function applyPreview() {
     dialog.style.setProperty('--folio-brightness', draft.brightness / 100);
-    syncRecord();
     applyScene(draft);
   }
 
@@ -140,12 +139,14 @@
       motion: input('setting-motion').checked,
       display: input('setting-display').value,
       model: { protocol: input('model-protocol').value, baseUrl: input('model-base-url').value, name: input('model-name').value },
-      preferences: { details: radioValue('dice-details'), diceMotion: input('dice-motion').checked, narrativeSize: radioValue('narrative-size') },
+      preferences: draft.preferences,
+      tts: { enabled: input('tts-enabled').checked, voice: radioValue('tts-voice'), rate: input('tts-rate').value, volume: input('tts-volume').value },
       audio: Object.fromEntries(audioNames.map(name => [name, input(`volume-${name}`).value])),
     });
   }
 
   function selectTab(tab, focus = false) {
+    if (activeTab !== tab) stopAudition();
     activeTab = tab;
     tabs.forEach(item => {
       const selected = item === tab;
@@ -278,6 +279,7 @@
 
   function close({immediate = false, restoreFocus = true} = {}) {
     if (!dialog.open) return;
+    stopAudition();
     window.ModelCatalogue?.reset();
     if (immediate) { finishClose(restoreFocus, true, true); return; }
     if (dialog.dataset.phase === 'closing') return;
@@ -314,6 +316,7 @@
 
   function open(source = document.activeElement) {
     if (dialog.open) return;
+    window.InfiniteTTS?.stop?.();
     stopSound('title-entrance');
     stopSound('title-return');
     clearAnimation();
@@ -324,6 +327,7 @@
     fillForm();
     status('');
     status('未检查', 'model-config-status');
+    status('', 'tts-preview-status');
     opener = source;
     const active = session;
     selectTab(activeTab || tabs[0]);
@@ -372,6 +376,7 @@
   dialog.addEventListener('close', () => {
     // A synchronously reopened dialog owns its own phase and draft.
     if (dialog.open) return;
+    stopAudition();
     if (dialog.dataset.phase) finishClose(closingRestoreFocus, true, true);
     else returnFocus();
   });
@@ -439,6 +444,7 @@
   });
   function previewChange(event) {
     if (event.target.id === 'display-mode') return;
+    if (event.target.id.startsWith('tts-') || event.target.name === 'tts-voice' || event.target.id === 'volume-master') stopAudition();
     readForm();
     if (event.target.type === 'range') syncRange(event.target);
     status('');
@@ -451,6 +457,7 @@
   form.addEventListener('input', previewChange);
   form.addEventListener('change', previewChange);
   input('reset-settings').addEventListener('click', () => {
+    stopAudition();
     draft = clone(defaults);
     fillForm();
     input('model-api-key').value = '';
@@ -495,6 +502,46 @@
     finally { setTimeout(() => { button.disabled = false; }, 600); }
   }
   input('preview-dice')?.addEventListener('click', previewDice);
+
+  function stopAudition() {
+    ++audition;
+    if (auditionPlaying) window.InfiniteTTS?.stop?.();
+    auditionPlaying = false;
+    input('preview-tts').setAttribute('aria-pressed', 'false');
+    input('preview-tts-label').textContent = '试听声线';
+    status('', 'tts-preview-status');
+  }
+  async function previewVoice() {
+    if (auditionPlaying) { stopAudition(); return; }
+    readForm();
+    if (!window.InfiniteTTS?.preview) { status('语音服务暂时不可用，请刷新后重试。', 'tts-preview-status'); return; }
+    const current = ++audition;
+    auditionPlaying = true;
+    input('preview-tts').setAttribute('aria-pressed', 'true');
+    input('preview-tts-label').textContent = '停止试听';
+    status('正在准备声线…', 'tts-preview-status');
+    try {
+      const played = await window.InfiniteTTS.preview({...draft.tts, master: draft.audio.master});
+      if (audition !== current || !dialog.open) return;
+      status(played ? '试听完成' : '试听已停止', 'tts-preview-status');
+    } catch (error) {
+      if (audition !== current || !dialog.open) return;
+      status(error?.userMessage || '声线暂时无法合成，请检查网络后重试。', 'tts-preview-status');
+    } finally {
+      if (audition === current) {
+        auditionPlaying = false;
+        input('preview-tts').setAttribute('aria-pressed', 'false');
+        input('preview-tts-label').textContent = '试听声线';
+      }
+    }
+  }
+  input('preview-tts').addEventListener('click', previewVoice);
+  window.addEventListener('infinite:ttsstate', event => {
+    if (!auditionPlaying || !dialog.open || event.detail?.kind !== 'preview') return;
+    if (event.detail.phase === 'playing') status(`正在试听 · ${event.detail.voice === 'male' ? '云希' : '晓晓'}`, 'tts-preview-status');
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAudition(); });
+  window.addEventListener('pagehide', stopAudition);
   window.addEventListener('storage', event => {
     if (event.key !== settingsKey && event.key !== null) return;
     saved = readSettings();
@@ -503,6 +550,7 @@
   });
 
   window.InfiniteSettings = Object.freeze({ open, close, getState: () => clone(draft),
+    getTTSConfig: () => clone(saved.tts),
     getModelConnection: () => ({...saved.model, apiKey:savedSecret}) });
   syncOrientation();
   fillForm();

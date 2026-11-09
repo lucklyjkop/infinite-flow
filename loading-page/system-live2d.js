@@ -12,7 +12,7 @@
   let mount = null, root = null, core = null, parameters = null;
   let prepared = false, attached = false, paused = true, disposed = false;
   let attachSerial = 0, elapsed = 0, dt = 1 / 60, frames = 0;
-  let lookX = 0, lookY = 0, blinkAt = -10, nextBlink = 2.6, greetAt = -10;
+  let lookX = 0, lookY = 0, blinkAt = -10, nextBlink = 2.6, greetAt = -10, speechLevel = 0;
   let phase = 'idle', error = '', physicsOutputs = [], parameterIds = [];
   let originalNatural = null, originalCoreUpdate = null;
   let debugPose = null;
@@ -67,7 +67,7 @@
       ParamBodyAngleZ: still ? 0 : Math.sin(t * .6 + .2) * .7,
       ParamEyeBallX: x * .65, ParamEyeBallY: -y * .5,
       ParamEyeLOpen: eyes, ParamEyeROpen: eyes,
-      ParamMouthOpenY: 0, ParamMouthForm: greeting * .45,
+      ParamMouthOpenY: still ? 0 : speechLevel, ParamMouthForm: greeting * .45,
       ParamBreath: still ? .5 : (Math.sin(t * 1.75) + 1) * .5,
     };
   }
@@ -114,13 +114,21 @@
   }
   function setLook(x = 0, y = 0) { lookX = clamp(x, -1, 1); lookY = clamp(y, -1, 1); }
   function setPaused(value) {
+    const wasPaused = paused;
     paused = Boolean(value);
-    if (paused) { lookX = lookY = 0; }
+    if (paused) { lookX = lookY = speechLevel = 0; }
+    if (paused && !wasPaused && prepared && attached) {
+      // A modal/return wave freezes the rendered frame. Close the mouth before
+      // stopping the ticker so the held frame never retains a speaking pose.
+      smooth.set('ParamMouthOpenY', 0);
+      renderStill();
+    }
     syncPlayback();
   }
   function greet() {
     if (prepared && attached && !paused && !reduced()) greetAt = elapsed;
   }
+  function setSpeechLevel(value = 0) { speechLevel = paused ? 0 : clamp(Number(value) || 0, 0, 1); }
   function setDebugPose(value = null) {
     debugPose = value && typeof value === 'object'
       ? Object.fromEntries(Object.entries(value).filter(([id, number]) => lookup.has(id) && !outputIds.has(id) && Number.isFinite(number)))
@@ -236,5 +244,5 @@
   // Force a draw without advancing model time. The caller copies this buffer
   // synchronously before WebGL's non-preserved drawing buffer can be cleared.
   function captureSource() { if (!prepared || !attached || !app) return null; app.render(); return app.canvas; }
-  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel,captureSource});
+  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel,captureSource,setSpeechLevel});
 })();

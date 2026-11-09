@@ -16,7 +16,9 @@ macOS / Linux 如果没有 `python` 命令，改用 `python3`。预览不需要 
 
 首次启动会从 Live2D 官方下载经过校验的 Cubism Core 到本机缓存，之后可离线使用。下载失败时页面保留角色插画；可运行 `python scripts/setup-live2d-runtime.py` 重试。Core 缓存在 `output/`，不随 Git 提交。
 
-需要 AI 对话时，另执行一次 `python scripts/setup-dsh-runtime.py` 安装本项目隔离的 DSH 运行环境。在游戏设置中选择 OpenAI 兼容或 Anthropic 协议，填写自己的接口地址、密钥和模型 ID 并保存。支持自定义服务与明确的 localhost 服务；具体端点规则见 [DSH 对话接入](loading-page/DSH_CHAT.md)。最近对话保留在服务内存，重启预览服务会清空。
+需要 AI 对话时，另执行一次 `python scripts/setup-dsh-runtime.py` 安装本项目隔离的 DSH 运行环境。在游戏设置中选择 OpenAI 兼容或 Anthropic 协议，填写自己的接口地址、密钥和模型 ID 并保存。支持自定义服务与明确的 localhost 服务；具体端点规则见 [DSH 对话接入](loading-page/DSH_CHAT.md)。已完成的对话保存在当前浏览器的命名存档中，载入时恢复近期上下文，见 [存档说明](loading-page/SAVES.md)。
+
+需要语音时，运行一次 `python scripts/setup-tts-runtime.py`，再启动预览。「TTS 模型设置」提供晓晓女声、云希男声、语速、音量、试听和回复自动朗读。与大肥鱼项目相同，声线已内置，合成由在线服务完成，无需额外密钥；安装及行为见 [TTS 说明](loading-page/TTS.md)。
 
 - 完整加载流程：[http://127.0.0.1:4173/](http://127.0.0.1:4173/)
 - 直接进入标题：[http://127.0.0.1:4173/?screen=title](http://127.0.0.1:4173/?screen=title)

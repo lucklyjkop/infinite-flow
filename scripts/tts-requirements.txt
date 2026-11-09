@@ -1,0 +1,2 @@
+# Online neural voice client used by the built-in Xiaoxiao and Yunxi presets.
+edge-tts==7.3.1

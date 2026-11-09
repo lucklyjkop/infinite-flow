@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 
 from models_api import CatalogueError, fetch_catalogue
 from dsh_api import ChatError, chat
+from tts_api import TTSError, runtime_status as tts_status, synthesize as synthesize_tts
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RUNTIME_ROUTE = "/runtime/live2dcubismcore.min.js"
@@ -79,7 +80,9 @@ class AssetHandler(SimpleHTTPRequestHandler):
                 pass
 
     def do_GET(self):
-        if urlsplit(self.path).path == RUNTIME_ROUTE:
+        if self.path == "/api/tts/status":
+            self.send_json(200, tts_status())
+        elif urlsplit(self.path).path == RUNTIME_ROUTE:
             self.send_live2d_runtime()
         else:
             super().do_GET()
@@ -145,7 +148,7 @@ class AssetHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         self._request_body_consumed = False
-        if self.path not in {"/api/models", "/api/chat"}:
+        if self.path not in {"/api/models", "/api/chat", "/api/tts"}:
             self.reject_json(404, {"error": "未知接口。", "code": "not_found"})
             return
         # A same-origin JSON POST is required; no CORS permission is exposed.
@@ -170,9 +173,22 @@ class AssetHandler(SimpleHTTPRequestHandler):
             # stream again from the error path.
             self._request_body_consumed = True
             payload = json.loads(self.rfile.read(length))
-            result = chat(payload) if self.path == "/api/chat" else fetch_catalogue(payload)
-            self.send_json(200, result)
-        except (CatalogueError, ChatError) as error:
+            if self.path == "/api/tts":
+                body = synthesize_tts(payload)
+                self.send_response(200)
+                self.send_header("Content-Type", "audio/mpeg")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("X-Content-Type-Options", "nosniff")
+                self.end_headers()
+                try:
+                    self.wfile.write(body)
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+                    pass
+            else:
+                result = chat(payload) if self.path == "/api/chat" else fetch_catalogue(payload)
+                self.send_json(200, result)
+        except (CatalogueError, ChatError, TTSError) as error:
             self.reject_json(error.status, {"error": error.message, "code": error.code})
         except (ValueError, UnicodeError):
             self.reject_json(400, {"error": "请求格式无效。", "code": "request"})

@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="title-return.css?v=twig-growth">
   <link rel="stylesheet" href="fan-loading.css?v=brocade-light">
   <link rel="stylesheet" href="start-wave.css">
-  <link rel="stylesheet" href="settings-folio.css?v=paper-corner">
+  <link rel="stylesheet" href="settings-folio.css?v=builtin-voices">
   <link rel="stylesheet" href="settings-folio-art.css?v=paper">
   <link rel="stylesheet" href="settings-folio-transition.css?v=return">
   <link rel="stylesheet" href="model-catalog.css?v=texture-only-4">
@@ -46,7 +46,7 @@
   <script defer src="main.js?v=system-weather-gate"></script>
   <script defer src="settings-folio-art.js?v=foley"></script>
   <script defer src="settings-paper-select.js?v=paper-select"></script>
-  <script defer src="settings-folio.js?v=dsh-connection"></script>
+  <script defer src="settings-folio.js?v=builtin-voices"></script>
   <script defer src="model-catalog.js?v=texture-only-4"></script>
   <script defer src="save-store.js?v=named-journeys"></script>
   <script defer src="save-pages.js?v=named-journeys"></script>
@@ -60,9 +60,10 @@
   <script defer src="deity-occlusion.js?v=warm-portrait-alpha-8"></script>
   <script defer src="deity-selection.js?v=contour-writing"></script>
   <script defer src="deity-space.js?v=save-handoff"></script>
-  <script defer src="system-space.js?v=named-journeys"></script>
+  <script defer src="system-space.js?v=tts-replies"></script>
+  <script defer src="system-tts.js?v=builtin-voices"></script>
   <script defer src="system-chat.js?v=save-history"></script>
-  <script defer src="system-live2d.js?v=save-capture"></script>
+  <script defer src="system-live2d.js?v=voice-mouth"></script>
   <script defer src="system-scene-transition.js?v=save-wave"></script>
   <script defer src="system-space-flow.js?v=named-journeys"></script>
 </head>
@@ -139,7 +140,7 @@
         <h2 id="settings-title">系统设置</h2>
         <div class="folio-tabs" role="tablist" aria-labelledby="settings-title" aria-orientation="vertical">
           <button id="tab-model" type="button" role="tab" aria-controls="panel-model" aria-selected="false" tabindex="-1">模型接口</button>
-          <button id="tab-preferences" type="button" role="tab" aria-controls="panel-preferences" aria-selected="true">跑团偏好</button>
+          <button id="tab-tts" type="button" role="tab" aria-controls="panel-tts" aria-selected="true">TTS 模型设置</button>
           <button id="tab-display" type="button" role="tab" aria-controls="panel-display" aria-selected="false" tabindex="-1">画面</button>
           <button id="tab-audio" type="button" role="tab" aria-controls="panel-audio" aria-selected="false" tabindex="-1">声音</button>
         </div>
@@ -166,17 +167,17 @@
               <p class="folio-help" id="model-key-help">密钥保存在当前浏览器会话</p>
               <div class="model-check"><button id="test-model-config" class="folio-ticket ticket-secondary" type="button">检查配置</button><output id="model-config-status" role="status">尚未检查</output></div>
             </section>
-            <section id="panel-preferences" class="folio-panel" role="tabpanel" aria-labelledby="tab-preferences">
-              <h3>跑团偏好</h3>
+            <section id="panel-tts" class="folio-panel" role="tabpanel" aria-labelledby="tab-tts">
+              <h3>TTS 模型设置</h3>
               <div class="folio-fields">
-                <div class="folio-row"><span id="details-label">检定明细</span><div class="paper-segments" role="radiogroup" aria-labelledby="details-label"><label><input type="radio" name="dice-details" value="expanded" checked><span>展开</span></label><label><input type="radio" name="dice-details" value="collapsed"><span>收起</span></label></div></div>
-                <div class="folio-row"><label for="dice-motion">掷骰动画</label><label class="paper-toggle"><input id="dice-motion" type="checkbox" checked><span aria-hidden="true"></span></label></div>
-                <div class="folio-row"><span id="narrative-size-label">叙事字号</span><div class="paper-segments" role="radiogroup" aria-labelledby="narrative-size-label"><label><input type="radio" name="narrative-size" value="small"><span>小</span></label><label><input type="radio" name="narrative-size" value="medium" checked><span>中</span></label><label><input type="radio" name="narrative-size" value="large"><span>大</span></label></div></div>
+                <div class="folio-row"><label for="tts-enabled">自动朗读</label><label class="paper-toggle"><input id="tts-enabled" type="checkbox" checked><span aria-hidden="true"></span></label></div>
+                <div class="folio-row"><span id="tts-voice-label">角色声线</span><div class="paper-segments tts-voices" role="radiogroup" aria-labelledby="tts-voice-label"><label><input type="radio" name="tts-voice" value="female" checked><span>晓晓 · 女声</span></label><label><input type="radio" name="tts-voice" value="male"><span>云希 · 男声</span></label></div></div>
+                <div class="folio-row range-row"><label for="tts-rate">语速</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="tts-rate" type="range" min="75" max="125" step="5" value="100"><output for="tts-rate">1.00×</output></div></div>
+                <div class="folio-row range-row"><label for="tts-volume">语音音量</label><div class="folio-range"><span class="range-cord" aria-hidden="true"></span><input id="tts-volume" type="range" min="0" max="100" step="1" value="80"><output for="tts-volume">80%</output></div></div>
               </div>
-              <div id="record-preview" class="record-preview" data-size="medium">
-                <p class="record-caption">记录预览</p>
-                <p class="record-narrative">门后传来第二声叩响。</p>
-                <p id="record-details"><img src="assets/settings-folio/dice-record.webp" alt="" draggable="false"><span>2d6 → 4 + 3 = 7</span></p>
+              <div class="tts-audition">
+                <button id="preview-tts" class="preview-dice" type="button" aria-pressed="false" aria-describedby="tts-preview-status"><img src="assets/settings-folio/play-token.webp" alt="" draggable="false"><span id="preview-tts-label">试听声线</span></button>
+                <output id="tts-preview-status" role="status" aria-live="polite"></output>
               </div>
             </section>
             <section id="panel-display" class="folio-panel" role="tabpanel" aria-labelledby="tab-display" hidden>

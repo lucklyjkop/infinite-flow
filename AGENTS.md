@@ -7,3 +7,7 @@
 可运行入口为 `loading-page/`，原生 HTML / CSS / JavaScript，无前端构建依赖。从仓库根目录运行 `python loading-page/serve.py`；Codespaces 使用 `--host 0.0.0.0`。`python scripts/check-project.py` 执行资源路径与语法检查，需要 Python 3.10+ 和 Node.js 22+。
 
 当前美术源稿与生成记录保存在 `art-source/imagegen/`，运行贴图在 `loading-page/assets/`。音效源录音在 `audio-source/`，制作脚本为 `scripts/build-game-audio.py`。当前版本不包含 BGM，环境声默认 25%。不要提交 API 密钥、浏览器存储、本机依赖或 `output/` 临时产物。
+
+# 界面文案与设计提示词
+
+默认减少界面上的常驻说明文字，以画面、控件和简短标签表达功能。不要主动添加实现原理、服务来源、联网方式、密钥要求等技术说明，也不要用装饰性句子填充空白。必要的加载、操作结果与错误反馈仅在对应状态出现；详细说明放在项目文档中。设计提示词与实现验收均应遵循这一约束，除非用户明确要求显示说明。
