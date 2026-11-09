@@ -595,6 +595,7 @@
   });
   window.InfiniteDeitySpace = Object.freeze({
     open, close, preload, recoverConfirmation,
+    captureFrame: () => window.captureDeityReturnFrame?.(root, spatial?.captureSource() || backdrop),
     getState: () => ({phase, visible: !root.hidden, selected,
       confirmed, launching, loaded: loads, failed: failures, locked: 0, available: roster.map(item => item.id),
       assembly: assembly?.getState?.() ?? null, pointerFrame: Boolean(spatial?.getState().moving),

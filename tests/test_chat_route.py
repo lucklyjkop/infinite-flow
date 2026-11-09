@@ -31,11 +31,11 @@ class ChatRouteTests(unittest.TestCase):
         cls.server.server_close()
         cls.thread.join()
 
-    def post(self, origin=None):
+    def post(self, origin=None, payload=None):
         url = f"http://127.0.0.1:{self.server.server_port}"
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=3)
         try:
-            connection.request("POST", "/api/chat", body=json.dumps({"message": "你好", "protocol": "openai"}),
+            connection.request("POST", "/api/chat", body=json.dumps(payload or {"message": "你好", "protocol": "openai"}, ensure_ascii=False).encode("utf-8"),
                                headers={"Content-Type": "application/json", "Origin": origin or url})
             response = connection.getresponse()
             return response.status, dict(response.getheaders()), json.loads(response.read())
@@ -55,6 +55,17 @@ class ChatRouteTests(unittest.TestCase):
             status, _, body = self.post("https://unrelated.example")
         self.assertEqual((status, body["code"]), (403, "origin"))
         bridge.assert_not_called()
+
+    def test_saved_unicode_history_larger_than_old_limit_reaches_bridge(self):
+        payload = {"message": "继续", "protocol": "openai", "history": [
+            {"role": "user", "content": "问题" * 2000},
+            {"role": "assistant", "content": "答复" * 6000},
+        ]}
+        result = {"reply": "继续了。", "sessionId": "1" * 32, "provider": "dsh"}
+        with patch.object(serve, "chat", return_value=result) as bridge:
+            status, _, body = self.post(payload=payload)
+        self.assertEqual((status, body), (200, result))
+        self.assertEqual(bridge.call_args.args[0], payload)
 
     def test_actionable_bridge_failure_is_returned(self):
         with patch.object(serve, "chat", side_effect=ChatError("timeout", "回应超时，请重试。", 504)):

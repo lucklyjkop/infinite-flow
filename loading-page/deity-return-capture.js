@@ -11,6 +11,9 @@
     'assets/menu-ui/label-exit.png', 'assets/deity-space/ui-avatar-frame.webp',
     'assets/deity-space/ui-avatar-active.webp', 'assets/deity-space/ui-confirm.webp',
     'assets/deity-space/nai-avatar.webp', 'assets/deity-space/location-title.webp',
+    'assets/system-space/moon-courtyard.png', 'assets/system-space/hub-title.png',
+    'assets/system-space/hub-symbols.png', 'assets/system-space/composer-rounded.webp',
+    'assets/system-space/composer.webp', 'assets/system-space/panel.webp',
   ];
   const number = (value, fallback = 0) => Number.isFinite(parseFloat(value)) ? parseFloat(value) : fallback;
   function load(url) {
@@ -144,7 +147,26 @@
       if (a === 'auto' && b !== 'auto') w = h * image.naturalWidth / image.naturalHeight;
       if (b === 'auto' && a !== 'auto') h = w * image.naturalHeight / image.naturalWidth;
       const [px, py = '50%'] = position.split(/\s+/);
+      ctx.save(); ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.width, rect.height); ctx.clip();
       ctx.drawImage(image, rect.x + align(px, rect.width - w), rect.y + align(py, rect.height - h), w, h);
+      ctx.restore();
+    }
+  }
+  function borderImage(ctx,style,rect){
+    const match=style.borderImageSource?.match(/^url\(["']?(.*?)["']?\)$/);if(!match)return;
+    const image=load(match[1]).image;if(!image.complete||!image.naturalWidth)return;
+    const four=value=>{const parts=value.trim().split(/\s+/).filter(part=>part!=='fill');return [parts[0],parts[1]||parts[0],parts[2]||parts[0],parts[3]||parts[1]||parts[0]];};
+    const slice=four(style.borderImageSlice),width=four(style.borderImageWidth);
+    const extent=[image.naturalHeight,image.naturalWidth,image.naturalHeight,image.naturalWidth];
+    const edges=slice.map((value,index)=>value.endsWith('%')?number(value)*extent[index]/100:number(value));
+    const borders=[style.borderTopWidth,style.borderRightWidth,style.borderBottomWidth,style.borderLeftWidth].map(value=>number(value));
+    const sizes=width.map((value,index)=>value==='auto'?edges[index]:value.endsWith('px')?number(value):value.endsWith('%')?number(value)*(index%2?rect.width:rect.height)/100:number(value)*borders[index]);
+    const sx=[0,edges[3],image.naturalWidth-edges[1],image.naturalWidth],sy=[0,edges[0],image.naturalHeight-edges[2],image.naturalHeight];
+    const dx=[rect.x,rect.x+sizes[3],rect.x+rect.width-sizes[1],rect.x+rect.width],dy=[rect.y,rect.y+sizes[0],rect.y+rect.height-sizes[2],rect.y+rect.height];
+    for(let row=0;row<3;row++)for(let column=0;column<3;column++){
+      if(row===1&&column===1&&!style.borderImageSlice.includes('fill'))continue;
+      const sw=sx[column+1]-sx[column],sh=sy[row+1]-sy[row],dw=dx[column+1]-dx[column],dh=dy[row+1]-dy[row];
+      if(sw>0&&sh>0&&dw>0&&dh>0)ctx.drawImage(image,sx[column],sy[row],sw,sh,dx[column],dy[row],dw,dh);
     }
   }
   function text(ctx, node, style, viewport) {
@@ -168,7 +190,7 @@
     range.detach();
   }
   function paint(ctx, element, viewport, opacity = 1, filters = []) {
-    if (!element || element.nodeType !== 1 || element.matches('svg,.sr-only,.deity-heading-words[hidden]')) return;
+    if (!element || element.nodeType !== 1 || element.matches('.sr-only,.system-sr-only,.deity-heading-words[hidden]')) return;
     const style = getComputedStyle(element), rect = box(element, viewport);
     if (!rect.width || !rect.height || style.display === 'none' || style.visibility === 'hidden' || style.clipPath === 'inset(50%)') return;
     opacity *= number(style.opacity, 1);
@@ -176,25 +198,51 @@
     const chain = style.filter && style.filter !== 'none' ? [...filters, style.filter] : filters;
     ctx.save(); ctx.globalAlpha = opacity; ctx.filter = chain.join(' ') || 'none';
     if (style.mixBlendMode && style.mixBlendMode !== 'normal') ctx.globalCompositeOperation = style.mixBlendMode;
-    if (style.overflow === 'hidden' || style.overflowX === 'hidden') {
+    if(/hidden|auto|scroll|clip/.test(`${style.overflowX} ${style.overflowY}`)){
+      const radius=value=>value.endsWith('%')?Math.min(rect.width,rect.height)*number(value)/100:number(value);
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(rect.x, rect.y, rect.width, rect.height, number(style.borderTopLeftRadius));
-      else ctx.rect(rect.x, rect.y, rect.width, rect.height);
+      if(ctx.roundRect)ctx.roundRect(rect.x,rect.y,rect.width,rect.height,[style.borderTopLeftRadius,style.borderTopRightRadius,style.borderBottomRightRadius,style.borderBottomLeftRadius].map(radius));
+      else ctx.rect(rect.x,rect.y,rect.width,rect.height);
       ctx.clip();
     }
-    backgrounds(ctx, style, rect);
+    backgrounds(ctx, style, rect);borderImage(ctx,style,rect);
     // These menu pseudo-elements form the plate beneath z-index:1 label images.
     for (const pseudo of ['::before', '::after']) {
       const decoration = getComputedStyle(element, pseudo);
       if (!decoration.content || decoration.content === 'none' || decoration.content === 'normal') continue;
       ctx.save(); ctx.globalAlpha = opacity * number(decoration.opacity, 1);
       if (decoration.filter && decoration.filter !== 'none') ctx.filter = [...chain, decoration.filter].join(' ');
-      backgrounds(ctx, decoration, rect); ctx.restore();
+      const width = number(decoration.width, rect.width), height = number(decoration.height, rect.height);
+      const left = decoration.left !== 'auto' ? number(decoration.left) : decoration.right !== 'auto' ? rect.width - number(decoration.right) - width : 0;
+      const top = decoration.top !== 'auto' ? number(decoration.top) : decoration.bottom !== 'auto' ? rect.height - number(decoration.bottom) - height : 0;
+      backgrounds(ctx, decoration, {x:rect.x + left,y:rect.y + top,width,height}); ctx.restore();
     }
     if (element.tagName === 'IMG') {
       if (element.complete && element.naturalWidth) fitImage(ctx, element, rect, style.objectFit, style.objectPosition);
     } else if (element.tagName === 'CANVAS') {
       if (element.width && element.height) ctx.drawImage(element, rect.x, rect.y, rect.width, rect.height);
+    } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
+      const value = element.value || element.placeholder || '';
+      const ink = element.value ? style : getComputedStyle(element, '::placeholder');
+      ctx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+      ctx.fillStyle = ink.color || style.color; ctx.textBaseline = 'top';
+      ctx.beginPath(); ctx.rect(rect.x,rect.y,rect.width,rect.height); ctx.clip();
+      const lineHeight = number(style.lineHeight,number(style.fontSize)*1.5);
+      value.split('\n').forEach((line,index) => ctx.fillText(line,rect.x+number(style.paddingLeft),rect.y+number(style.paddingTop)+index*lineHeight));
+    } else if (element.tagName.toLowerCase() === 'svg') {
+      const view = element.viewBox?.baseVal;
+      if (view?.width && view?.height) {
+        ctx.translate(rect.x,rect.y); ctx.scale(rect.width/view.width,rect.height/view.height);
+        for (const path of element.querySelectorAll('path')) {
+          const ink = getComputedStyle(path), data = path.getAttribute('d');
+          if (!data || number(ink.opacity,1)<.001) continue;
+          ctx.save(); ctx.globalAlpha = opacity*number(ink.opacity,1);
+          const outline = new Path2D(data);
+          if (ink.fill && ink.fill !== 'none') {ctx.fillStyle=ink.fill;ctx.fill(outline);}
+          if (ink.stroke && ink.stroke !== 'none') {ctx.strokeStyle=ink.stroke;ctx.lineWidth=number(ink.strokeWidth,1);ctx.lineCap=ink.strokeLinecap;ctx.stroke(outline);}
+          ctx.restore();
+        }
+      }
     } else for (const child of element.childNodes) {
       if (child.nodeType === 3) { ctx.save(); text(ctx, child, style, viewport); ctx.restore(); }
       else if (child.nodeType === 1) paint(ctx, child, viewport, opacity, chain);
@@ -256,5 +304,27 @@
     for (const selector of ['.vignette', '#title-screen']) paint(frame.ctx, world.querySelector(selector), viewport);
     return finish(frame, world);
   };
-  window.DeityReturnCapture = Object.freeze({ready});
+  async function prepare(root) {
+    const waiting = [ready];
+    for (const element of [root,...root.querySelectorAll('*')]) {
+      if (element.tagName === 'IMG') waiting.push(element.decode().catch(()=>{}));
+      for (const pseudo of [null,'::before','::after']) {
+        const computed=getComputedStyle(element,pseudo);
+        const value = `${computed.backgroundImage},${computed.borderImageSource}`;
+        for (const match of value.matchAll(/url\(["']?(.*?)["']?\)/g)) waiting.push(load(match[1]).ready);
+      }
+    }
+    await Promise.all(waiting);
+  }
+  window.captureSceneReturnFrame = root => {
+    if (!root || root.hidden) return null;
+    if (root.id === 'system-space') window.InfiniteSystemLive2D?.captureSource?.();
+    const viewport=root.getBoundingClientRect(), frame=surface(viewport);
+    if (!frame) return null;
+    frame.ctx.fillStyle=getComputedStyle(root).backgroundColor || '#080c10';
+    frame.ctx.fillRect(0,0,frame.width,frame.height);
+    for (const child of root.children) paint(frame.ctx,child,viewport);
+    return finish(frame,root);
+  };
+  window.DeityReturnCapture = Object.freeze({ready,prepare});
 })();

@@ -164,7 +164,7 @@
     petals?.setReducedMotion(media.matches);
     rain?.setReducedMotion(media.matches);
     const state = world.dataset.state;
-    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity', 'system-arriving', 'system', 'system-returning'].includes(state);
+    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity', 'system-arriving', 'system', 'system-returning', 'archives'].includes(state);
     const returning = world.classList.contains('deity-returning');
     // A warm camera can track during a replay. The first full-resolution GL
     // upload waits for the menu entrance to finish instead of stalling the opening.

@@ -163,7 +163,8 @@ class AssetHandler(SimpleHTTPRequestHandler):
             if self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json" or self.headers.get("Transfer-Encoding"):
                 raise CatalogueError("request", "需要 JSON 请求。", 415)
             length = int(self.headers.get("Content-Length", "0"))
-            if not 0 < length <= 16384:
+            limit = 131072 if self.path == '/api/chat' else 16384
+            if not 0 < length <= limit:
                 raise CatalogueError("request", "请求长度无效。", 413)
             # Even when this bounded read times out, do not read its buffered
             # stream again from the error path.

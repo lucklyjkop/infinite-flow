@@ -1,4 +1,4 @@
-/* One left-to-right matte cube crest carries the complete deity frame into the title. */
+/* A single matte cube crest exchanges complete scenes in either direction. */
 (() => {
   'use strict';
   const clamp = x => Math.max(0, Math.min(1, x));
@@ -9,7 +9,7 @@
     attribute vec3 corner, normal;
     attribute vec4 patch;
     uniform vec2 view;
-    uniform float progress, cellSize, focal, flatPass;
+    uniform float progress, cellSize, focal, flatPass, waveDirection;
     varying vec2 uv, swatch;
     varying vec3 surfaceNormal;
     varying float front, rise, exchange, heightAbovePlane;
@@ -30,13 +30,14 @@
         return;
       }
       float bend = .026 * sin(swatch.y * 6.) * sin(swatch.x * 3.14159265);
-      float age = clamp((progress * 1.34 - swatch.x - bend) / .34, 0., 1.);
+      float travel = waveDirection < 0. ? 1. - swatch.x : swatch.x;
+      float age = clamp((progress * 1.34 - travel - bend) / .34, 0., 1.);
       float wave = sin(age * 3.14159265);
       wave *= wave;
       float slope = sin(age * 6.2831853);
       // There is only one crest. Its slope, not another oscillation, tips each cube.
       float variation = sin(swatch.y * view.y / cellSize * 1.73 + swatch.x * view.x / cellSize * .71);
-      vec3 angle = vec3((-.18 + .085 * variation) * wave, -.46 * slope,
+      vec3 angle = vec3((-.18 + .085 * variation) * wave, -.46 * slope * waveDirection,
         .035 * wave * variation);
       float height = cellSize * (1.48 + .17 * variation) * wave;
       float blockSize = cellSize * (1. - .14 * wave);
@@ -56,7 +57,7 @@
     uniform sampler2D beforePhoto, afterPhoto;
     uniform vec4 beforeCrop, afterCrop;
     uniform vec2 view;
-    uniform float progress, cellSize, flatPass;
+    uniform float progress, cellSize, flatPass, waveDirection;
     varying vec2 uv, swatch;
     varying vec3 surfaceNormal;
     varying float front, rise, exchange, heightAbovePlane;
@@ -67,7 +68,8 @@
         // Continuous backing photograph prevents black cracks between lifted blocks.
         vec2 cell = (floor(uv * view / cellSize) + .5) * cellSize / view;
         float bend = .026 * sin(cell.y * 6.) * sin(cell.x * 3.14159265);
-        float age = clamp((progress * 1.34 - cell.x - bend) / .34, 0., 1.);
+        float travel = waveDirection < 0. ? 1. - cell.x : cell.x;
+        float age = clamp((progress * 1.34 - travel - bend) / .34, 0., 1.);
         float blend = smoothstep(.36, .70, age);
         if (progress <= 0.) blend = 0.;
         if (progress >= 1.) blend = 1.;
@@ -110,7 +112,7 @@
     return {cells, size, du: size / width, dv: size / height};
   }
 
-  function createGL(canvas, before, after, width, height, field, crops) {
+  function createGL(canvas, before, after, width, height, field, crops, direction) {
     const gl = canvas.getContext('webgl', {alpha: true, depth: true, antialias: true,
       stencil: false, premultipliedAlpha: true, preserveDrawingBuffer: true});
     if (!gl) return null;
@@ -191,6 +193,7 @@
       gl.uniform2f(gl.getUniformLocation(program, 'view'), width, height);
       gl.uniform1f(gl.getUniformLocation(program, 'cellSize'), field.size);
       gl.uniform1f(gl.getUniformLocation(program, 'focal'), Math.max(width, height) * 2.5);
+      gl.uniform1f(gl.getUniformLocation(program, 'waveDirection'), direction);
       const progress = gl.getUniformLocation(program, 'progress'), flat = gl.getUniformLocation(program, 'flatPass');
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
@@ -214,7 +217,7 @@
     }
   }
 
-  function create2D(canvas, before, after, width, height, field, crops) {
+  function create2D(canvas, before, after, width, height, field, crops, direction) {
     let target = canvas, ctx = canvas.getContext('2d'), proxy = null;
     // If a driver created a context but rejected the shader, use a temporary 2D
     // surface in exactly the same rectangle. It belongs to this controller only.
@@ -259,7 +262,8 @@
       active.length = 0;
       for (const cell of field.cells) {
         const bend = .026 * Math.sin(cell.y / height * 6) * Math.sin(cell.x / width * Math.PI);
-        const age = clamp((time * (1 + BAND) - cell.x / width - bend) / BAND);
+        const travel = direction < 0 ? 1 - cell.x / width : cell.x / width;
+        const age = clamp((time * (1 + BAND) - travel - bend) / BAND);
         if (!age) continue;
         const blend = smooth((age - .36) / .34), wave = Math.sin(Math.PI * age) ** 2;
         const sx = Math.max(0, cell.x - side / 2), sy = Math.max(0, cell.y - side / 2);
@@ -274,7 +278,7 @@
       for (const item of active) {
         const {cell, wave, age, blend, sx, sy, sw, sh} = item;
         const variation = Math.sin(cell.y / side * 1.73 + cell.x / side * .71);
-        const depth = side * (1.48 + .17 * variation) * wave, tilt = -.46 * Math.sin(age * Math.PI * 2);
+        const depth = side * (1.48 + .17 * variation) * wave, tilt = -.46 * Math.sin(age * Math.PI * 2) * direction;
         const scale = 1 / (1 - depth / (Math.max(width, height) * 2.5));
         const x = width / 2 + (cell.x - width / 2 - .17 * depth) * scale;
         const y = height / 2 + (cell.y - height / 2 - .24 * depth) * scale;
@@ -309,10 +313,11 @@
     const reduced = !!options.reducedMotion || media.matches;
     const crops = [cropFor(fromImage, width, height), cropFor(toImage, width, height)];
     const field = makeField(width, height);
+    const direction = options.direction === 'right-to-left' ? -1 : 1;
     let renderer = null;
     try {
-      if (crops.every(Boolean)) renderer = createGL(canvas, fromImage, toImage, width, height, field, crops)
-        || create2D(canvas, fromImage, toImage, width, height, field, crops);
+      if (crops.every(Boolean)) renderer = (!options.force2D && createGL(canvas, fromImage, toImage, width, height, field, crops, direction))
+        || create2D(canvas, fromImage, toImage, width, height, field, crops, direction);
     } catch { /* Completion still hands control to the live destination scene. */ }
     const mode = renderer?.name || 'none';
     canvas.dataset.renderer = mode;
@@ -370,7 +375,7 @@
     else raf = requestAnimationFrame(frame);
     return Object.freeze({finished, cancel: () => stop(false), getState: () => ({
       mode, progress, running: !done, completed, reason, duration,
-      reducedMotion: reduced, cubes: field.cells.length, direction: 'left-to-right',
+      reducedMotion: reduced, cubes: field.cells.length, direction: direction < 0 ? 'right-to-left' : 'left-to-right',
     })});
   };
 })();

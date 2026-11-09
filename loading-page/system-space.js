@@ -7,7 +7,7 @@
   const root=document.createElement('section');
   root.id='system-space';root.className='system-space';root.hidden=true;root.tabIndex=-1;
   root.setAttribute('aria-labelledby','system-space-title');root.dataset.phase='hidden';root.dataset.characterRenderer='illustration';
-  const entries=[['world','世界入口'],['records','轮回记录'],['inventory','行囊'],['covenant','主神契约'],['settings','系统设置'],['back','返回主神']];
+  const entries=[['world','世界入口'],['records','轮回记录'],['inventory','行囊'],['covenant','主神契约'],['settings','系统设置'],['back','返回标题']];
   const symbol=id=>`<span class="system-symbol system-symbol-${id}" aria-hidden="true"></span>`;
   const control=([id,label],index)=>`<div class="system-float-slot system-float-${id} ${index<4?'system-primary-slot':'system-utility-slot'}" style="--float-index:${index};--entry-delay:${index<4?190+index*65:90}ms"><button id="system-control-${id}" type="button" class="system-orb ${index<4?'system-primary-control':'system-utility-control'}" data-system-control="${id}" ${index<4?'aria-haspopup="dialog" aria-expanded="false" aria-controls="system-details"':id==='settings'?'aria-haspopup="dialog"':''}><span class="system-nav-core">${symbol(id)}<span class="system-orb-label">${label}</span></span><span class="system-nav-flare" aria-hidden="true"></span><span class="system-nav-thread" aria-hidden="true"><svg viewBox="0 0 240 22" preserveAspectRatio="none"><path pathLength="1" d="M2 15C57-9 137 37 222 10"/><path class="system-thread-glint" pathLength="1" d="M2 15C57-9 137 37 222 10"/></svg>${symbol('blossom')}</span></button></div>`;
   root.innerHTML=`
@@ -23,16 +23,16 @@
   const form=root.querySelector('.system-composer'),input=root.querySelector('#system-message'),send=root.querySelector('.system-send'),messageStatus=root.querySelector('#system-message-status');
   let phase='hidden',selected='world',deity={id:'hongzhuang',name:'红妆'},serial=0,timer=0,whisperTimer=0,animation=null,preloadJob=null,finishPending=null,settleTransition=null;
   let x=0,y=0,goalX=0,goalY=0,frame=0,previous=0,spoken=0,renderer=null,failedAssets=[],detailsAnimation=null,opener=null,composing=false,sending=false,messageSerial=0;
-  let lastFocusCue=0,lastFocusControl=null;
+  let lastFocusCue=0,lastFocusControl=null,transitionPaused=false;
   const animated=()=>!media.matches&&window.InfiniteSettings?.getState?.().motion!==false;
   const blocked=()=>document.hidden||Boolean(document.querySelector('dialog[open]'));
   const emit=(name,detail={})=>window.dispatchEvent(new CustomEvent(name,{detail}));
   function cue(name){if(!document.hidden)emit('infinite:soundcue',{name,group:'system-ui'});}
-  function selectControl(key){selected=key;for(const button of buttons){const active=button.dataset.systemControl===key;button.classList.toggle('is-selected',active);if(active)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current');}}
+  function selectControl(key){selected=['world','records','inventory','covenant'].includes(key)?key:'world';for(const button of buttons){const active=button.dataset.systemControl===selected;button.classList.toggle('is-selected',active);if(active)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current');}if(phase==='ready'&&!transitionPaused){const save=window.InfiniteSaves?.active?.();if(save&&save.progress?.selected!==selected){try{window.InfiniteSaves.update(save.id,{progress:{...save.progress,selected}});}catch{messageStatus.textContent='未能保存当前进度，请检查浏览器存储空间。';}}}}
   function focusCue(button){const now=performance.now();if(phase!=='ready'||blocked()||button.disabled||now-lastFocusCue<180||(lastFocusControl===button&&now-lastFocusCue<650))return;lastFocusControl=button;lastFocusCue=now;emit('infinite:soundcue',{name:'ui-focus',group:'system-ui',gain:.56,pan:Math.max(-.25,Math.min(.25,(button.getBoundingClientRect().left/innerWidth-.5)*.5))});}
   function pulseControl(button){if(!animated())return;const flare=button.querySelector('.system-nav-flare');flare.getAnimations().forEach(value=>value.cancel());flare.animate([{opacity:0,transform:'scaleX(.35)'},{opacity:.65,offset:.28,transform:'scaleX(.88)'},{opacity:0,transform:'scaleX(1.12)'}],{duration:520,easing:'cubic-bezier(.2,.7,.25,1)'});}
   function say(text,{persistent=false}={}){clearTimeout(whisperTimer);(persistent?root:root.querySelector('.system-character-area')).append(whisper);whisper.querySelector('.system-whisper-text').textContent=text;whisper.querySelector('.system-whisper-close').hidden=!persistent;whisper.classList.toggle('system-whisper-reply',persistent);whisper.hidden=false;if(!persistent)whisperTimer=setTimeout(()=>{whisper.hidden=true;},4800);}
-  function syncComposer(){const busy=phase!=='ready'||sending;input.disabled=busy;send.disabled=busy||!input.value.trim();form.setAttribute('aria-busy',String(sending));}
+  function syncComposer(){const busy=phase!=='ready'||sending||transitionPaused;input.disabled=busy;send.disabled=busy||!input.value.trim();form.setAttribute('aria-busy',String(sending));}
   function resizeInput(){input.style.height='auto';input.style.height=`${Math.min(68,Math.max(24,input.scrollHeight))}px`;}
   function lock(value){root.setAttribute('aria-busy',String(value));for(const button of root.querySelectorAll('button'))button.disabled=value;syncComposer();}
   function setPhase(value){phase=value;root.dataset.phase=value;if(value==='opening')world.dataset.state='system-arriving';else if(value==='ready')world.dataset.state='system';syncMotion();syncComposer();}
@@ -57,7 +57,7 @@
     return detailsAnimation.finished.then(finish,()=>{});
   }
   function resetAim(){cancelAnimationFrame(frame);frame=previous=x=y=goalX=goalY=0;root.style.setProperty('--system-aim-x','0px');root.style.setProperty('--system-aim-y','0px');renderer?.setLook?.(0,0);}
-  function syncMotion(){const paused=phase!=='ready'||blocked()||!animated();root.classList.toggle('system-motion-off',!animated());root.classList.toggle('system-paused',paused);renderer?.setPaused?.(paused);if(paused)resetAim();}
+  function syncMotion(){const paused=transitionPaused||phase!=='ready'||blocked()||!animated();root.classList.toggle('system-motion-off',!animated());root.classList.toggle('system-paused',paused);renderer?.setPaused?.(paused);if(paused)resetAim();}
   function draw(now){frame=0;if(phase!=='ready'||blocked()||!animated()){resetAim();return;}const dt=previous?Math.min(.05,(now-previous)/1000):1/60;previous=now;const t=1-Math.exp(-11*dt);x+=(goalX-x)*t;y+=(goalY-y)*t;if(Math.abs(goalX-x)<.025)x=goalX;if(Math.abs(goalY-y)<.025)y=goalY;root.style.setProperty('--system-aim-x',`${x.toFixed(3)}px`);root.style.setProperty('--system-aim-y',`${y.toFixed(3)}px`);renderer?.setLook?.(x/6,y/4);if(x!==goalX||y!==goalY)frame=requestAnimationFrame(draw);else previous=0;}
   function aim(a=0,b=0){goalX=a;goalY=b;if(!frame&&phase==='ready'&&animated()&&!blocked())frame=requestAnimationFrame(draw);}
   function clearTransition(){clearTimeout(timer);timer=0;animation?.cancel();animation=null;finishPending?.(false);finishPending=null;settleTransition=null;}
@@ -69,23 +69,22 @@
   }
   async function open(value={}){
     if(phase!=='hidden')return false;const token=++serial,assets=await preload();if(token!==serial||!assets.ready)return false;
-    deity={id:typeof value.id==='string'?value.id:'hongzhuang',name:typeof value.name==='string'?value.name:'红妆'};spoken=0;selectControl('world');lastFocusControl=null;lastFocusCue=0;sending=false;composing=false;++messageSerial;input.placeholder=`向${deity.name}说些什么…`;characterTouch.setAttribute('aria-label',`与${deity.name}交谈`);input.value='';messageStatus.textContent='';whisper.hidden=true;clearTimeout(whisperTimer);resetAim();root.hidden=false;root.inert=false;setPhase('opening');lock(true);resizeInput();
+    deity={id:typeof value.id==='string'?value.id:'hongzhuang',name:typeof value.name==='string'?value.name:'红妆'};spoken=0;const saved=window.InfiniteSaves?.active?.();selectControl(saved?.progress?.selected||'world');lastFocusControl=null;lastFocusCue=0;sending=false;composing=false;++messageSerial;input.placeholder=`向${deity.name}说些什么…`;characterTouch.setAttribute('aria-label',`与${deity.name}交谈`);input.value='';messageStatus.textContent='';whisper.hidden=true;clearTimeout(whisperTimer);resetAim();root.hidden=false;root.inert=transitionPaused;setPhase('opening');lock(true);resizeInput();
     // The decoded backdrop is opaque immediately; only the character and UI enter.
-    emit('infinite:systemvisible',{id:deity.id,name:deity.name});const duration=animated()&&!document.hidden?820:0;
-    return new Promise(resolve=>{finishPending=resolve;const complete=()=>{if(token!==serial)return;clearTimeout(timer);timer=0;finishPending=null;settleTransition=null;setPhase('ready');lock(false);root.focus({preventScroll:true});emit('infinite:systemready',{id:deity.id,name:deity.name});resolve(true);};settleTransition=complete;if(!duration)complete();else timer=setTimeout(complete,duration);});
+    emit('infinite:systemvisible',{id:deity.id,name:deity.name,saveId:saved?.id||null});const duration=!value.immediate&&animated()&&!document.hidden?820:0;
+    return new Promise(resolve=>{finishPending=resolve;const complete=()=>{if(token!==serial)return;clearTimeout(timer);timer=0;finishPending=null;settleTransition=null;setPhase('ready');lock(transitionPaused);const last=[...(saved?.chat||[])].reverse().find(message=>message.role==='assistant');if(last)say(last.content,{persistent:true});if(!transitionPaused)root.focus({preventScroll:true});emit('infinite:systemready',{id:deity.id,name:deity.name,saveId:saved?.id||null});resolve(true);};settleTransition=complete;if(!duration)complete();else timer=setTimeout(complete,duration);});
   }
-  function close({returnToDeity=true,immediate=false}={}){
+  function close({returnToDeity=true,returnToTitle=returnToDeity,immediate=false}={}){
+    if(returnToTitle&&phase==='ready'&&!transitionPaused){const waiting=[],request=new CustomEvent('infinite:systemreturn',{cancelable:true,detail:{id:deity.id,name:deity.name,deity:{...deity},immediate,waitUntil(promise){waiting.push(Promise.resolve(promise));}}});const unhandled=window.dispatchEvent(request);if(!unhandled&&waiting.length)return Promise.all(waiting).then(values=>values.every(Boolean),()=>false);return close({returnToTitle:false,immediate:true}).then(result=>{window.InfiniteTitle?.returnToTitle();return result;});}
+    if(returnToTitle)return Promise.resolve(false);
     if(phase==='hidden'){++serial;return Promise.resolve(false);}if(['returning','closing'].includes(phase)&&!immediate)return Promise.resolve(false);
-    const token=++serial;clearTransition();clearTimeout(whisperTimer);whisper.hidden=true;++messageSerial;sending=false;composing=false;closeDetails({immediate:true,focus:false});resetAim();lock(true);setPhase(returnToDeity?'returning':'closing');
+    const token=++serial;emit('infinite:systemleaving',{id:deity.id});clearTransition();clearTimeout(whisperTimer);whisper.hidden=true;++messageSerial;sending=false;composing=false;closeDetails({immediate:true,focus:false});resetAim();lock(true);setPhase('closing');
     return new Promise(resolve=>{finishPending=resolve;
-      const restore=()=>{if(token!==serial)return;finishPending=null;settleTransition=null;setPhase('ready');lock(false);say('归途尚未准备好，请稍后再试。');root.focus({preventScroll:true});resolve(false);};
       const leave=()=>{if(token!==serial)return;setPhase('closing');const duration=!immediate&&animated()&&!document.hidden?520:0;
         const complete=()=>{if(token!==serial)return;clearTimeout(timer);timer=0;root.hidden=true;root.inert=true;animation?.cancel();animation=null;finishPending=null;settleTransition=null;setPhase('hidden');lock(false);emit('infinite:soundstop',{group:'system-ui',fade:.1});emit('infinite:systemclosed',{id:deity.id,name:deity.name,returnToDeity});resolve(true);};settleTransition=complete;
         if(!duration){complete();return;}animation=root.animate([{opacity:1},{opacity:0}],{duration,easing:'cubic-bezier(.4,0,.6,1)',fill:'both'});timer=setTimeout(complete,duration+20);
       };
-      if(!returnToDeity){leave();return;}
-      const waiting=[],request=new CustomEvent('infinite:systemreturn',{cancelable:true,detail:{id:deity.id,name:deity.name,deity:{...deity},waitUntil(promise){waiting.push(Promise.resolve(promise));}}});
-      const unhandled=window.dispatchEvent(request);if(unhandled&&!waiting.length){restore();return;}Promise.all(waiting).then(results=>{if(results.some(result=>result===false))restore();else leave();},restore);
+      leave();
     });
   }
   function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('ui-tap');renderer?.greet?.();say(lines[spoken++%lines.length]);}
@@ -111,5 +110,5 @@
   const observer=new MutationObserver(syncMotion);for(const dialog of document.querySelectorAll('dialog'))observer.observe(dialog,{attributes:true,attributeFilter:['open']});
   function changedMotion(){syncMotion();if(document.hidden||!animated())settleTransition?.();}
   for(const name of ['infinite:settings','infinite:settingssaved'])window.addEventListener(name,changedMotion);media.addEventListener('change',changedMotion);document.addEventListener('visibilitychange',changedMotion);window.addEventListener('blur',resetAim);window.addEventListener('resize',()=>{resetAim();if(!root.hidden)resizeInput();});window.addEventListener('pagehide',()=>close({returnToDeity:false,immediate:true}));
-  window.InfiniteSystemSpace=Object.freeze({open,close,preload,prepare:preload,getCharacterMount:()=>mount,setCharacterRenderer(value){if(renderer===value){syncMotion();return;}renderer?.dispose?.();renderer=value||null;root.dataset.characterRenderer=renderer?.kind||(renderer?'external':'illustration');syncMotion();},getState:()=>({phase,visible:!root.hidden,selected,deity:{...deity},moving:Boolean(frame),paused:root.classList.contains('system-paused'),characterRenderer:root.dataset.characterRenderer,detailsOpen:details.open,sending,failedAssets:[...failedAssets]})});
+  window.InfiniteSystemSpace=Object.freeze({open,close,preload,prepare:preload,getCharacterMount:()=>mount,setTransitioning(value){transitionPaused=Boolean(value);root.inert=transitionPaused;if(transitionPaused)emit('infinite:systemleaving',{id:deity.id});syncMotion();lock(transitionPaused||phase!=='ready');},setCharacterRenderer(value){if(renderer===value){syncMotion();return;}renderer?.dispose?.();renderer=value||null;root.dataset.characterRenderer=renderer?.kind||(renderer?'external':'illustration');syncMotion();},getState:()=>({phase,visible:!root.hidden,selected,deity:{...deity},moving:Boolean(frame),paused:root.classList.contains('system-paused'),transitioning:transitionPaused,characterRenderer:root.dataset.characterRenderer,detailsOpen:details.open,sending,failedAssets:[...failedAssets]})});
 })();

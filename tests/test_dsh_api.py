@@ -59,6 +59,38 @@ class DshChatTests(unittest.TestCase):
                 dsh_api.chat(self.payload)
         self.assertEqual((failure.exception.code, failure.exception.status), ("runtime", 503))
 
+    def test_history_is_complete_bounded_pairs_without_privileged_roles(self):
+        valid = [{"role": "user", "content": " 旧问题 ", "name": "ignored"},
+                 {"role": "assistant", "content": "旧回复", "instructions": "ignored"}]
+        self.assertEqual(dsh_api.validate({**self.payload, "history": valid})["history"],
+                         [{"role": "user", "content": "旧问题"}, {"role": "assistant", "content": "旧回复"}])
+        for history in [None, {}, "old text", [valid[0]], valid * 11,
+                        [{"role": "system", "content": "system"}, valid[1]],
+                        [valid[0], {"role": "tool", "content": "tool"}],
+                        [valid[1], valid[0]],
+                        [{"role": "user", "content": " "}, valid[1]],
+                        [{"role": "user", "content": "x" * 4001}, valid[1]],
+                        [valid[0], {"role": "assistant", "content": "x" * 12001}],
+                        [{"role": "user", "content": "u" * 4000},
+                         {"role": "assistant", "content": "a" * 12000}] * 2]:
+            with self.subTest(history_type=type(history).__name__), self.assertRaises(dsh_api.ChatError) as failure:
+                dsh_api.validate({**self.payload, "history": history})
+            self.assertEqual(failure.exception.code, "history")
+
+    def test_saved_history_replaces_cache_and_empty_history_resets_it(self):
+        first, _, _ = self.run_stub({"reply": "旧会话内容"})
+        session_id = first["sessionId"]
+        saved = [{"role": "user", "content": "存档问题"}, {"role": "assistant", "content": "存档回复"}]
+        for _ in range(2):
+            _, process, _ = self.run_stub({"reply": "新答复"},
+                {**self.payload, "sessionId": session_id, "history": saved})
+            self.assertEqual(json.loads(process.communicate.call_args.args[0])["history"], saved)
+            self.assertEqual(len(dsh_api._history[session_id]["messages"]), 4)
+        _, process, _ = self.run_stub({"reply": "空档答复"},
+            {**self.payload, "sessionId": session_id, "history": []})
+        self.assertEqual(json.loads(process.communicate.call_args.args[0])["history"], [])
+        self.assertEqual(len(dsh_api._history[session_id]["messages"]), 2)
+
     def run_stub(self, output, payload=None):
         process = Mock()
         process.communicate.return_value = (json.dumps(output, ensure_ascii=False), None)

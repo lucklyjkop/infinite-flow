@@ -233,5 +233,8 @@
       physicsLoaded:Boolean(model?.internalModel.physics),drawableCount:core?._model?.drawables?.count ?? 0,
       drawn:{...drawn},error};
   }
-  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel});
+  // Force a draw without advancing model time. The caller copies this buffer
+  // synchronously before WebGL's non-preserved drawing buffer can be cleared.
+  function captureSource() { if (!prepared || !attached || !app) return null; app.render(); return app.canvas; }
+  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel,captureSource});
 })();

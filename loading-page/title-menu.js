@@ -56,9 +56,11 @@
   }
 
   function updateContinue() {
-    continueButton.disabled = !save;
-    continueButton.title = save ? (typeof save.title === 'string' ? save.title : '继续上次的旅程') : '暂无存档';
-    if (!save && continueButton.classList.contains('is-selected')) selectButton(buttons[0]);
+    let count = 0;
+    try { count = window.InfiniteSaves?.list?.().length || 0; } catch { /* The archive view owns the readable retry state. */ }
+    continueButton.disabled = false;
+    continueButton.title = count ? `选择存档 · ${count} 段旅程` : '查看轮回存档';
+    continueButton.setAttribute('aria-haspopup', 'dialog');
   }
 
   function closeDialogs() {
@@ -113,7 +115,14 @@
 
   function startGame(mode, opener, pointer) {
     if (starting || world.dataset.state !== 'title') return;
-    if (mode === 'continue' && !save) return;
+    if (mode === 'continue' && window.InfiniteSaveUI?.show) {
+      closeDialogs();
+      window.InfiniteSaveUI.show({opener}).catch(() => {
+        document.getElementById('notice-message').textContent = '存档页面暂时无法打开，请稍后重试。';
+        openDialog(noticeDialog, opener);
+      });
+      return;
+    }
     const detail = { mode, save: mode === 'continue' ? normalizeSave(save) : null };
     const action = {player: null};
     if (mode === 'new') {
@@ -218,6 +227,7 @@
       updateContinue();
     }
   });
+  window.addEventListener('infinite:saveschange', updateContinue);
 
   window.InfiniteTitle = Object.freeze({
     show,

@@ -22,6 +22,8 @@ WORKER = ROOT / "scripts" / "dsh-chat-worker.py"
 SESSION_ROOT = ROOT / "output" / "dsh-sessions"
 TIMEOUT = 120
 MAX_REPLY = 12000
+MAX_HISTORY_MESSAGES = 20
+MAX_HISTORY_CHARS = 16000
 _active = set()
 _history = {}
 _lock = threading.Lock()
@@ -39,6 +41,28 @@ def runtime_python():
 
 def runtime_status():
     return {"installed": runtime_python().is_file(), "provider": "dsh", "version": "0.2.1rc2"}
+
+
+def validate_history(value):
+    """Saved context consists only of complete player/character exchanges."""
+    if not isinstance(value, list) or len(value) > MAX_HISTORY_MESSAGES or len(value) % 2:
+        raise ChatError("history", "存档对话记录格式无效，请重新载入存档。")
+    result, total = [], 0
+    for index, item in enumerate(value):
+        expected = "user" if index % 2 == 0 else "assistant"
+        limit = 4000 if expected == "user" else MAX_REPLY
+        if not isinstance(item, dict) or item.get("role") != expected:
+            raise ChatError("history", "存档对话记录格式无效，请重新载入存档。")
+        content = item.get("content")
+        if not isinstance(content, str) or not content.strip() or len(content) > limit:
+            raise ChatError("history", "存档对话记录长度无效，请重新载入存档。")
+        content = content.strip()
+        total += len(content)
+        if total > MAX_HISTORY_CHARS:
+            raise ChatError("history", "存档对话上下文过长，请重新载入存档。")
+        # Strip extra object fields, including names, instructions and tool data.
+        result.append({"role": expected, "content": content})
+    return result
 
 
 def validate(payload):
@@ -66,9 +90,12 @@ def validate(payload):
     session = payload.get("sessionId") or uuid.uuid4().hex
     if not isinstance(session, str) or not re.fullmatch(r"[0-9a-f]{32}", session):
         raise ChatError("session", "对话会话无效，请重新进入系统空间。")
-    return {"message": message.strip(), "apiKey": key, "model": model.strip(),
-            "protocol": protocol, "endpoint": endpoint, "wireApi": wire_api,
-            "sessionId": session, "timeout": TIMEOUT}
+    request = {"message": message.strip(), "apiKey": key, "model": model.strip(),
+               "protocol": protocol, "endpoint": endpoint, "wireApi": wire_api,
+               "sessionId": session, "timeout": TIMEOUT}
+    if "history" in payload:
+        request["history"] = validate_history(payload["history"])
+    return request
 
 
 def _child_environment():
@@ -112,7 +139,10 @@ def chat(payload):
             raise ChatError("busy", "红妆正在回应，请稍候再发送。", 409)
         _active.add(session)
         previous = _history.get(session, {})
-        request["history"] = list(previous.get("messages", [])) if previous.get("route") == route else []
+        # An explicit saved history is authoritative, including an empty list.
+        # Only legacy clients which omit it fall back to the in-memory session.
+        if "history" not in request:
+            request["history"] = list(previous.get("messages", [])) if previous.get("route") == route else []
     try:
         SESSION_ROOT.mkdir(parents=True, exist_ok=True)
         process = subprocess.Popen([str(executable), str(WORKER)],
@@ -153,8 +183,8 @@ def chat(payload):
         reply = reply.strip()
         with _lock:
             messages = [*request["history"], {"role": "user", "content": request["message"]},
-                        {"role": "assistant", "content": reply}][-20:]
-            while sum(len(m["content"]) for m in messages) > 16000 and len(messages) > 2:
+                        {"role": "assistant", "content": reply}][-MAX_HISTORY_MESSAGES:]
+            while sum(len(m["content"]) for m in messages) > MAX_HISTORY_CHARS and len(messages) > 2:
                 messages = messages[2:]
             _history[session] = {"messages": messages, "touched": time.monotonic(), "route": route}
             if len(_history) > 50:
