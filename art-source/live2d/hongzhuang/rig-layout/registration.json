@@ -1,5 +1,5 @@
 {
-  "processing": "Crop, alpha island cleanup, original-pixel white/lash separation, and coordinate registration only. No repainting.",
+  "processing": "Crop, alpha island cleanup, original-pixel upper-lash separation (lower contour stays with eye white), and coordinate registration only. No repainting.",
   "layers": [
     {
       "id": "back-hair",
@@ -52,12 +52,12 @@
         420
       ],
       "rect": {
-        "left": 326,
+        "left": 321,
         "top": 453,
-        "width": 135,
+        "width": 137,
         "height": 122
       },
-      "sha256": "ee8ce6ef3779ee2555e91af6d728b2b6a2d6d7179d517897864210b68fe73130"
+      "sha256": "b730acf2187ca4fc859d7e0c78e0fa708943afd56b5fd0c3c8fa7998c3bbb382"
     },
     {
       "id": "eyelash-right",
@@ -69,12 +69,12 @@
         420
       ],
       "rect": {
-        "left": 326,
-        "top": 453,
-        "width": 135,
-        "height": 122
+        "left": 321.0,
+        "top": 453.0,
+        "width": 137.0,
+        "height": 73.4721189591078
       },
-      "sha256": "fa64be159801beb3e5d11995f3d5ee883b0d1eee294e5a013b70ced318cacd66"
+      "sha256": "16220415a00b677e57bc3a2ab64da4c0645dcf7c856991d82b40aa901cd88d11"
     },
     {
       "id": "eyewhite-left",
@@ -86,12 +86,12 @@
         420
       ],
       "rect": {
-        "left": 557,
+        "left": 554,
         "top": 453,
-        "width": 135,
+        "width": 137,
         "height": 122
       },
-      "sha256": "f6dfb1f1089bf9ce8b66f29bc71d0614cc6b87b5ecc6c3d5d865dafe1edd0d1d"
+      "sha256": "1eb5dc6c8ae78e18455cbdfc0a7b26f5863d98ad8c881b824242b51ced435993"
     },
     {
       "id": "eyelash-left",
@@ -103,12 +103,12 @@
         420
       ],
       "rect": {
-        "left": 557,
-        "top": 453,
-        "width": 135,
-        "height": 122
+        "left": 554.0,
+        "top": 453.0,
+        "width": 137.0,
+        "height": 73.2910447761194
       },
-      "sha256": "be79506b9585a2a3d0164c1dc5a05f420e3aa0e3723dafd6ed4e76bd5e8fb225"
+      "sha256": "0be3b4858763631d08797f349cb8404f4ef7e3877e92c9c2f7d53dd326e3cc76"
     },
     {
       "id": "irides-right",
@@ -120,10 +120,10 @@
         820
       ],
       "rect": {
-        "left": 354,
-        "top": 475,
-        "width": 82,
-        "height": 94
+        "left": 366,
+        "top": 479,
+        "width": 80,
+        "height": 90
       },
       "sha256": "3e479e5422b6034cd62fdfba841d5829baed4a5d43632643b89f42c4255d62c0"
     },
@@ -137,10 +137,10 @@
         820
       ],
       "rect": {
-        "left": 584,
-        "top": 475,
-        "width": 82,
-        "height": 94
+        "left": 566,
+        "top": 479,
+        "width": 80,
+        "height": 90
       },
       "sha256": "1dc685de74ed33b2eb4dede43a2b7654b36eacd84511e963c8dc3c668a31327c"
     },
@@ -154,10 +154,10 @@
         1120
       ],
       "rect": {
-        "left": 346,
+        "left": 337,
         "top": 394,
-        "width": 86,
-        "height": 12
+        "width": 94,
+        "height": 14
       },
       "sha256": "eb90adb1133bd81a6c99893c66430c503a2221761ea43c4b25756994ed213b85"
     },
@@ -171,10 +171,10 @@
         1120
       ],
       "rect": {
-        "left": 579,
+        "left": 570,
         "top": 394,
-        "width": 86,
-        "height": 12
+        "width": 94,
+        "height": 14
       },
       "sha256": "11a9c38bc6752cf89d1f81ec4635664a00b388566378a9530c2e8c0affeb3233"
     },
@@ -225,7 +225,7 @@
         "left": 147,
         "top": 120,
         "width": 704,
-        "height": 483
+        "height": 453
       },
       "sha256": "4a86d7d3a4f5fe699e450b5cc501f9cb7dd4d8aea69d7680a56f4c9a0894f2b0"
     },

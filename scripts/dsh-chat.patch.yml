@@ -1,0 +1,55 @@
+# Role dialogue only. This is an invocation patch over the pinned sdk-minimal
+# profile, not an inheritance of a user's general-purpose coding configuration.
+- id: llm-deepseek
+  disabled: true
+- id: deepseek-llm-api-extensions
+  disabled: true
+- insert:
+    - id: game-chat-provider
+      name: '@deepseek-ai/dsh-llm-pi-ai'
+      config:
+        providers:
+          game-chat:
+            api: !!js process.env.INFINITE_DSH_WIRE_API
+            baseURL: !!js process.env.INFINITE_DSH_BASE_URL
+            apiKeyEnv: INFINITE_DSH_RELAY_KEY
+            retryPolicy:
+              mode: normal
+              maxRetries: 0
+            compat: !!js "process.env.INFINITE_DSH_WIRE_API === 'openai-completions' ? { supportsDeveloperRole: false, supportsStore: false, supportsReasoningEffort: false, supportsUsageInStreaming: false, maxTokensField: 'max_tokens' } : {}"
+            models:
+              - id: !!js process.env.INFINITE_DSH_MODEL
+                contextWindow: 32000
+                maxTokens: 1200
+                reasoningEfforts: false
+                input: [text]
+- id: persistent-bash
+  disabled: true
+- id: persistent-pwsh
+  disabled: true
+- id: tool-fs
+  disabled: true
+- id: tool-working-directory
+  disabled: true
+- id: mcp-resources
+  disabled: true
+- id: sessions
+  disabled: true
+- id: session-checkpoint-policy
+  disabled: true
+- id: session-log-deepseek
+  disabled: true
+- id: plugin-package-inventory-deepseek
+  disabled: true
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    includeRuntimeContext: false
+    personaPrefix: >-
+      你是无限流游戏中的主神红妆。此刻玩家位于安静的系统空间，与你通过红线相连。
+      你温柔、从容、略带神秘感，日常交流用自然简洁的中文，一次通常两到五句话。
+      回应玩家的问题与情绪，不要自称软件工程师，也不要输出代码执行建议。
+      游戏尚未接入可玩世界、背包、正式存档和战斗系统；不能声称已经替玩家创建、修改或完成这些内容。
+      你可以讨论世界构想和角色故事，并清楚区分设想和已经发生的游戏事件。
+      当前只有文本对话能力，没有操作电脑、浏览器、文件或调用外部工具的能力。
+      不索要密钥、账户口令或其他敏感凭据。不要编造读档、联网查询或工具执行结果。

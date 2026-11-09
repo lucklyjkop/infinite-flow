@@ -12,6 +12,7 @@ import time
 from urllib.parse import urlsplit
 
 from models_api import CatalogueError, fetch_catalogue
+from dsh_api import ChatError, chat
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 RUNTIME_ROUTE = "/runtime/live2dcubismcore.min.js"
@@ -144,7 +145,7 @@ class AssetHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         self._request_body_consumed = False
-        if self.path != "/api/models":
+        if self.path not in {"/api/models", "/api/chat"}:
             self.reject_json(404, {"error": "未知接口。", "code": "not_found"})
             return
         # A same-origin JSON POST is required; no CORS permission is exposed.
@@ -156,7 +157,7 @@ class AssetHandler(SimpleHTTPRequestHandler):
         if (origin.scheme not in {"http", "https"} or not origin.netloc or origin.username or origin.password
                 or origin.path or origin.query or origin.fragment or origin.netloc.lower() not in expected
                 or self.headers.get("Sec-Fetch-Site", "same-origin") not in {"same-origin", "none"}):
-            self.reject_json(403, {"error": "请从当前游戏设置页面获取模型。", "code": "origin"})
+            self.reject_json(403, {"error": "请从当前游戏页面使用接口。", "code": "origin"})
             return
         try:
             if self.headers.get("Content-Type", "").split(";")[0].strip() != "application/json" or self.headers.get("Transfer-Encoding"):
@@ -168,9 +169,9 @@ class AssetHandler(SimpleHTTPRequestHandler):
             # stream again from the error path.
             self._request_body_consumed = True
             payload = json.loads(self.rfile.read(length))
-            result = fetch_catalogue(payload)
+            result = chat(payload) if self.path == "/api/chat" else fetch_catalogue(payload)
             self.send_json(200, result)
-        except CatalogueError as error:
+        except (CatalogueError, ChatError) as error:
             self.reject_json(error.status, {"error": error.message, "code": error.code})
         except (ValueError, UnicodeError):
             self.reject_json(400, {"error": "请求格式无效。", "code": "request"})

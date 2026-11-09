@@ -18,6 +18,10 @@
 .system-character-touch { position:absolute; left:25%; top:8%; width:50%; height:75%; padding:0; border:0; background:transparent; pointer-events:auto; cursor:pointer; }
 .system-character-touch:focus-visible { outline:0; background:radial-gradient(ellipse,#f5d3a810,transparent 70%); }
 .system-whisper { position:absolute; z-index:6; left:65%; top:24%; width:max-content; max-width:260px; padding:16px 24px; margin:0; color:#ead7be; font-size:15px; line-height:1.8; text-align:center; background:url('assets/system-space/composer.webp') center/100% 100% no-repeat; filter:drop-shadow(0 5px 12px #0005); }
+.system-whisper-reply { position:fixed; left:50%; top:auto; bottom:15%; width:min(600px,80vw); max-width:none; transform:translateX(-50%); padding:10px 20px 12px 10px; border:24px solid transparent; border-image:url('assets/system-space/panel.webp') 180 180 200 180 fill / 26px / 0 stretch; text-align:left; pointer-events:auto; background:none; }
+.system-whisper-reply .system-whisper-text { display:block; max-height:min(28vh,210px); overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; user-select:text; scrollbar-width:thin; scrollbar-color:#96734b transparent; }
+.system-whisper-close { position:absolute; right:-4px; top:-6px; border:0; background:none; color:#d7c3a7; font:24px/1 serif; padding:5px; }
+.system-whisper-close:hover,.system-whisper-close:focus-visible { color:#fff1d9; outline:0; text-shadow:0 0 6px #e2ac67; }
 .system-floating-navigation { position:absolute; inset:0; z-index:5; pointer-events:none; }
 .system-float-slot { --float-out:-20px; position:absolute; width:clamp(95px,7.8vw,144px); pointer-events:auto; }
 .system-float-left { left:20%; }
@@ -132,3 +136,5 @@
   .system-composer { padding-left:23px; padding-right:18px; } .system-details,.system-details[data-side="left"] { padding:30px; }
 }
 @media (prefers-reduced-motion:reduce) { .system-space *,.system-space *::before { animation:none !important; transition:none !important; } }
+@media (orientation:portrait) { .system-whisper.system-whisper-reply { left:50%; top:auto; bottom:17%; max-width:none; width:88vw; padding:8px 15px 10px 8px; } }
+@media (max-height:480px) and (orientation:landscape) { .system-whisper.system-whisper-reply { left:50%; top:auto; bottom:23%; max-width:none; width:min(500px,70vw); padding:4px 12px 6px 4px; } }

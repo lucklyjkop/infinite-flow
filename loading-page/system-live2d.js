@@ -2,7 +2,7 @@
    updates; application inputs are written before physics, never after it. */
 (() => {
   'use strict';
-  const MODEL_URL = 'assets/live2d/hongzhuang/hongzhuang.model3.json';
+  const MODEL_URL = 'assets/live2d/hongzhuang/hongzhuang.model3.json?v=eye-alignment-2';
   const CORE_URL = 'runtime/live2dcubismcore.min.js';
   const VENDOR_URL = 'vendor/live2d/live2d-vendor.js';
   const scripts = new Map();

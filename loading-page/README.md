@@ -117,7 +117,7 @@ Cubism Core 由 `../scripts/setup-live2d-runtime.py` 从官方地址下载到忽
 
 大肥鱼项目作为 Q 版比例、画风与制作流程参考，没有复制它的角色模型或贴图。原 UI 源图在 `../art-source/imagegen/system-space/`；本次拆层素材、完整提示词、PSD、Cubism `.cmo3` 与绑定工程在 `../art-source/live2d/hongzhuang/`。使用内置生图工具，工具未披露具体模型版本和质量档位。
 
-底部输入支持 Enter 发送、Shift+Enter 换行及中文输入法。发送派发可取消的 `infinite:systemmessage`，尚无对话服务时保留输入并提示“对话尚未连接”，不模拟 AI 应答。正式对话模块可接管该事件；世界入口的 `infinite:journeyrequest` 同理，未接入时仅显示未启程状态。
+底部输入支持 Enter 发送、Shift+Enter 换行及中文输入法。`system-chat.js` 接管可取消的 `infinite:systemmessage`，将已保存的模型连接配置提交给本地 `/api/chat`，通过官方 DSH SDK 的原生多协议插件连接自定义 OpenAI 兼容或 Anthropic 接口。成功回复显示在可滚动、可收起的对话贴图中；等待时阻止重复发送，失败保留输入并显示具体错误，离开场景后不展示迟到的回复。设置草稿不会替代已保存的连接配置，切换连接会清除旧对话会话。安装与协议详情见 [DSH_CHAT.md](DSH_CHAT.md)。当前没有 TTS 和语音口型同步。世界入口的 `infinite:journeyrequest` 仍未接入可玩世界，保持未启程状态。
 
 ### 项目检查
 

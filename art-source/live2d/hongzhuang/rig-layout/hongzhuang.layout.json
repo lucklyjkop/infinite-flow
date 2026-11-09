@@ -71,9 +71,9 @@
         "height": 269
       },
       "rect": {
-        "left": 326,
+        "left": 321,
         "top": 453,
-        "width": 135,
+        "width": 137,
         "height": 122
       },
       "tags": [
@@ -88,13 +88,13 @@
       "image": {
         "path": "eyelash-right.png",
         "width": 343,
-        "height": 269
+        "height": 162
       },
       "rect": {
-        "left": 326,
-        "top": 453,
-        "width": 135,
-        "height": 122
+        "left": 321.0,
+        "top": 453.0,
+        "width": 137.0,
+        "height": 73.4721189591078
       },
       "tags": [
         "eye",
@@ -111,9 +111,9 @@
         "height": 268
       },
       "rect": {
-        "left": 557,
+        "left": 554,
         "top": 453,
-        "width": 135,
+        "width": 137,
         "height": 122
       },
       "tags": [
@@ -128,13 +128,13 @@
       "image": {
         "path": "eyelash-left.png",
         "width": 343,
-        "height": 268
+        "height": 161
       },
       "rect": {
-        "left": 557,
-        "top": 453,
-        "width": 135,
-        "height": 122
+        "left": 554.0,
+        "top": 453.0,
+        "width": 137.0,
+        "height": 73.2910447761194
       },
       "tags": [
         "eye",
@@ -151,10 +151,10 @@
         "height": 279
       },
       "rect": {
-        "left": 354,
-        "top": 475,
-        "width": 82,
-        "height": 94
+        "left": 366,
+        "top": 479,
+        "width": 80,
+        "height": 90
       },
       "tags": [
         "eye",
@@ -171,10 +171,10 @@
         "height": 279
       },
       "rect": {
-        "left": 584,
-        "top": 475,
-        "width": 82,
-        "height": 94
+        "left": 566,
+        "top": 479,
+        "width": 80,
+        "height": 90
       },
       "tags": [
         "eye",
@@ -191,10 +191,10 @@
         "height": 74
       },
       "rect": {
-        "left": 346,
+        "left": 337,
         "top": 394,
-        "width": 86,
-        "height": 12
+        "width": 94,
+        "height": 14
       },
       "tags": [
         "brow",
@@ -210,10 +210,10 @@
         "height": 75
       },
       "rect": {
-        "left": 579,
+        "left": 570,
         "top": 394,
-        "width": 86,
-        "height": 12
+        "width": 94,
+        "height": 14
       },
       "tags": [
         "brow",
@@ -270,7 +270,7 @@
         "left": 147,
         "top": 120,
         "width": 704,
-        "height": 483
+        "height": 453
       },
       "tags": [
         "hair",

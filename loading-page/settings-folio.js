@@ -502,7 +502,8 @@
     else status('其他窗口已更新设置，保存将使用当前页的修改。');
   });
 
-  window.InfiniteSettings = Object.freeze({ open, close, getState: () => clone(draft) });
+  window.InfiniteSettings = Object.freeze({ open, close, getState: () => clone(draft),
+    getModelConnection: () => ({...saved.model, apiKey:savedSecret}) });
   syncOrientation();
   fillForm();
   applyPreview();

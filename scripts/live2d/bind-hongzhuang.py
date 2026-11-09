@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--output', type=Path, default=ROOT/'output/hongzhuang-live2d/bound')
     parser.add_argument('--head-strength', type=float, default=.32)
     parser.add_argument('--body-strength', type=float, default=.24)
-    parser.add_argument('--mesh-spacing', type=int, default=36)
+    parser.add_argument('--mesh-spacing', type=int, default=24)
     parser.add_argument('--heap-mib', type=int, default=1536)
     args = parser.parse_args()
     args.portable = args.portable.resolve(strict=True)
@@ -46,7 +46,11 @@ def main():
     settings={'atlasSize':2048,'meshSpacing':args.mesh_spacing,'headStrength':args.head_strength,
               'bodyStrength':args.body_strength,'generateDeformers':True,'generatePhysics':True,
               'seeThroughEyes':False,'seeThroughBrows':False,'exportCmo3':True,'exportMoc3':True,
-              'exportJson':True,'exportMotions':True}
+              'exportJson':True,'exportMotions':True,
+              # The wide chibi eye has a thin upper lash, not a whole outline.
+              # Close within the aperture and keep the iris rebound subtle.
+              'rigTuning':{'blinkCorner':28,'blinkDepth':30,'eyelashSquash':65,
+                           'irisJellyStretch':3,'irisJellySquash':1.5}}
     records={'tool':'PSD2Live portable','executable_sha256':hashlib.sha256(args.portable.read_bytes()).hexdigest(),
              'layout_sha256':hashlib.sha256(args.layout.read_bytes()).hexdigest(),'settings':settings,'operations':{}}
     record_path=work/'operations.json'

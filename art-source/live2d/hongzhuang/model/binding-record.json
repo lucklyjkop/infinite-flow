@@ -2,10 +2,10 @@
   "generator": "PSD2Live 3.6.7 portable",
   "runtime": "Cubism 5.0 MOC v5",
   "tool_executable_sha256": "983c02686933909fa04a2192b0fc0f65f6e97ee1908ccf239fa23c07aa3e0e70",
-  "layout_sha256": "eaee0043b81ff6770978bf5ab75ffaa0b1f5c7e4c6ce0d8d91812d7fdc9139e5",
+  "layout_sha256": "5b886ca743f9e073afa63473e4d9efcb3178cb6f12980119e7a6edf998e1f494",
   "settings": {
     "atlasSize": 2048,
-    "meshSpacing": 30,
+    "meshSpacing": 24,
     "headStrength": 0.32,
     "bodyStrength": 0.24,
     "generateDeformers": true,
@@ -15,14 +15,21 @@
     "exportCmo3": true,
     "exportMoc3": true,
     "exportJson": true,
-    "exportMotions": true
+    "exportMotions": true,
+    "rigTuning": {
+      "blinkCorner": 28,
+      "blinkDepth": 30,
+      "eyelashSquash": 65,
+      "irisJellyStretch": 3,
+      "irisJellySquash": 1.5
+    }
   },
   "source": "18 registered layers from built-in image generation; no borrowed character model",
   "runtime_files": [
     {
       "file": "hongzhuang.layout.2048/texture_00.png",
-      "bytes": 4528138,
-      "sha256": "11d6a8fb50381c2e5ec4218f50ae17355ffaff0286e8499cc2ec808e4bdbf17c"
+      "bytes": 4480546,
+      "sha256": "c24103186faa803cb0d7169b3a781e8481b11329ca14eb3bedbf4a2d03abe3e1"
     },
     {
       "file": "hongzhuang.layout.2048/texture_01.png",
@@ -51,8 +58,8 @@
     },
     {
       "file": "hongzhuang.layout.moc3",
-      "bytes": 251840,
-      "sha256": "04b827faacf7f540b2e001913215078bf694eb867684693311f8869dde040a16"
+      "bytes": 249664,
+      "sha256": "4d797884301f5e1505c0942d36408336fa262a30a1d799542bc089156a6c177d"
     },
     {
       "file": "hongzhuang.layout.nod.motion3.json",

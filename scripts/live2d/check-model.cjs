@@ -209,6 +209,27 @@ async function main(config) {
     const neutral = pose();
     report.neutralBounds = bounds(neutral.vertices);
     check('Neutral geometry has visible extent', report.neutralBounds?.width > 0 && report.neutralBounds?.height > 0);
+    // A finite mesh can still be visually broken: the original combined upper
+    // and lower lash loop drifted down onto the cheeks during blinking. Check
+    // that actual MOC lash geometry stays inside its neutral eye region.
+    report.blinkAlignment = [];
+    for (const side of ['L', 'R']) {
+      const lashIndex = drawableIds.findIndex(id => new RegExp(`eyelash${side}(?:\\d+)?$`, 'i').test(id));
+      const whiteIndex = drawableIds.findIndex(id => new RegExp(`eyewhite${side}(?:\\d+)?$`, 'i').test(id));
+      if (lashIndex < 0 || whiteIndex < 0) continue;
+      const lashRest = bounds([neutral.vertices[lashIndex]]);
+      const eyeRest = bounds([neutral.vertices[whiteIndex]]);
+      const margin = Math.max(lashRest.height, eyeRest.height) * .12;
+      for (const openness of [.5, 0]) {
+        const closed = pose({[`ParamEye${side}Open`]:openness});
+        const lash = bounds([closed.vertices[lashIndex]]);
+        const aligned = lash.bottom >= Math.min(lashRest.bottom, eyeRest.bottom) - margin
+          && lash.top <= Math.max(lashRest.top, eyeRest.top) + margin;
+        const evidence = {side, openness, neutralLash:lashRest, neutralWhite:eyeRest, lash, margin};
+        report.blinkAlignment.push(evidence);
+        check(`Eye ${side} at ${openness} openness keeps lashes at the eye`, aligned, evidence);
+      }
+    }
     function compare(state) {
       let changedCoordinates = 0, invalidCoordinates = 0, changedOpacities = 0, invalidOpacities = 0, maxDelta = 0;
       const changedDrawables = [], changedOpacityDrawables = [];

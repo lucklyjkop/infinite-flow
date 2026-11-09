@@ -7,8 +7,8 @@
   "cmo3TargetVersionNo": 5000000,
   "cmo3FileFormatVersion": "500000005",
   "canvas": {"width":1024,"height":1536},
-  "config": {"atlasSize":2048,"meshSpacing":30,"headTurnStrength":0.32,"bodyStrength":0.24,"meshOnly":false,"generateDeformers":true,"exportMotions":true},
-  "faceRig": {"algorithm":"perspective-parallelogram-nine-pose-v2","angleX":[-45,0,45],"angleY":[-30,0,30],"initialAngleZ":0.0,"centerX":508.12308,"centerY":474.05096,"radiusX":271.19992,"radiusY":281.3022},
+  "config": {"atlasSize":2048,"meshSpacing":24,"headTurnStrength":0.32,"bodyStrength":0.24,"meshOnly":false,"generateDeformers":true,"exportMotions":true},
+  "faceRig": {"algorithm":"perspective-parallelogram-nine-pose-v2","angleX":[-45,0,45],"angleY":[-30,0,30],"initialAngleZ":0.0,"centerX":505.81808,"centerY":474.05096,"radiusX":273.5049,"radiusY":281.3022},
   "deformerHierarchy": {"head":"DeformHeadContainer","face":"DeformFaceNinePose","frontHair":["DeformHairFrontFollow","DeformHairFrontPhysics"],"backHair":["DeformHairBackFollow","DeformHairBackPhysics"]},
   "physics": {"enabled":true,"frontHair":true,"backHair":true,"eyeJelly":true,"groups":["PhysicsHairBack","PhysicsHairFront","PhysicsEyeJelly"]},
   "summary": {"layers":20,"drawables":18,"deformers":23,"parameters":20,"atlasPages":2},
@@ -34,5 +34,5 @@
   {"source":"front hair ahoge","type":"preset","tag":"front hair","side":"NONE","parameter":"","switchId":0,"drawable":"ArtMeshFrontHair"},
   {"source":"headwear","type":"preset","tag":"headwear","side":"NONE","parameter":"","switchId":0,"drawable":"ArtMeshHeadwear"}
   ],
-  "warnings": ["Duplicate layer names detected: eyewhite, eyelash, irides, eyebrow, front hair; stable layer IDs were used to distinguish them.","CMO3: Atlas holds up to 6.25x the canvas resolution of 16 layers (topwear, face, front hair right, front hair left, headwear and 11 more); Cubism Editor rebuilds the atlas from canvas-resolution layers"]
+  "warnings": ["Duplicate layer names detected: eyewhite, eyelash, irides, eyebrow, front hair; stable layer IDs were used to distinguish them.","CMO3: Atlas holds up to 5.36x the canvas resolution of 16 layers (topwear, face, front hair right, front hair left, headwear and 11 more); Cubism Editor rebuilds the atlas from canvas-resolution layers"]
 }

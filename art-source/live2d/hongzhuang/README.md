@@ -16,7 +16,9 @@
 
 ## 绑定范围
 
-模型包含 18 个实际绘制网格、20 个参数：左右眼独立眨眼、瞳孔 XY 跟随、张闭嘴、眉毛、头部 XYZ、身体姿态、呼吸、前后发物理和眼睛轻微弹性。提供 Idle、Blink、Nod、Shake 动作及四种基础表情。双瞳各由对应眼白网格裁剪；睫毛与眼白使用原像素分离，避免整眼一起压扁后睫毛消失。
+模型包含 18 个实际绘制网格、20 个参数：左右眼独立眨眼、瞳孔 XY 跟随、张闭嘴、眉毛、头部 XYZ、身体姿态、呼吸、前后发物理和眼睛轻微弹性。提供 Idle、Blink、Nod、Shake 动作及四种基础表情。双瞳各由对应眼白网格裁剪。上睫毛使用独立紧边界图层，下眼线归入眼白，闭眼时随眼白压合；整圈眼线不得作为单个睫毛层，否则绑定器按列求中心线时会把下眼线拉到脸颊。
+
+中性眼球中心按母版校正到画布 X=406/606，虹膜为 80×90。刘海高度为 453，减少遮挡眼眶与眉毛。眨眼落点在眼眶高度 58% 处（边角 28% 加弧深 30%），上睫毛保留 65% 厚度；瞳孔物理形变限制为伸长 3%、收窄 1.5%。这些参数随绑定工程保存，不靠浏览器隐藏错误部件。
 
 身体、双袖、手和红线保留在连续的同一网格，确保轻幅身体与呼吸形变时红线不断裂；这版未提供独立手指、抬臂或大幅衣袖动作。运行时应使用轻幅转头，参数全幅通过数值检查不代表所有大幅视觉组合均已精修。
 
@@ -28,7 +30,7 @@
 
 ```powershell
 python scripts/live2d/prepare-hongzhuang.py
-python scripts/live2d/bind-hongzhuang.py --portable "E:/大肥鱼/vendor/psd2live/PSD2Live.exe" --proxy-source "E:/大肥鱼/vendor/psd2live-source" --mesh-spacing 30
+python scripts/live2d/bind-hongzhuang.py --portable "E:/大肥鱼/vendor/psd2live/PSD2Live.exe" --proxy-source "E:/大肥鱼/vendor/psd2live-source" --mesh-spacing 24
 python scripts/live2d/package-hongzhuang.py
 ```
 

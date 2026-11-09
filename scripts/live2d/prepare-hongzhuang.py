@@ -48,24 +48,36 @@ part('back hair','hair-atlas.png',(0,0,512,512),(82,110,860,1080),['hair','back'
 part('topwear','body.png',None,(150,650,720,880),['top'])
 part('face','face-base.png',None,(265,215,490,440),['face'])
 
-# The generated eye white includes its lash. Separate original bright/dark pixels;
-# this preserves native lash thickness on closing instead of flattening the entire eye.
-for side, crop, rect in [('right',(0,0,543,420),(326,453,135,122)),('left',(543,0,1086,420),(557,453,135,122))]:
+# Keep only the UPPER lid in EYELASH. Its alpha-weighted column centreline is
+# what PSD2Live bends on blink. Including the lower contour in that layer makes
+# the two contours orbit their shared centroid and pulls the lower one onto the
+# cheek. The lower contour instead closes with EYEWHITE, along the same curve.
+for side, crop, rect in [('right',(0,0,543,420),(321,453,137,122)),('left',(543,0,1086,420),(554,453,137,122))]:
     eye = source_part('features-atlas.png', crop)
     rgba = np.array(eye)
-    bright = rgba[:,:,:3].mean(axis=2) > 170
-    white = rgba.copy(); white[:,:,3][~bright] = 0
-    lash = rgba.copy(); lash[:,:,3][bright] = 0
+    bright = (rgba[:,:,:3].mean(axis=2) > 170) & (rgba[:,:,3] > 8)
+    first_white = np.where(bright.any(axis=0), bright.argmax(axis=0), eye.height*.60)
+    upper_limit = np.minimum(first_white+1, eye.height*.60)
+    upper_lash = (~bright) & (np.arange(eye.height)[:,None] < upper_limit[None,:])
+    white = rgba.copy(); white[:,:,3][upper_lash] = 0
+    lash = rgba.copy(); lash[:,:,3][~upper_lash] = 0
     add('eyewhite '+side,Image.fromarray(white),rect,['eye','white',side],'features-atlas.png',crop)
-    add('eyelash '+side,Image.fromarray(lash),rect,['eye','lash',side],'features-atlas.png',crop)
+    # Tight crop changes raster extent only; compensate the placement so no
+    # pixel moves in the neutral assembly. Avoid a tall transparent lash mesh.
+    lash_image = Image.fromarray(lash)
+    box = lash_image.getchannel('A').getbbox()
+    x,y,w,h = rect
+    lash_rect = (x+box[0]*w/eye.width,y+box[1]*h/eye.height,
+                 (box[2]-box[0])*w/eye.width,(box[3]-box[1])*h/eye.height)
+    add('eyelash '+side,lash_image.crop(box),lash_rect,['eye','lash',side],'features-atlas.png',crop)
 
-part('irides right','features-atlas.png',(0,420,543,820),(354,475,82,94),['eye','iris','right'])
-part('irides left','features-atlas.png',(543,420,1086,820),(584,475,82,94),['eye','iris','left'])
-part('eyebrow right','features-atlas.png',(0,820,543,1120),(346,394,86,12),['brow','right'])
-part('eyebrow left','features-atlas.png',(543,820,1086,1120),(579,394,86,12),['brow','left'])
+part('irides right','features-atlas.png',(0,420,543,820),(366,479,80,90),['eye','iris','right'])
+part('irides left','features-atlas.png',(543,420,1086,820),(566,479,80,90),['eye','iris','left'])
+part('eyebrow right','features-atlas.png',(0,820,543,1120),(337,394,94,14),['brow','right'])
+part('eyebrow left','features-atlas.png',(543,820,1086,1120),(570,394,94,14),['brow','left'])
 part('mouth close','features-atlas.png',(0,1120,543,1448),(480,596,50,10),['mouth','closed'])
 part('mouth open','features-atlas.png',(543,1120,1086,1448),(488,591,35,22),['mouth','open'])
-part('front hair','hair-atlas.png',(512,0,1024,512),(147,120,704,483),['hair','front'])
+part('front hair','hair-atlas.png',(512,0,1024,512),(147,120,704,453),['hair','front'])
 part('front hair right','hair-atlas.png',(0,512,512,1024),(225,420,140,440),['hair','front','right'])
 part('front hair left','hair-atlas.png',(512,512,1024,1024),(660,420,140,440),['hair','front','left'])
 part('front hair ahoge','hair-atlas.png',(0,1024,512,1536),(300,9,300,145),['hair','front'])
@@ -73,11 +85,11 @@ part('headwear','hair-atlas.png',(512,1024,1024,1536),(690,210,165,315),['headwe
 
 layout = {'format':'psd2live-layout','version':1,'name':'hongzhuang','canvas':{'width':CANVAS[0],'height':CANVAS[1]},'layers':layers}
 (OUT / 'hongzhuang.layout.json').write_text(json.dumps(layout,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-(OUT / 'registration.json').write_text(json.dumps({'processing':'Crop, alpha island cleanup, original-pixel white/lash separation, and coordinate registration only. No repainting.','layers':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+(OUT / 'registration.json').write_text(json.dumps({'processing':'Crop, alpha island cleanup, original-pixel upper-lash separation (lower contour stays with eye white), and coordinate registration only. No repainting.','layers':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 preview = Image.new('RGBA', CANVAS)
 for layer in layers:
     if layer['name'] == 'mouth open': continue
-    r=layer['rect']; image=Image.open(OUT / layer['image']['path']).convert('RGBA').resize((r['width'],r['height']),Image.Resampling.LANCZOS)
-    preview.alpha_composite(image,(r['left'],r['top']))
+    r=layer['rect']; image=Image.open(OUT / layer['image']['path']).convert('RGBA').resize((round(r['width']),round(r['height'])),Image.Resampling.LANCZOS)
+    preview.alpha_composite(image,(round(r['left']),round(r['top'])))
 preview.save(OUT / 'layout-preview.png')
 print(json.dumps({'layers':len(layers),'layout':str(OUT / 'hongzhuang.layout.json'),'preview':str(OUT / 'layout-preview.png')}))
