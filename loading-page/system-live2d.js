@@ -2,7 +2,7 @@
    updates; application inputs are written before physics, never after it. */
 (() => {
   'use strict';
-  const MODEL_URL = 'assets/live2d/hongzhuang/hongzhuang.model3.json?v=eye-alignment-2';
+  const MODEL_URL = 'assets/live2d/hongzhuang/hongzhuang.model3.json?v=mouth-continuity-3';
   const CORE_URL = 'runtime/live2dcubismcore.min.js';
   const VENDOR_URL = 'vendor/live2d/live2d-vendor.js';
   const scripts = new Map();
@@ -77,7 +77,7 @@
       if (index === undefined || outputIds.has(id)) continue;
       const value = clamp(target, parameters.minimumValues[index], parameters.maximumValues[index]);
       const previous = smooth.get(id) ?? parameters.values[index];
-      const speed = id.includes('EyeLOpen') || id.includes('EyeROpen') ? 48 : id.includes('Mouth') ? 20 : 9;
+      const speed = id.includes('EyeLOpen') || id.includes('EyeROpen') ? 48 : id.includes('Mouth') ? 38 : 9;
       const next = reduced() || debugPose ? value : previous + (value - previous) * (1 - Math.exp(-dt * speed));
       smooth.set(id, next); parameters.values[index] = next;
     }

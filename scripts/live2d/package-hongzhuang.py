@@ -25,9 +25,13 @@ for rel in paths:
 for name in ['hongzhuang.psd2live','hongzhuang.psd','hongzhuang.layout.cmo3','hongzhuang.layout.can3','hongzhuang.layout.psd2live.json']:
     shutil.copy2(source/name,editable/name)
 operation=json.loads((source/'.binding-run/operations.json').read_text(encoding='utf-8'))
+layer_count=operation.get('layout_layers',len(json.loads((ROOT/'art-source/live2d/hongzhuang/rig-layout/hongzhuang.layout.json').read_text(encoding='utf-8'))['layers']))
 record={'generator':'PSD2Live 3.6.7 portable','runtime':'Cubism 5.0 MOC v5',
         'tool_executable_sha256':operation['executable_sha256'],'layout_sha256':operation['layout_sha256'],
-        'settings':operation['settings'],'source':'18 registered layers from built-in image generation; no borrowed character model',
+        'settings':operation['settings'],'source':f'{layer_count} registered layers from built-in image generation; no borrowed character model',
+        'mouth_binding':{'surface':'mouth-open','closed_smile':'archived source only; not bound',
+                         'rect':{'left':488,'top':598,'width':35,'height':18},
+                         'rest_seam_y':601.6,'method':'Continuous original-art mesh deformation; no overlapping opacity-switched mouth'},
         'runtime_files':[{ 'file':str(p.relative_to(runtime)).replace('\\','/'),'bytes':p.stat().st_size,
                           'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(runtime.rglob('*')) if p.is_file() and p.name!='manifest.json']}
 (editable/'binding-record.json').write_bytes((json.dumps(record,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))

@@ -5,12 +5,16 @@ const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const {test}=require('node:test');
 const source=fs.readFileSync(path.resolve(__dirname,'../loading-page/system-tts.js'),'utf8');
+const envelopeSource=fs.readFileSync(path.resolve(__dirname,'../loading-page/speech-envelope.js'),'utf8');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function settle(){for(let i=0;i<3;i++)await flush();}
 
 function fixture(){
   const window=new EventTarget(),document=new EventTarget(),requests=[],sources=[],gains=[],mouth=[],states=[],frames=new Map(),timers=[];
-  let config={enabled:true,voice:'female',rate:100,volume:80},master=80,hub={visible:true,phase:'ready'},dialog=false,frameId=0,amplitude=.1;
+  let config={enabled:true,voice:'female',rate:100,volume:80},master=80,hub={visible:true,phase:'ready'},dialog=false,frameId=0;
+  const sampleRate=24000,pcm=Float32Array.from({length:sampleRate},(_,index)=>{
+    const seconds=index/sampleRate;return seconds>=.12&&seconds<.42?.2*Math.sin(2*Math.PI*200*seconds):0;
+  });
   document.hidden=false;document.querySelector=()=>dialog?{}:null;
   window.InfiniteSettings={getTTSConfig:()=>({...config}),getState:()=>({audio:{master}})};
   window.InfiniteSystemSpace={getState:()=>({...hub})};
@@ -19,7 +23,7 @@ function fixture(){
     constructor(){this.state='running';this.currentTime=10;this.destination={};f.context=this;}
     async resume(){this.state='running';}
     async suspend(){this.state='suspended';}
-    async decodeAudioData(bytes){return {duration:.5,bytes};}
+    async decodeAudioData(bytes){return {duration:pcm.length/sampleRate,length:pcm.length,numberOfChannels:1,sampleRate,getChannelData:()=>pcm,bytes};}
     createBufferSource(){
       const item={started:false,stopped:false,disconnected:false,onended:null,connect(){},disconnect(){this.disconnected=true;},start(){this.started=true;},stop(){this.stopped=true;}};
       sources.push(item);return item;
@@ -31,7 +35,6 @@ function fixture(){
         linearRampToValueAtTime(value,time){this.value=value;calls.push(['ramp',value,time]);}}};
       gains.push(node);return node;
     }
-    createAnalyser(){return {fftSize:256,connect(){},disconnect(){},getFloatTimeDomainData(values){values.fill(amplitude);}};}
   }
   window.AudioContext=Context;
   window.addEventListener('infinite:ttsstate',event=>states.push({...event.detail}));
@@ -39,17 +42,18 @@ function fixture(){
     setConfig(next){config={...config,...next};},setMaster(value){master=value;},setHub(value){hub=value;},setDialog(value){dialog=value;},
     emit(name,detail){window.dispatchEvent(new CustomEvent(name,{detail}));},
     hide(){document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));},
-    frame(value=amplitude){amplitude=value;const pending=[...frames.values()];frames.clear();pending.forEach(callback=>callback());},
+    frame(seconds=0){if(f.context)f.context.currentTime+=seconds;const pending=[...frames.values()];frames.clear();pending.forEach(callback=>callback());},
     finish(index=sources.length-1){sources[index]?.onended?.();},
     respond(index,{ok=true,error='语音网络暂不可用',contentType='audio/mpeg',size=256}={}){
       requests[index].resolve({ok,headers:{get:()=>contentType},json:async()=>({error}),arrayBuffer:async()=>new ArrayBuffer(size)});
     },
   };
-  vm.runInNewContext(source,{window,document,CustomEvent,AbortController,Float32Array,
+  const context=vm.createContext({window,document,CustomEvent,AbortController,Float32Array,
     setTimeout:(fn,delay)=>{const timer=setTimeout(fn,delay);timer.unref();timers.push({fn,delay,timer});return timer;},clearTimeout,
     requestAnimationFrame:fn=>{const id=++frameId;frames.set(id,fn);return id;},cancelAnimationFrame:id=>frames.delete(id),
     fetch:(url,options)=>new Promise((resolve,reject)=>requests.push({url,options,payload:JSON.parse(options.body),resolve,reject})),
   });
+  vm.runInContext(envelopeSource,context);vm.runInContext(source,context);
   f.api=window.InfiniteTTS;return f;
 }
 
@@ -120,11 +124,13 @@ test('long prose is split at Unicode boundaries and Markdown destinations are no
   assert.ok(chunks.every(text=>!text.includes('https:')&&!text.includes('console.log')&&!text.includes('**')));
 });
 
-test('gain follows master and voice volume, while mouth follows analyser samples',async()=>{
+test('gain follows volume, while decoded speech follows the audio clock and closes on pauses',async()=>{
   const f=fixture();f.setConfig({volume:50});f.setMaster(25);const job=f.api.reply('真实口型');await settle();f.respond(0);await settle();
   const level=Math.pow(.25,1.35)*.5;
   assert.ok(f.gains[0].calls.some(call=>call[0]==='ramp'&&Math.abs(call[1]-level)<1e-10));
-  assert.ok(f.mouth.at(-1)>.4);f.frame(0);assert.equal(f.mouth.at(-1),0);f.frame(.3);assert.equal(f.mouth.at(-1),.85);
+  assert.equal(f.mouth.at(-1),0);f.frame(.2);assert.ok(f.mouth.at(-1)>.5&&f.mouth.at(-1)<=.68);
+  const held=f.mouth.at(-1);for(let frame=0;frame<15;frame++)f.frame();assert.equal(f.mouth.at(-1),held,'render frames must not advance speech');
+  f.frame(.5);assert.equal(f.mouth.at(-1),0,'the pause closes the mouth before the audio buffer ends');
   f.finish();assert.equal(await job,true);assert.equal(f.mouth.at(-1),0);
 });
 

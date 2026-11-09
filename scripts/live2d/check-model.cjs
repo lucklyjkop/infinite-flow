@@ -230,6 +230,34 @@ async function main(config) {
         check(`Eye ${side} at ${openness} openness keeps lashes at the eye`, aligned, evidence);
       }
     }
+    // Hongzhuang uses a single continuously deformed mouth. The old broad
+    // closed-smile layer stayed visible over the opening and doubled the lips.
+    if (path.basename(config.model).startsWith('hongzhuang')) {
+      const mouths = drawableIds.filter(id => /^ArtMeshMouth(?:Open|Close)$/.test(id));
+      check('Hongzhuang binds one continuous mouth surface', mouths.length === 1 && mouths[0] === 'ArtMeshMouthOpen', mouths);
+      const mouthIndex = drawableIds.indexOf('ArtMeshMouthOpen');
+      report.mouthAlignment = [];
+      if (mouthIndex >= 0) {
+        const rest = bounds([neutral.vertices[mouthIndex]]);
+        let previousHeight = rest.height;
+        for (const openness of [0, .1, .3, .6, .68, 1]) {
+          const state = pose({ParamMouthOpenY:openness});
+          const mouth = bounds([state.vertices[mouthIndex]]);
+          const evidence = {openness, opacity:state.opacity[mouthIndex], bounds:mouth};
+          report.mouthAlignment.push(evidence);
+          check(`Mouth at ${openness} keeps a fixed horizontal anchor`,
+            Math.abs(mouth.left-rest.left) < EPSILON && Math.abs(mouth.right-rest.right) < EPSILON, evidence);
+          check(`Mouth at ${openness} opens monotonically without opacity swaps`,
+            mouth.height >= previousHeight-EPSILON && Math.abs(state.opacity[mouthIndex]-1) < EPSILON, evidence);
+          check(`Mouth at ${openness} leaves other geometry unchanged`,
+            state.vertices.every((points,index) => index === mouthIndex || points.every((value,j) => Math.abs(value-neutral.vertices[index][j]) < EPSILON)));
+          previousHeight = mouth.height;
+        }
+        const opened = report.mouthAlignment.at(-1).bounds;
+        check('Mouth opening moves mainly the lower lip', opened.top-rest.top < (rest.bottom-opened.bottom)*.4,
+          {upperTravel:opened.top-rest.top,lowerTravel:rest.bottom-opened.bottom});
+      }
+    }
     function compare(state) {
       let changedCoordinates = 0, invalidCoordinates = 0, changedOpacities = 0, invalidOpacities = 0, maxDelta = 0;
       const changedDrawables = [], changedOpacityDrawables = [];

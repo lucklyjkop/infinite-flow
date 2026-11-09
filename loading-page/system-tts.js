@@ -24,11 +24,11 @@
   }
   function endAudio(run,fade=false){
     cancelAnimationFrame(run.frame);run.frame=0;
-    const source=run.source,gain=run.gain,analyser=run.analyser;
-    run.source=run.gain=run.analyser=null;
+    const source=run.source,gain=run.gain;
+    run.source=run.gain=null;
     if(source){
       source.onended=null;
-      const disconnect=()=>{try{source.disconnect();analyser?.disconnect();gain?.disconnect();}catch{}};
+      const disconnect=()=>{try{source.disconnect();gain?.disconnect();}catch{}};
       try{
         if(fade&&context?.state==='running'){
           const now=context.currentTime;gain.gain.cancelScheduledValues(now);gain.gain.setValueAtTime(gain.gain.value,now);gain.gain.linearRampToValueAtTime(0,now+.035);source.stop(now+.04);setTimeout(disconnect,80);
@@ -70,19 +70,16 @@
   }
   function play(run,buffer){
     if(!current(run)||!buffer)return Promise.resolve(false);
-    const source=context.createBufferSource(),gain=context.createGain(),analyser=context.createAnalyser();
+    const source=context.createBufferSource(),gain=context.createGain();
+    const voiceMotion=run.kind==='reply'?window.InfiniteSpeechEnvelope.build(buffer):null;
     const level=Math.pow(run.config.master/100,1.35)*(run.config.volume/100),now=context.currentTime;
-    source.buffer=buffer;analyser.fftSize=256;source.connect(analyser);analyser.connect(gain);gain.connect(context.destination);
+    source.buffer=buffer;source.connect(gain);gain.connect(context.destination);
     gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(level,now+.018);
     gain.gain.setValueAtTime(level,now+Math.max(.02,buffer.duration-.045));gain.gain.linearRampToValueAtTime(0,now+buffer.duration);
-    run.source=source;run.gain=gain;run.analyser=analyser;
-    const values=new Float32Array(analyser.fftSize);
+    run.source=source;run.gain=gain;
     function envelope(){
       if(!current(run)||run.source!==source)return;
-      if(run.kind==='reply'){
-        analyser.getFloatTimeDomainData(values);let sum=0;for(const value of values)sum+=value*value;
-        mouth(clamp((Math.sqrt(sum/values.length)-.012)*6,0,.85));
-      }
+      if(voiceMotion)mouth(voiceMotion.sample(context.currentTime-now+.018));
       run.frame=requestAnimationFrame(envelope);
     }
     const completion=new Promise(resolve=>{

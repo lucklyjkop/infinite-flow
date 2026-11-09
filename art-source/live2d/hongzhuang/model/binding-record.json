@@ -2,7 +2,9 @@
   "generator": "PSD2Live 3.6.7 portable",
   "runtime": "Cubism 5.0 MOC v5",
   "tool_executable_sha256": "983c02686933909fa04a2192b0fc0f65f6e97ee1908ccf239fa23c07aa3e0e70",
-  "layout_sha256": "5b886ca743f9e073afa63473e4d9efcb3178cb6f12980119e7a6edf998e1f494",
+  "layout_sha256": "da57483b96ce8ea77cda484644d07ea014b771c513ed2f63d956f944c74e838c",
+  "bound_layout_sha256": "d8b801c5beb54b24ecba329719e14f36065341e88d6343098e7f4ca4395e1121",
+  "layout_normalization": "Source JSON normalized from CRLF to LF after binding; parsed layout is unchanged.",
   "settings": {
     "atlasSize": 2048,
     "meshSpacing": 24,
@@ -16,20 +18,39 @@
     "exportMoc3": true,
     "exportJson": true,
     "exportMotions": true,
+    "mouthOutlineEnabled": false,
+    "mouthShape": "smile",
     "rigTuning": {
       "blinkCorner": 28,
       "blinkDepth": 30,
       "eyelashSquash": 65,
       "irisJellyStretch": 3,
-      "irisJellySquash": 1.5
+      "irisJellySquash": 1.5,
+      "mouthClosedNarrow": 0,
+      "mouthFormWiden": 3,
+      "mouthSmile": 5,
+      "mouthSmileBase": 0,
+      "mouthSeam": 20
     }
   },
-  "source": "18 registered layers from built-in image generation; no borrowed character model",
+  "source": "17 registered layers from built-in image generation; no borrowed character model",
+  "mouth_binding": {
+    "surface": "mouth-open",
+    "closed_smile": "archived source only; not bound",
+    "rect": {
+      "left": 488,
+      "top": 598,
+      "width": 35,
+      "height": 18
+    },
+    "rest_seam_y": 601.6,
+    "method": "Continuous original-art mesh deformation; no overlapping opacity-switched mouth"
+  },
   "runtime_files": [
     {
       "file": "hongzhuang.layout.2048/texture_00.png",
-      "bytes": 4480546,
-      "sha256": "c24103186faa803cb0d7169b3a781e8481b11329ca14eb3bedbf4a2d03abe3e1"
+      "bytes": 4472731,
+      "sha256": "499498d8725f87dbf9d9a23ec864ac5e9bd9c078a2bae0c364e8545dc7c9bfbd"
     },
     {
       "file": "hongzhuang.layout.2048/texture_01.png",
@@ -48,8 +69,8 @@
     },
     {
       "file": "hongzhuang.layout.cdi3.json",
-      "bytes": 4069,
-      "sha256": "24780acab912be34dc449c71f1a064d0da736227e0d819d74582ebea0819d80a"
+      "bytes": 4005,
+      "sha256": "51f282cd48dbb2a3a77d8e29bf6d00df558716888aad4049a712b971f9b5c861"
     },
     {
       "file": "hongzhuang.layout.idle.motion3.json",
@@ -58,8 +79,8 @@
     },
     {
       "file": "hongzhuang.layout.moc3",
-      "bytes": 249664,
-      "sha256": "4d797884301f5e1505c0942d36408336fa262a30a1d799542bc089156a6c177d"
+      "bytes": 248960,
+      "sha256": "bf3030d865c9cb9a7d77eec402a22fccb993a09090aad7646c4c8dd1a7293764"
     },
     {
       "file": "hongzhuang.layout.nod.motion3.json",

@@ -204,10 +204,6 @@
 			"Name": "mouth open"
 		},
 		{
-			"Id": "ArtMeshMouthClose",
-			"Name": "mouth close"
-		},
-		{
 			"Id": "ArtMeshEyebrowL",
 			"Name": "eyebrow left"
 		},

@@ -32,17 +32,18 @@ def source_part(file, crop=None):
     image = Image.open(SOURCE / file).convert('RGBA')
     return cleaned(image.crop(crop) if crop else image)
 
-def add(name, image, rect, tags, source, source_crop=None):
+def add(name, image, rect, tags, source, source_crop=None, binding=True):
     key = name.replace(' ', '-'); path = OUT / (key + '.png')
     image.save(path)
     layer = {'id': key, 'name': name, 'image': {'path': path.name, 'width': image.width, 'height': image.height},
              'rect': dict(zip(('left', 'top', 'width', 'height'), rect)), 'tags': tags}
-    layers.append(layer)
+    if binding:
+        layers.append(layer)
     records.append({'id': key, 'source': source, 'source_crop': source_crop, 'rect': layer['rect'],
-                    'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+                    'bound': binding, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
 
-def part(name, file, crop, rect, tags):
-    add(name, source_part(file, crop), rect, tags, file, crop)
+def part(name, file, crop, rect, tags, binding=True):
+    add(name, source_part(file, crop), rect, tags, file, crop, binding)
 
 part('back hair','hair-atlas.png',(0,0,512,512),(82,110,860,1080),['hair','back'])
 part('topwear','body.png',None,(150,650,720,880),['top'])
@@ -75,8 +76,12 @@ part('irides right','features-atlas.png',(0,420,543,820),(366,479,80,90),['eye',
 part('irides left','features-atlas.png',(543,420,1086,820),(566,479,80,90),['eye','iris','left'])
 part('eyebrow right','features-atlas.png',(0,820,543,1120),(337,394,94,14),['brow','right'])
 part('eyebrow left','features-atlas.png',(543,820,1086,1120),(570,394,94,14),['brow','left'])
-part('mouth close','features-atlas.png',(0,1120,543,1448),(480,596,50,10),['mouth','closed'])
-part('mouth open','features-atlas.png',(543,1120,1086,1448),(488,591,35,22),['mouth','open'])
+# Archive the original closed smile, but do not bind it over the mouth surface.
+# Crossfading a 50px smile over a 35px opening doubles the lips at every syllable.
+part('mouth close','features-atlas.png',(0,1120,543,1448),(480,596,50,10),['mouth','closed'],binding=False)
+# One continuous surface, with its 20% seam at y=601.6. The upper lip remains
+# close to the original resting position while the lower lip opens downward.
+part('mouth open','features-atlas.png',(543,1120,1086,1448),(488,598,35,18),['mouth','open'])
 part('front hair','hair-atlas.png',(512,0,1024,512),(147,120,704,453),['hair','front'])
 part('front hair right','hair-atlas.png',(0,512,512,1024),(225,420,140,440),['hair','front','right'])
 part('front hair left','hair-atlas.png',(512,512,1024,1024),(660,420,140,440),['hair','front','left'])
@@ -84,11 +89,10 @@ part('front hair ahoge','hair-atlas.png',(0,1024,512,1536),(300,9,300,145),['hai
 part('headwear','hair-atlas.png',(512,1024,1024,1536),(690,210,165,315),['headwear'])
 
 layout = {'format':'psd2live-layout','version':1,'name':'hongzhuang','canvas':{'width':CANVAS[0],'height':CANVAS[1]},'layers':layers}
-(OUT / 'hongzhuang.layout.json').write_text(json.dumps(layout,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-(OUT / 'registration.json').write_text(json.dumps({'processing':'Crop, alpha island cleanup, original-pixel upper-lash separation (lower contour stays with eye white), and coordinate registration only. No repainting.','layers':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+(OUT / 'hongzhuang.layout.json').write_text(json.dumps(layout,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+(OUT / 'registration.json').write_text(json.dumps({'processing':'Crop, alpha island cleanup, original-pixel upper-lash separation (lower contour stays with eye white), and coordinate registration only. No repainting.','layers':records},ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
 preview = Image.new('RGBA', CANVAS)
 for layer in layers:
-    if layer['name'] == 'mouth open': continue
     r=layer['rect']; image=Image.open(OUT / layer['image']['path']).convert('RGBA').resize((round(r['width']),round(r['height'])),Image.Resampling.LANCZOS)
     preview.alpha_composite(image,(round(r['left']),round(r['top'])))
 preview.save(OUT / 'layout-preview.png')

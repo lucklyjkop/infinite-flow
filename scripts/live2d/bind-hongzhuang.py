@@ -47,11 +47,17 @@ def main():
               'bodyStrength':args.body_strength,'generateDeformers':True,'generatePhysics':True,
               'seeThroughEyes':False,'seeThroughBrows':False,'exportCmo3':True,'exportMoc3':True,
               'exportJson':True,'exportMotions':True,
+              # One original mouth surface closes along a stable seam. A second
+              # crossfaded smile line produces doubled lips during speech.
+              'mouthOutlineEnabled':False,'mouthShape':'smile',
               # The wide chibi eye has a thin upper lash, not a whole outline.
               # Close within the aperture and keep the iris rebound subtle.
               'rigTuning':{'blinkCorner':28,'blinkDepth':30,'eyelashSquash':65,
-                           'irisJellyStretch':3,'irisJellySquash':1.5}}
+                           'irisJellyStretch':3,'irisJellySquash':1.5,
+                           'mouthClosedNarrow':0,'mouthFormWiden':3,
+                           'mouthSmile':5,'mouthSmileBase':0,'mouthSeam':20}}
     records={'tool':'PSD2Live portable','executable_sha256':hashlib.sha256(args.portable.read_bytes()).hexdigest(),
+             'layout_layers':len(json.loads(args.layout.read_text(encoding='utf-8'))['layers']),
              'layout_sha256':hashlib.sha256(args.layout.read_bytes()).hexdigest(),'settings':settings,'operations':{}}
     record_path=work/'operations.json'
     def record(step,result):

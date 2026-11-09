@@ -221,25 +221,6 @@
       ]
     },
     {
-      "id": "mouth-close",
-      "name": "mouth close",
-      "image": {
-        "path": "mouth-close.png",
-        "width": 168,
-        "height": 37
-      },
-      "rect": {
-        "left": 480,
-        "top": 596,
-        "width": 50,
-        "height": 10
-      },
-      "tags": [
-        "mouth",
-        "closed"
-      ]
-    },
-    {
       "id": "mouth-open",
       "name": "mouth open",
       "image": {
@@ -249,9 +230,9 @@
       },
       "rect": {
         "left": 488,
-        "top": 591,
+        "top": 598,
         "width": 35,
-        "height": 22
+        "height": 18
       },
       "tags": [
         "mouth",
