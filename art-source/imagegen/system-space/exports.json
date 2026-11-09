@@ -57,6 +57,18 @@
       "source_sha256": "5df23591b651382c19eedfa16e5070def7b231a318d75f2e6cacb421b6921595",
       "runtime_sha256": "fd3a34e941821febafd236184d6dfd85315ef9ef505990c3f0a03ff01379f738",
       "processing": "See floating-ui-generation.json"
+    },
+    {
+      "source": "composer-rounded.png",
+      "runtime": "composer-rounded.webp",
+      "size": [
+        2130,
+        247
+      ],
+      "mode": "RGBA",
+      "source_sha256": "2b63d6a723aca47d8b5a796e44041b8a092fa889b0fbb50759f8824058618215",
+      "runtime_sha256": "38b4664773ba3ea22a5320d67fa50dd4c1b0274f0d6bcac5f174b98ad5665636",
+      "processing": "See composer-rounded-generation.json"
     }
   ]
 }

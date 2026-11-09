@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-09",
+  "tool": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "quality": "具体画质档位未披露；提示词请求最高可用质量",
+  "file": "composer-rounded.png",
+  "runtime": "loading-page/assets/system-space/composer-rounded.webp",
+  "prompt": "Edit the supplied game text input bar texture only. Change the entire outer silhouette from pointed/angular tips to a smooth rounded rectangle with generous R corners (corner radius about 35 percent of the bar's height), straight horizontal middle edges and SHORT vertical end edges. Absolutely NO pointed ends, NO diamond silhouette, NO spear tips, NO acute corners or beveled polygon corners anywhere along the border. Rounded ends, fluid clean continuous curves. Keep the dark charcoal matte silk-paper material, fine restrained warm antique-gold perimeter, tiny plum blossom near lower-left and very fine dark red silk cord along the bottom with tiny knot on lower-right. Adapt the cord and border so they gently curve around the rounded corners. Make the central 85 percent calm and empty for editable cream text, with no text or icons. Both left and right corners must be clearly visible and rounded, not covered by large flowers. One horizontally elongated UI text input background on genuine transparent alpha background. Keep the full bar about 8.5:1 aspect ratio, 5 percent padding around the complete object, shallow subtle material depth, quiet elegant game art, no heavy drop shadow, no exterior plate. No characters, faces, extra UI, lettering, symbols, placeholder or white backdrop. Highest available visual quality.",
+  "referenced_image_paths": [
+    "loading-page/assets/system-space/composer.webp"
+  ],
+  "transparent_background": true,
+  "export": {
+    "crop": [
+      21,
+      238,
+      2130,
+      247
+    ],
+    "reason": "trim transparent padding only",
+    "format": "WebP",
+    "quality": 95,
+    "method": 6,
+    "alpha": "preserved"
+  }
+}

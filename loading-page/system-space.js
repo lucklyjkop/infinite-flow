@@ -65,7 +65,7 @@
   function aim(a=0,b=0){goalX=a;goalY=b;if(!frame&&phase==='ready'&&animated()&&!blocked())frame=requestAnimationFrame(draw);}
   function clearTransition(){clearTimeout(timer);timer=0;animation?.cancel();animation=null;finishPending?.(false);finishPending=null;settleTransition=null;}
   function preload(){
-    if(!preloadJob){const urls=['assets/system-space/sanctuary.webp','assets/system-space/hongzhuang.webp','assets/system-space/panel.webp','assets/system-space/floating-medallion.webp','assets/system-space/composer.webp'];
+    if(!preloadJob){const urls=['assets/system-space/sanctuary.webp','assets/system-space/hongzhuang.webp','assets/system-space/panel.webp','assets/system-space/floating-medallion.webp','assets/system-space/composer.webp','assets/system-space/composer-rounded.webp'];
       const job=Promise.all(urls.map(async url=>{const image=new Image();image.src=url;try{await image.decode();return true;}catch{return false;}})).then(results=>{failedAssets=urls.filter((_,i)=>!results[i]);const state={ready:results[0]&&results[1],complete:results.every(Boolean),failed:[...failedAssets]};if(!state.complete&&preloadJob===job)preloadJob=null;return state;});preloadJob=job;
     }return preloadJob;
   }
