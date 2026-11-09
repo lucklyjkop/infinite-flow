@@ -1,0 +1,24 @@
+{
+  "id": "eastern-fantasy",
+  "label": "玄幻异世",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/eastern-fantasy.txt",
+  "file": "atlases/eastern-fantasy.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "2cbf4300ef4312b7e0c5498d5aeb807375106e8ced9fd8d86af96f5017f3c0af",
+  "bytes": 3185163,
+  "original_preserved": true
+}

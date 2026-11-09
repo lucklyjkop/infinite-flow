@@ -1,0 +1,4078 @@
+{
+  "version": 1,
+  "scope": "仅素材；未接入游戏或新增图鉴页面",
+  "layout": "每张3列2行，左到右、上到下；frame为原图像素区域，原始PNG未裁切或改像素",
+  "sheets": [
+    {
+      "id": "xianxia-cultivation",
+      "name": "仙侠修仙",
+      "file": "atlases/xianxia-cultivation.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "a5737447e834b1e66447a28afefaf90158d1ef7da447a70680b2eba62a954871",
+      "prompt": "prompts/xianxia-cultivation.txt",
+      "record": "records/xianxia-cultivation.json"
+    },
+    {
+      "id": "scifi-frontiers",
+      "name": "科幻未来",
+      "file": "atlases/scifi-frontiers.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "7fc5c278ccd911892d6ade9231f443fba9ea01613ac9dde6147a361f8609ef3d",
+      "prompt": "prompts/scifi-frontiers.txt",
+      "record": "records/scifi-frontiers.json"
+    },
+    {
+      "id": "apocalypse-survival",
+      "name": "末世求生",
+      "file": "atlases/apocalypse-survival.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "5ad4a54d95757e8404ffad905e17b4cfee2bcb6fd1baef5514d2ff5b742c0052",
+      "prompt": "prompts/apocalypse-survival.txt",
+      "record": "records/apocalypse-survival.json"
+    },
+    {
+      "id": "mystery-folklore",
+      "name": "悬疑民俗",
+      "file": "atlases/mystery-folklore.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "9bab4d308df40501b3e4e866557eda646bed80d3e4a6029c4b3662d7b24f29ed",
+      "prompt": "prompts/mystery-folklore.txt",
+      "record": "records/mystery-folklore.json"
+    },
+    {
+      "id": "cosmic-gothic",
+      "name": "奇幻哥特",
+      "file": "atlases/cosmic-gothic.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "3324d2e54b79a27a0a6346fbb7a2e82378f9737f1d554fed0282884b9f8b98e2",
+      "prompt": "prompts/cosmic-gothic.txt",
+      "record": "records/cosmic-gothic.json"
+    },
+    {
+      "id": "world-hopping",
+      "name": "诸天无限",
+      "file": "atlases/world-hopping.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "c3c7fa0f009e86c27bab5b37de29ba3b8edf0bd9d9ea2cc62bc882b722c3f56c",
+      "prompt": "prompts/world-hopping.txt",
+      "record": "records/world-hopping.json"
+    },
+    {
+      "id": "mythic-primordial",
+      "name": "洪荒神话",
+      "file": "atlases/mythic-primordial.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "8e00a4d0df5d19586898025f4ead801e5d7b161dbe5a8dbf67f339d584ffc069",
+      "prompt": "prompts/mythic-primordial.txt",
+      "record": "records/mythic-primordial.json"
+    },
+    {
+      "id": "eastern-fantasy",
+      "name": "玄幻异世",
+      "file": "atlases/eastern-fantasy.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "2cbf4300ef4312b7e0c5498d5aeb807375106e8ced9fd8d86af96f5017f3c0af",
+      "prompt": "prompts/eastern-fantasy.txt",
+      "record": "records/eastern-fantasy.json"
+    },
+    {
+      "id": "wuxia-jianghu",
+      "name": "武侠江湖",
+      "file": "atlases/wuxia-jianghu.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "d8418c8435badccc40aaa286e3d2237cd2958b0bdffd8b105c7b190183328c8f",
+      "prompt": "prompts/wuxia-jianghu.txt",
+      "record": "records/wuxia-jianghu.json"
+    },
+    {
+      "id": "urban-life",
+      "name": "都市生活",
+      "file": "atlases/urban-life.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "99ad0c6ffa288df93e6bc4f1c806e5f37ce3bc43fab21f6de79c7e0d63e6397f",
+      "prompt": "prompts/urban-life.txt",
+      "record": "records/urban-life.json"
+    },
+    {
+      "id": "urban-extraordinary",
+      "name": "都市异能",
+      "file": "atlases/urban-extraordinary.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "366d286192efb6159273438783574d3ac4923e97a2ba7b681c61536515a5fa95",
+      "prompt": "prompts/urban-extraordinary.txt",
+      "record": "records/urban-extraordinary.json"
+    },
+    {
+      "id": "reality-era",
+      "name": "现实年代",
+      "file": "atlases/reality-era.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "91a8b08b1ec9e0a24d45ee83444b1e098485c319addb0961c1451c41af4f0333",
+      "prompt": "prompts/reality-era.txt",
+      "record": "records/reality-era.json"
+    },
+    {
+      "id": "history-courts",
+      "name": "历史王朝",
+      "file": "atlases/history-courts.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "0429795fd07c3bedc05b335b4d3d445d57ea55bb7249b858becaa5447bb7545b",
+      "prompt": "prompts/history-courts.txt",
+      "record": "records/history-courts.json"
+    },
+    {
+      "id": "military-operations",
+      "name": "军事谍战",
+      "file": "atlases/military-operations.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "788f4451815d8285566c4c0129c84cf78f3b883a55c7ffb76b07524d861eb511",
+      "prompt": "prompts/military-operations.txt",
+      "record": "records/military-operations.json"
+    },
+    {
+      "id": "ancient-romance",
+      "name": "古代言情",
+      "file": "atlases/ancient-romance.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "ddffe994e99d84770c46bdc1e810db0be25e9fab09e10e8af16f3053fc04801d",
+      "prompt": "prompts/ancient-romance.txt",
+      "record": "records/ancient-romance.json"
+    },
+    {
+      "id": "modern-romance",
+      "name": "现代言情",
+      "file": "atlases/modern-romance.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "9ec2783115c058429ab224740ce79bd90f0f9a25b41056645fea79efa8dd84db",
+      "prompt": "prompts/modern-romance.txt",
+      "record": "records/modern-romance.json"
+    },
+    {
+      "id": "fantasy-romance",
+      "name": "幻想言情",
+      "file": "atlases/fantasy-romance.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "a17e4437df325b7fc320e30a36fe1ba589884fb078864526c343bbd98a7156d7",
+      "prompt": "prompts/fantasy-romance.txt",
+      "record": "records/fantasy-romance.json"
+    },
+    {
+      "id": "game-sports",
+      "name": "游戏体育",
+      "file": "atlases/game-sports.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "c3137cae9afbb21639848f7b5d6d4df07a217912ac9d779655f0c7d122adcacf",
+      "prompt": "prompts/game-sports.txt",
+      "record": "records/game-sports.json"
+    },
+    {
+      "id": "youth-anime",
+      "name": "青春轻小说",
+      "file": "atlases/youth-anime.png",
+      "columns": 3,
+      "rows": 2,
+      "size": [
+        1536,
+        1024
+      ],
+      "sha256": "4de10d38fa40d64db2ac32d4175929f9146df3ff34a9e854bca3637600d1a31b",
+      "prompt": "prompts/youth-anime.txt",
+      "record": "records/youth-anime.json"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "xianxia-cultivation-01",
+      "name": "问道山门",
+      "topic": "修真",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "xianxia-cultivation-02",
+      "name": "瀑下仙阙",
+      "topic": "古典仙侠",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "xianxia-cultivation-03",
+      "name": "青禾药圃",
+      "topic": "凡人修仙",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "xianxia-cultivation-04",
+      "name": "万剑孤峰",
+      "topic": "剑修",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "xianxia-cultivation-05",
+      "name": "灵泉梯田",
+      "topic": "种田修仙",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "xianxia-cultivation-06",
+      "name": "霓城隐观",
+      "topic": "现代修仙/都市修仙",
+      "sheetId": "xianxia-cultivation",
+      "file": "atlases/xianxia-cultivation.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-01",
+      "name": "月面观测站",
+      "topic": "硬科幻",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-02",
+      "name": "星港远航",
+      "topic": "星际/太空歌剧",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-03",
+      "name": "重装机库",
+      "topic": "机甲",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-04",
+      "name": "霓虹街区",
+      "topic": "赛博朋克",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-05",
+      "name": "进化实验室",
+      "topic": "基因/机械飞升",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "scifi-frontiers-06",
+      "name": "红星温室",
+      "topic": "星际种田",
+      "sheetId": "scifi-frontiers",
+      "file": "atlases/scifi-frontiers.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-01",
+      "name": "断桥余烬",
+      "topic": "末世废土",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-02",
+      "name": "深岩避难所",
+      "topic": "末日求生",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-03",
+      "name": "隔离街区",
+      "topic": "末日封锁",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-04",
+      "name": "冰原前哨",
+      "topic": "冰封末日",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-05",
+      "name": "沙海车间",
+      "topic": "废土回收",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "apocalypse-survival-06",
+      "name": "浮海营地",
+      "topic": "海洋求生",
+      "sheetId": "apocalypse-survival",
+      "file": "atlases/apocalypse-survival.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-01",
+      "name": "雾宅疑云",
+      "topic": "推理探案",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-02",
+      "name": "夜班警署",
+      "topic": "刑侦",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-03",
+      "name": "幽陵石门",
+      "topic": "盗墓探险",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-04",
+      "name": "末班站台",
+      "topic": "规则怪谈",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-05",
+      "name": "纸灯古祠",
+      "topic": "中式民俗恐怖",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mystery-folklore-06",
+      "name": "红伞旧楼",
+      "topic": "都市异闻",
+      "sheetId": "mystery-folklore",
+      "file": "atlases/mystery-folklore.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-01",
+      "name": "异潮海港",
+      "topic": "克苏鲁/克系",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-02",
+      "name": "绯月古堡",
+      "topic": "血族",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-03",
+      "name": "齿轮工坊",
+      "topic": "蒸汽朋克",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-04",
+      "name": "地城秘藏",
+      "topic": "DND/伪DND",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-05",
+      "name": "古木星塔",
+      "topic": "巫师流",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "cosmic-gothic-06",
+      "name": "白石王都",
+      "topic": "西幻剑与魔法/史诗奇幻",
+      "sheetId": "cosmic-gothic",
+      "file": "atlases/cosmic-gothic.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-01",
+      "name": "轮回中转站",
+      "topic": "无限流",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-02",
+      "name": "万界石门",
+      "topic": "诸天流",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-03",
+      "name": "时序驿站",
+      "topic": "快穿",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-04",
+      "name": "契约终端",
+      "topic": "系统流",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-05",
+      "name": "溯时钟楼",
+      "topic": "读档流",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "world-hopping-06",
+      "name": "重生营地",
+      "topic": "第四天灾流",
+      "sheetId": "world-hopping",
+      "file": "atlases/world-hopping.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "id": "mythic-primordial-01",
+      "name": "太初神木",
+      "topic": "洪荒",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "primordial immense sacred tree above a compact ancient jade altar, floating stones, archaic bronze vessels and a tiny lotus pool"
+    },
+    {
+      "id": "mythic-primordial-02",
+      "name": "镇岳武院",
+      "topic": "高武",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "monumental modern martial academy courtyard, reinforced training platform, massive stone pillars and striking red banners without writing"
+    },
+    {
+      "id": "mythic-primordial-03",
+      "name": "觉醒旧城",
+      "topic": "灵气复苏",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ordinary modern bus stop and old brick residential corner overtaken by luminous spirit roots and giant jade crystals"
+    },
+    {
+      "id": "mythic-primordial-04",
+      "name": "云台封神",
+      "topic": "封神衍生",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original ancient Chinese bronze ceremonial terrace on clouds, tall sculpted stone columns, three elegant sacred pavilions, no franchise likeness"
+    },
+    {
+      "id": "mythic-primordial-05",
+      "name": "灵山古渡",
+      "topic": "西游衍生",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original remote Buddhist mountain temple with a tiny river ferry and long stone stair, ochre walls, old cypress, no named characters"
+    },
+    {
+      "id": "mythic-primordial-06",
+      "name": "龙骨祭坛",
+      "topic": "神话",
+      "sheetId": "mythic-primordial",
+      "file": "atlases/mythic-primordial.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ancient circular cliff altar embraced by enormous weathered dragon-shaped fossil ribs, bronze brazier and delicate white cloud"
+    },
+    {
+      "id": "eastern-fantasy-01",
+      "name": "赤霄古城",
+      "topic": "东方玄幻",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "Chinese fantasy fortress on red sandstone terraces, massive carved gate, jade beacon and small martial courtyard"
+    },
+    {
+      "id": "eastern-fantasy-02",
+      "name": "浮陆驿站",
+      "topic": "异世大陆",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "alien fantasy floating rocky island with strange blue plants, a windswept traveler lodge and a narrow hanging bridge"
+    },
+    {
+      "id": "eastern-fantasy-03",
+      "name": "九旗王城",
+      "topic": "王朝争霸",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "powerful ancient walled Chinese royal city miniature with palace, watchtowers, varied unlettered banners and siege gate"
+    },
+    {
+      "id": "eastern-fantasy-04",
+      "name": "万灵兽苑",
+      "topic": "御兽",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "beautiful terraced animal sanctuary with domed stone nesting shelters, a giant empty golden egg, aviaries and lush exotic trees"
+    },
+    {
+      "id": "eastern-fantasy-05",
+      "name": "赤炉演武场",
+      "topic": "气血武道",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "rugged ancient martial training compound with massive stone practice rings, iron furnace, red earth and heavy wooden equipment"
+    },
+    {
+      "id": "eastern-fantasy-06",
+      "name": "星阵召唤台",
+      "topic": "召唤流",
+      "sheetId": "eastern-fantasy",
+      "file": "atlases/eastern-fantasy.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "arcane stone summoning circle with no lettering, crystal obelisks, nested luminous geometric rings and small forest shrine"
+    },
+    {
+      "id": "wuxia-jianghu-01",
+      "name": "风雨客栈",
+      "topic": "传统武侠",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ancient Chinese roadside timber inn, warm lanterns, hitching posts, rain-dark stone paving and bamboo"
+    },
+    {
+      "id": "wuxia-jianghu-02",
+      "name": "青崖剑庄",
+      "topic": "门派江湖",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "low elegant mountain sword school, stone practice terrace, plum trees, circular courtyard gate and wooden racks"
+    },
+    {
+      "id": "wuxia-jianghu-03",
+      "name": "烟雨漕帮",
+      "topic": "江湖水路",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "canal-side dock guild hall, curved roof warehouse, moored wooden boat, rope winch and reed banks"
+    },
+    {
+      "id": "wuxia-jianghu-04",
+      "name": "大漠孤关",
+      "topic": "边塞武侠",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "rammed-earth desert frontier pass, worn watchtower, sparse oasis palms, old supply carts and wind-shaped rocks"
+    },
+    {
+      "id": "wuxia-jianghu-05",
+      "name": "长街茶肆",
+      "topic": "市井武侠",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "compact ancient street corner with open tea house, small bridge, ceramic jars and hanging blank cloth awnings"
+    },
+    {
+      "id": "wuxia-jianghu-06",
+      "name": "竹影秘窟",
+      "topic": "江湖秘境",
+      "sheetId": "wuxia-jianghu",
+      "file": "atlases/wuxia-jianghu.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "dense miniature bamboo grove around a hidden rock cave, mossy stair, small waterfall and solitary stone lantern"
+    },
+    {
+      "id": "urban-life-01",
+      "name": "梧桐街角",
+      "topic": "都市生活",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "contemporary Chinese residential street corner, corner grocery without signage, bicycles, plane trees and warm apartment windows"
+    },
+    {
+      "id": "urban-life-02",
+      "name": "云端创投",
+      "topic": "商战创业",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "glass business headquarters with startup loft and plaza, tiny delivery bay, landscaped planters and architectural model"
+    },
+    {
+      "id": "urban-life-03",
+      "name": "深夜写字楼",
+      "topic": "职场",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern office building cutaway with lit meeting room, desks visible through glass, rooftop HVAC and ground coffee kiosk"
+    },
+    {
+      "id": "urban-life-04",
+      "name": "星幕片场",
+      "topic": "娱乐圈/华娱",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "compact film studio backlot with blank movie screen, camera crane, light stands, warehouse and red carpet without people"
+    },
+    {
+      "id": "urban-life-05",
+      "name": "晴窗书院",
+      "topic": "校园",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern school campus corner, classroom wing, running lane, old tree, benches and bicycle shelter"
+    },
+    {
+      "id": "urban-life-06",
+      "name": "烟火食坊",
+      "topic": "美食",
+      "sheetId": "urban-life",
+      "file": "atlases/urban-life.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "small lively-looking but empty Chinese food alley diorama, open kitchen, bamboo steamers, noodle pots, tables and warm lanterns without text"
+    },
+    {
+      "id": "urban-extraordinary-01",
+      "name": "雨夜觉醒",
+      "topic": "都市异能",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern elevated railway corner with fractured asphalt and restrained blue energy hovering between concrete pillars"
+    },
+    {
+      "id": "urban-extraordinary-02",
+      "name": "杏林医馆",
+      "topic": "神医",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "beautiful contemporary clinic inside restored traditional courtyard, medicinal herb garden, wooden pharmacy drawers and small waiting porch"
+    },
+    {
+      "id": "urban-extraordinary-03",
+      "name": "归城旧营",
+      "topic": "兵王/战神",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "quiet modern veteran garage beside brick training compound, rugged unmarked utility vehicle, equipment crates and camphor tree"
+    },
+    {
+      "id": "urban-extraordinary-04",
+      "name": "庭深旧宅",
+      "topic": "赘婿",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "large modern Chinese family courtyard residence with ornate entrance and modest attached workshop, layered social contrast conveyed by architecture"
+    },
+    {
+      "id": "urban-extraordinary-05",
+      "name": "藏珍古玩街",
+      "topic": "鉴宝",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "refined antique market corner, open display shelves of original porcelain and bronzes, tiny auction room and stone courtyard"
+    },
+    {
+      "id": "urban-extraordinary-06",
+      "name": "海湾云邸",
+      "topic": "神豪",
+      "sheetId": "urban-extraordinary",
+      "file": "atlases/urban-extraordinary.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "luxurious contemporary coastal villa, infinity pool, sculpted garden, curved glass facade and a tiny yacht pier, restrained tasteful materials"
+    },
+    {
+      "id": "reality-era-01",
+      "name": "人间小院",
+      "topic": "现实",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "grounded Chinese neighborhood courtyard, shared outdoor sink, clothesline with plain fabric, vegetable planters, bicycles, weathered brick"
+    },
+    {
+      "id": "reality-era-02",
+      "name": "旧厂新灯",
+      "topic": "年代文",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "1980s Chinese industrial housing corner, red-brick workshop, old sewing machines in window, bicycle racks and communal garden"
+    },
+    {
+      "id": "reality-era-03",
+      "name": "稻香村落",
+      "topic": "乡土种田",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "realistic rural farmhouse, golden rice patch, water buffalo-shaped stone sculpture, irrigation ditch and wooden waterwheel"
+    },
+    {
+      "id": "reality-era-04",
+      "name": "寒窗小铺",
+      "topic": "布衣逆袭",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "humble ancient family dwelling transformed into a small prosperous handcraft shop, tidy workbench and bamboo garden"
+    },
+    {
+      "id": "reality-era-05",
+      "name": "留声书屋",
+      "topic": "文抄/文娱流",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "warm vintage recording and writing studio, upright piano visible through window, book shelves, small record player and courtyard magnolia"
+    },
+    {
+      "id": "reality-era-06",
+      "name": "雨停以后",
+      "topic": "短篇",
+      "sheetId": "reality-era",
+      "file": "atlases/reality-era.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "intimate modern railway-side small bookshop and solitary covered bench, one flowering tree, rain puddles and warm window glow"
+    },
+    {
+      "id": "history-courts-01",
+      "name": "青铜王都",
+      "topic": "架空历史",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original fictional ancient Chinese capital palace compound, ceremonial boulevard, bronze vessels, crenelated walls and amber lamps"
+    },
+    {
+      "id": "history-courts-02",
+      "name": "驿路长安",
+      "topic": "穿越历史",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "Tang-inspired city gate and traveler post house, horse-cart shelter, tiled street, elaborate timber eaves and willow"
+    },
+    {
+      "id": "history-courts-03",
+      "name": "古城县衙",
+      "topic": "考据正史",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "historically grounded traditional Chinese county administrative office with restrained timber architecture, stone courtyard and drum pavilion"
+    },
+    {
+      "id": "history-courts-04",
+      "name": "金阶议政",
+      "topic": "朝堂权谋",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "majestic Chinese palace audience hall on layered marble terraces, balanced stairs, bronze cranes and red lacquer colonnades"
+    },
+    {
+      "id": "history-courts-05",
+      "name": "百年祠堂",
+      "topic": "世家宗族",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ancestral family compound with grey brick halls, enclosed courtyard, ancient camphor, carved lintels with no text and ceremonial lamps"
+    },
+    {
+      "id": "history-courts-06",
+      "name": "烽火孤城",
+      "topic": "乱世争霸",
+      "sheetId": "history-courts",
+      "file": "atlases/history-courts.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "fortified ancient Chinese stone gate with repaired battlements, siege timber equipment, field tents and dusty ravine"
+    },
+    {
+      "id": "military-operations-01",
+      "name": "边防哨所",
+      "topic": "军事",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "realistic unmarked modern border outpost, radar antenna, low bunker, watchtower, rocky terrain and utility truck, no flags or insignia"
+    },
+    {
+      "id": "military-operations-02",
+      "name": "山城战地",
+      "topic": "抗战",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "historical 1930s Chinese hillside defensive village, sandbagged timber house, stone walls, supply crates and simple field radio"
+    },
+    {
+      "id": "military-operations-03",
+      "name": "暗巷电台",
+      "topic": "谍战",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "1930s Shanghai-inspired narrow lane and art deco townhouse, concealed rooftop antenna, old car and one amber upstairs window"
+    },
+    {
+      "id": "military-operations-04",
+      "name": "雨林前哨",
+      "topic": "特种兵",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "compact modern special operations jungle training camp, observation platform, rope course, covered radio station and supply boxes"
+    },
+    {
+      "id": "military-operations-05",
+      "name": "壕沟要塞",
+      "topic": "战争战略",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "miniature military trench network around reinforced concrete command bunker, sandbags, empty observation positions and muddy ground"
+    },
+    {
+      "id": "military-operations-06",
+      "name": "海岬雷达站",
+      "topic": "海空军事",
+      "sheetId": "military-operations",
+      "file": "atlases/military-operations.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "coastal air-surveillance installation, detailed radar dish, compact aircraft hangar, rocky sea cliff and a short empty runway segment"
+    },
+    {
+      "id": "ancient-romance-01",
+      "name": "朱墙深宫",
+      "topic": "宫斗",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "inner palace garden courtyard, red walls, delicate screened pavilion, winding stone path, peonies and a secluded lily pond"
+    },
+    {
+      "id": "ancient-romance-02",
+      "name": "海棠重院",
+      "topic": "宅斗",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "multi-courtyard traditional family mansion, layered screen walls, separate side passage, begonias and ornamental rockery"
+    },
+    {
+      "id": "ancient-romance-03",
+      "name": "南亩春耕",
+      "topic": "种田",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "peaceful ancient rural household, neat vegetable fields, chicken coop without animals, loom porch and small lotus irrigation pond"
+    },
+    {
+      "id": "ancient-romance-04",
+      "name": "灯下贡院",
+      "topic": "科举",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "ancient examination compound with rows of tiny study cells, elegant entrance, lanterns, writing desks and old scholar tree"
+    },
+    {
+      "id": "ancient-romance-05",
+      "name": "凤仪王庭",
+      "topic": "女尊",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original dignified ancient sovereign palace, balanced monumental timber halls, restrained phoenix-shaped roof finials, gardens, no figures"
+    },
+    {
+      "id": "ancient-romance-06",
+      "name": "三朝园记",
+      "topic": "朝代穿/清穿/唐穿/明穿",
+      "sheetId": "ancient-romance",
+      "file": "atlases/ancient-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "single cohesive Chinese scholar garden combining Tang open veranda, Ming moon gate and Qing delicate pavilion, linked by paths and water"
+    },
+    {
+      "id": "modern-romance-01",
+      "name": "云际会客厅",
+      "topic": "总裁/霸道总裁流",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "contemporary executive penthouse with tall glass conservatory, elegant seating visible through cutaway, sculpture terrace and city footprint"
+    },
+    {
+      "id": "modern-romance-02",
+      "name": "蔷薇家宴",
+      "topic": "豪门恩怨",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "imposing contemporary family estate, formal rose garden, two contrasting residence wings and a long veranda"
+    },
+    {
+      "id": "modern-romance-03",
+      "name": "月下公馆",
+      "topic": "民国",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "1930s Chinese art deco mansion, covered balcony, plane tree, vintage automobile, small wrought iron gate and warm interior"
+    },
+    {
+      "id": "modern-romance-04",
+      "name": "双窗公寓",
+      "topic": "现代都市纯爱",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "intimate tasteful urban apartment corner with two adjoining balconies, books, plants, bicycles and a shared rooftop garden, no figures or symbols"
+    },
+    {
+      "id": "modern-romance-05",
+      "name": "橘灯新居",
+      "topic": "甜宠/先婚后爱",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "welcoming small modern townhouse with paired cups on empty porch table, a flourishing citrus tree and cozy lit windows"
+    },
+    {
+      "id": "modern-romance-06",
+      "name": "旧站重逢",
+      "topic": "破镜重圆/追妻火葬场",
+      "sheetId": "modern-romance",
+      "file": "atlases/modern-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "romantic but restrained old railway station pavilion, empty benches, two divergent paths joining at an antique clock with blank dial"
+    },
+    {
+      "id": "fantasy-romance-01",
+      "name": "林冠栖居",
+      "topic": "兽世",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original fantasy treetop settlement with carved wood dens and vine bridges, giant ferns and warm amber seed lanterns, no humanoids"
+    },
+    {
+      "id": "fantasy-romance-02",
+      "name": "星环花园",
+      "topic": "星际言情",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "elegant futuristic orbital garden on a small curved station segment, transparent conservatory, luminous flowers and visible star-view aperture"
+    },
+    {
+      "id": "fantasy-romance-03",
+      "name": "白榆疗养院",
+      "topic": "ABO",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "neutral original near-future botanical medical campus, private garden courtyards, herb conservatory and soft ivory architecture, no gender-coded motifs"
+    },
+    {
+      "id": "fantasy-romance-04",
+      "name": "精神图景哨塔",
+      "topic": "哨向",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "quiet futuristic sentinel observation tower beside a surreal translucent spectral tree and shallow reflecting pool, restrained blue and bronze"
+    },
+    {
+      "id": "fantasy-romance-05",
+      "name": "方寸灵园",
+      "topic": "随身空间",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "small self-contained pocket dimension farming island with cottage, spring, fruit trees, medicinal plots and delicate stone boundary arch"
+    },
+    {
+      "id": "fantasy-romance-06",
+      "name": "夜城花隙",
+      "topic": "幻想现言/奇幻言情/现代幻想纯爱",
+      "sheetId": "fantasy-romance",
+      "file": "atlases/fantasy-romance.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "contemporary brick florist building with a hidden magical doorway into a tiny glowing forest garden, gentle original urban fantasy"
+    },
+    {
+      "id": "game-sports-01",
+      "name": "水晶竞技场",
+      "topic": "游戏/游戏竞技",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original fantasy competitive arena, tiered stone stands, central glowing crystal, symmetrical gates and empty banners without writing"
+    },
+    {
+      "id": "game-sports-02",
+      "name": "绿茵球场",
+      "topic": "体育/足球",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "detailed miniature football stadium with clear pitch markings, compact grandstand, floodlight towers and equipment tunnel, no logos"
+    },
+    {
+      "id": "game-sports-03",
+      "name": "街角篮场",
+      "topic": "体育/篮球",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern outdoor basketball court with hoops, clean court markings, wire fence, small bleachers and plane tree"
+    },
+    {
+      "id": "game-sports-04",
+      "name": "极速维修站",
+      "topic": "体育/赛车",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "compact racing circuit pit garage with one original sports car, track corner, tire stacks and blank control screens, no logos"
+    },
+    {
+      "id": "game-sports-05",
+      "name": "像素裂隙",
+      "topic": "游戏现实融合流",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern city playground overlaid by a coherent fantasy portal and translucent geometric landscape fragments, original physical miniature"
+    },
+    {
+      "id": "game-sports-06",
+      "name": "竞技训练基地",
+      "topic": "第四天灾/电竞",
+      "sheetId": "game-sports",
+      "file": "atlases/game-sports.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern esports training campus cutaway with desks and blank monitors, glass competition hall, garden plaza and stylized geometric sculpture"
+    },
+    {
+      "id": "youth-anime-01",
+      "name": "放学坡道",
+      "topic": "浪漫青春/青梅竹马",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 0,
+        "row": 0,
+        "x": 0,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "quiet contemporary school hillside path, small school gate, old camphor tree, two parked bicycles and flowering verge"
+    },
+    {
+      "id": "youth-anime-02",
+      "name": "晴空社团楼",
+      "topic": "轻小说",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 1,
+        "row": 0,
+        "x": 512,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original modern Japanese-style school club building, rooftop greenhouse, small courtyard and cherry tree, no franchise imagery"
+    },
+    {
+      "id": "youth-anime-03",
+      "name": "星愿钟庭",
+      "topic": "二次元言情",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 2,
+        "row": 0,
+        "x": 1024,
+        "y": 0,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "whimsical original academy courtyard with elegant clock tower, glass rooftop observatory, hanging star-shaped lanterns and pale blossoms"
+    },
+    {
+      "id": "youth-anime-04",
+      "name": "暮色天台",
+      "topic": "现代幻想",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 0,
+        "row": 1,
+        "x": 0,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "modern school rooftop with small observatory and beautiful contained floating ribbon of stars, plant pots and empty benches"
+    },
+    {
+      "id": "youth-anime-05",
+      "name": "群星旅舍",
+      "topic": "无CP/群像",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 1,
+        "row": 1,
+        "x": 512,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "original welcoming travel hostel and workshop courtyard with several distinct empty seating nooks, luggage racks and a large shared table"
+    },
+    {
+      "id": "youth-anime-06",
+      "name": "回声邮局",
+      "topic": "互动小说/论坛体/对话体",
+      "sheetId": "youth-anime",
+      "file": "atlases/youth-anime.png",
+      "frame": {
+        "column": 2,
+        "row": 1,
+        "x": 1024,
+        "y": 512,
+        "width": 512,
+        "height": 512
+      },
+      "brief": "imaginative old post office and public reading courtyard, many blank envelopes in trays, linked pathways, listening alcoves, no legible marks"
+    }
+  ],
+  "classification": {
+    "L1": {
+      "男频（起点口径）": [
+        {
+          "label": "玄幻",
+          "sceneIds": [
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06"
+          ]
+        },
+        {
+          "label": "奇幻",
+          "sceneIds": [
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06"
+          ]
+        },
+        {
+          "label": "武侠",
+          "sceneIds": [
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06"
+          ]
+        },
+        {
+          "label": "仙侠",
+          "sceneIds": [
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06"
+          ]
+        },
+        {
+          "label": "都市",
+          "sceneIds": [
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06",
+            "urban-extraordinary-01",
+            "urban-extraordinary-02",
+            "urban-extraordinary-03",
+            "urban-extraordinary-04",
+            "urban-extraordinary-05",
+            "urban-extraordinary-06"
+          ]
+        },
+        {
+          "label": "现实",
+          "sceneIds": [
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06"
+          ]
+        },
+        {
+          "label": "军事",
+          "sceneIds": [
+            "military-operations-01",
+            "military-operations-02",
+            "military-operations-03",
+            "military-operations-04",
+            "military-operations-05",
+            "military-operations-06"
+          ]
+        },
+        {
+          "label": "历史",
+          "sceneIds": [
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06"
+          ]
+        },
+        {
+          "label": "游戏",
+          "sceneIds": [
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06"
+          ]
+        },
+        {
+          "label": "体育",
+          "sceneIds": [
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04"
+          ]
+        },
+        {
+          "label": "科幻",
+          "sceneIds": [
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "apocalypse-survival-01",
+            "apocalypse-survival-02",
+            "apocalypse-survival-03",
+            "apocalypse-survival-04",
+            "apocalypse-survival-05",
+            "apocalypse-survival-06"
+          ]
+        },
+        {
+          "label": "悬疑灵异",
+          "sceneIds": [
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06"
+          ]
+        },
+        {
+          "label": "诸天无限",
+          "sceneIds": [
+            "world-hopping-01",
+            "world-hopping-02",
+            "world-hopping-03",
+            "world-hopping-04",
+            "world-hopping-05",
+            "world-hopping-06"
+          ]
+        },
+        {
+          "label": "轻小说",
+          "sceneIds": [
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "短篇",
+          "sceneIds": [
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06"
+          ]
+        }
+      ],
+      "女频（起点女生网）": [
+        {
+          "label": "古代言情",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06"
+          ]
+        },
+        {
+          "label": "现代言情",
+          "sceneIds": [
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06"
+          ]
+        },
+        {
+          "label": "幻想言情",
+          "sceneIds": [
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "仙侠奇缘",
+          "sceneIds": [
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06"
+          ]
+        },
+        {
+          "label": "玄幻言情",
+          "sceneIds": [
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "浪漫青春",
+          "sceneIds": [
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "悬疑推理",
+          "sceneIds": [
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06"
+          ]
+        },
+        {
+          "label": "科幻空间",
+          "sceneIds": [
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "游戏竞技",
+          "sceneIds": [
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06"
+          ]
+        },
+        {
+          "label": "轻小说",
+          "sceneIds": [
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        }
+      ],
+      "女频（晋江频道）": [
+        {
+          "label": "古代言情",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06"
+          ]
+        },
+        {
+          "label": "现代言情",
+          "sceneIds": [
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06"
+          ]
+        },
+        {
+          "label": "幻想现言",
+          "sceneIds": [
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "古代穿越",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06"
+          ]
+        },
+        {
+          "label": "奇幻言情",
+          "sceneIds": [
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06"
+          ]
+        },
+        {
+          "label": "未来游戏悬疑",
+          "sceneIds": [
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06",
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06"
+          ]
+        },
+        {
+          "label": "现代都市纯爱",
+          "sceneIds": [
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06"
+          ]
+        },
+        {
+          "label": "现代幻想纯爱",
+          "sceneIds": [
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "古代纯爱",
+          "sceneIds": [
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06"
+          ]
+        },
+        {
+          "label": "未来幻想纯爱",
+          "sceneIds": [
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06"
+          ]
+        },
+        {
+          "label": "百合",
+          "sceneIds": [
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06",
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "apocalypse-survival-01",
+            "apocalypse-survival-02",
+            "apocalypse-survival-03",
+            "apocalypse-survival-04",
+            "apocalypse-survival-05",
+            "apocalypse-survival-06",
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06",
+            "world-hopping-01",
+            "world-hopping-02",
+            "world-hopping-03",
+            "world-hopping-04",
+            "world-hopping-05",
+            "world-hopping-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06",
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06",
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06",
+            "urban-extraordinary-01",
+            "urban-extraordinary-02",
+            "urban-extraordinary-03",
+            "urban-extraordinary-04",
+            "urban-extraordinary-05",
+            "urban-extraordinary-06",
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06",
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06",
+            "military-operations-01",
+            "military-operations-02",
+            "military-operations-03",
+            "military-operations-04",
+            "military-operations-05",
+            "military-operations-06",
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06",
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06",
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "无CP",
+          "sceneIds": [
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06",
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "apocalypse-survival-01",
+            "apocalypse-survival-02",
+            "apocalypse-survival-03",
+            "apocalypse-survival-04",
+            "apocalypse-survival-05",
+            "apocalypse-survival-06",
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06",
+            "world-hopping-01",
+            "world-hopping-02",
+            "world-hopping-03",
+            "world-hopping-04",
+            "world-hopping-05",
+            "world-hopping-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06",
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06",
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06",
+            "urban-extraordinary-01",
+            "urban-extraordinary-02",
+            "urban-extraordinary-03",
+            "urban-extraordinary-04",
+            "urban-extraordinary-05",
+            "urban-extraordinary-06",
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06",
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06",
+            "military-operations-01",
+            "military-operations-02",
+            "military-operations-03",
+            "military-operations-04",
+            "military-operations-05",
+            "military-operations-06",
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06",
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06",
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "衍生/同人纯爱",
+          "sceneIds": [
+            "xianxia-cultivation-01",
+            "xianxia-cultivation-02",
+            "xianxia-cultivation-03",
+            "xianxia-cultivation-04",
+            "xianxia-cultivation-05",
+            "xianxia-cultivation-06",
+            "scifi-frontiers-01",
+            "scifi-frontiers-02",
+            "scifi-frontiers-03",
+            "scifi-frontiers-04",
+            "scifi-frontiers-05",
+            "scifi-frontiers-06",
+            "apocalypse-survival-01",
+            "apocalypse-survival-02",
+            "apocalypse-survival-03",
+            "apocalypse-survival-04",
+            "apocalypse-survival-05",
+            "apocalypse-survival-06",
+            "mystery-folklore-01",
+            "mystery-folklore-02",
+            "mystery-folklore-03",
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06",
+            "cosmic-gothic-01",
+            "cosmic-gothic-02",
+            "cosmic-gothic-03",
+            "cosmic-gothic-04",
+            "cosmic-gothic-05",
+            "cosmic-gothic-06",
+            "world-hopping-01",
+            "world-hopping-02",
+            "world-hopping-03",
+            "world-hopping-04",
+            "world-hopping-05",
+            "world-hopping-06",
+            "mythic-primordial-01",
+            "mythic-primordial-02",
+            "mythic-primordial-03",
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06",
+            "eastern-fantasy-01",
+            "eastern-fantasy-02",
+            "eastern-fantasy-03",
+            "eastern-fantasy-04",
+            "eastern-fantasy-05",
+            "eastern-fantasy-06",
+            "wuxia-jianghu-01",
+            "wuxia-jianghu-02",
+            "wuxia-jianghu-03",
+            "wuxia-jianghu-04",
+            "wuxia-jianghu-05",
+            "wuxia-jianghu-06",
+            "urban-life-01",
+            "urban-life-02",
+            "urban-life-03",
+            "urban-life-04",
+            "urban-life-05",
+            "urban-life-06",
+            "urban-extraordinary-01",
+            "urban-extraordinary-02",
+            "urban-extraordinary-03",
+            "urban-extraordinary-04",
+            "urban-extraordinary-05",
+            "urban-extraordinary-06",
+            "reality-era-01",
+            "reality-era-02",
+            "reality-era-03",
+            "reality-era-04",
+            "reality-era-05",
+            "reality-era-06",
+            "history-courts-01",
+            "history-courts-02",
+            "history-courts-03",
+            "history-courts-04",
+            "history-courts-05",
+            "history-courts-06",
+            "military-operations-01",
+            "military-operations-02",
+            "military-operations-03",
+            "military-operations-04",
+            "military-operations-05",
+            "military-operations-06",
+            "ancient-romance-01",
+            "ancient-romance-02",
+            "ancient-romance-03",
+            "ancient-romance-04",
+            "ancient-romance-05",
+            "ancient-romance-06",
+            "modern-romance-01",
+            "modern-romance-02",
+            "modern-romance-03",
+            "modern-romance-04",
+            "modern-romance-05",
+            "modern-romance-06",
+            "fantasy-romance-01",
+            "fantasy-romance-02",
+            "fantasy-romance-03",
+            "fantasy-romance-04",
+            "fantasy-romance-05",
+            "fantasy-romance-06",
+            "game-sports-01",
+            "game-sports-02",
+            "game-sports-03",
+            "game-sports-04",
+            "game-sports-05",
+            "game-sports-06",
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        },
+        {
+          "label": "二次元言情",
+          "sceneIds": [
+            "youth-anime-01",
+            "youth-anime-02",
+            "youth-anime-03",
+            "youth-anime-04",
+            "youth-anime-05",
+            "youth-anime-06"
+          ]
+        }
+      ]
+    },
+    "L2": {
+      "仙侠修仙": [
+        {
+          "label": "修真",
+          "sceneIds": [
+            "xianxia-cultivation-01"
+          ]
+        },
+        {
+          "label": "古典仙侠",
+          "sceneIds": [
+            "xianxia-cultivation-02"
+          ]
+        },
+        {
+          "label": "洪荒",
+          "sceneIds": [
+            "mythic-primordial-01"
+          ]
+        },
+        {
+          "label": "现代修仙/都市修仙",
+          "sceneIds": [
+            "xianxia-cultivation-06"
+          ]
+        },
+        {
+          "label": "凡人修仙",
+          "sceneIds": [
+            "xianxia-cultivation-03"
+          ]
+        },
+        {
+          "label": "剑修",
+          "sceneIds": [
+            "xianxia-cultivation-04"
+          ]
+        },
+        {
+          "label": "种田修仙",
+          "sceneIds": [
+            "xianxia-cultivation-05"
+          ]
+        },
+        {
+          "label": "高武",
+          "sceneIds": [
+            "mythic-primordial-02"
+          ]
+        },
+        {
+          "label": "灵气复苏",
+          "sceneIds": [
+            "mythic-primordial-03"
+          ]
+        },
+        {
+          "label": "神话/封神西游衍生",
+          "sceneIds": [
+            "mythic-primordial-04",
+            "mythic-primordial-05",
+            "mythic-primordial-06"
+          ]
+        }
+      ],
+      "玄幻奇幻": [
+        {
+          "label": "东方玄幻",
+          "sceneIds": [
+            "eastern-fantasy-01"
+          ]
+        },
+        {
+          "label": "异世大陆",
+          "sceneIds": [
+            "eastern-fantasy-02"
+          ]
+        },
+        {
+          "label": "王朝争霸",
+          "sceneIds": [
+            "eastern-fantasy-03"
+          ]
+        },
+        {
+          "label": "御兽",
+          "sceneIds": [
+            "eastern-fantasy-04"
+          ]
+        },
+        {
+          "label": "气血武道",
+          "sceneIds": [
+            "eastern-fantasy-05"
+          ]
+        },
+        {
+          "label": "西幻剑与魔法",
+          "sceneIds": [
+            "cosmic-gothic-06"
+          ]
+        },
+        {
+          "label": "史诗奇幻",
+          "sceneIds": [
+            "cosmic-gothic-06"
+          ]
+        },
+        {
+          "label": "DND/伪DND",
+          "sceneIds": [
+            "cosmic-gothic-04"
+          ]
+        },
+        {
+          "label": "克苏鲁",
+          "sceneIds": [
+            "cosmic-gothic-01"
+          ]
+        },
+        {
+          "label": "血族",
+          "sceneIds": [
+            "cosmic-gothic-02"
+          ]
+        },
+        {
+          "label": "蒸汽朋克",
+          "sceneIds": [
+            "cosmic-gothic-03"
+          ]
+        }
+      ],
+      "都市现实": [
+        {
+          "label": "都市生活",
+          "sceneIds": [
+            "urban-life-01"
+          ]
+        },
+        {
+          "label": "商战创业",
+          "sceneIds": [
+            "urban-life-02"
+          ]
+        },
+        {
+          "label": "职场",
+          "sceneIds": [
+            "urban-life-03"
+          ]
+        },
+        {
+          "label": "娱乐圈/华娱",
+          "sceneIds": [
+            "urban-life-04"
+          ]
+        },
+        {
+          "label": "校园",
+          "sceneIds": [
+            "urban-life-05"
+          ]
+        },
+        {
+          "label": "都市异能",
+          "sceneIds": [
+            "urban-extraordinary-01"
+          ]
+        },
+        {
+          "label": "神医",
+          "sceneIds": [
+            "urban-extraordinary-02"
+          ]
+        },
+        {
+          "label": "兵王/战神",
+          "sceneIds": [
+            "urban-extraordinary-03"
+          ]
+        },
+        {
+          "label": "赘婿",
+          "sceneIds": [
+            "urban-extraordinary-04"
+          ]
+        },
+        {
+          "label": "鉴宝",
+          "sceneIds": [
+            "urban-extraordinary-05"
+          ]
+        },
+        {
+          "label": "美食",
+          "sceneIds": [
+            "urban-life-06"
+          ]
+        },
+        {
+          "label": "神豪",
+          "sceneIds": [
+            "urban-extraordinary-06"
+          ]
+        },
+        {
+          "label": "年代文",
+          "sceneIds": [
+            "reality-era-02"
+          ]
+        },
+        {
+          "label": "豪门恩怨",
+          "sceneIds": [
+            "modern-romance-02"
+          ]
+        }
+      ],
+      "历史军事": [
+        {
+          "label": "架空历史",
+          "sceneIds": [
+            "history-courts-01"
+          ]
+        },
+        {
+          "label": "穿越历史",
+          "sceneIds": [
+            "history-courts-02"
+          ]
+        },
+        {
+          "label": "考据正史",
+          "sceneIds": [
+            "history-courts-03"
+          ]
+        },
+        {
+          "label": "朝堂权谋",
+          "sceneIds": [
+            "history-courts-04"
+          ]
+        },
+        {
+          "label": "世家宗族",
+          "sceneIds": [
+            "history-courts-05"
+          ]
+        },
+        {
+          "label": "乱世争霸",
+          "sceneIds": [
+            "history-courts-06"
+          ]
+        },
+        {
+          "label": "布衣逆袭",
+          "sceneIds": [
+            "reality-era-04"
+          ]
+        },
+        {
+          "label": "抗战",
+          "sceneIds": [
+            "military-operations-02"
+          ]
+        },
+        {
+          "label": "谍战",
+          "sceneIds": [
+            "military-operations-03"
+          ]
+        },
+        {
+          "label": "特种兵",
+          "sceneIds": [
+            "military-operations-04"
+          ]
+        }
+      ],
+      "科幻未来": [
+        {
+          "label": "硬科幻",
+          "sceneIds": [
+            "scifi-frontiers-01"
+          ]
+        },
+        {
+          "label": "星际/太空歌剧",
+          "sceneIds": [
+            "scifi-frontiers-02"
+          ]
+        },
+        {
+          "label": "机甲",
+          "sceneIds": [
+            "scifi-frontiers-03"
+          ]
+        },
+        {
+          "label": "赛博朋克",
+          "sceneIds": [
+            "scifi-frontiers-04"
+          ]
+        },
+        {
+          "label": "末世废土",
+          "sceneIds": [
+            "apocalypse-survival-01"
+          ]
+        },
+        {
+          "label": "末日求生",
+          "sceneIds": [
+            "apocalypse-survival-02"
+          ]
+        },
+        {
+          "label": "基因/机械飞升",
+          "sceneIds": [
+            "scifi-frontiers-05"
+          ]
+        },
+        {
+          "label": "星际种田",
+          "sceneIds": [
+            "scifi-frontiers-06"
+          ]
+        }
+      ],
+      "悬疑灵异": [
+        {
+          "label": "推理探案",
+          "sceneIds": [
+            "mystery-folklore-01"
+          ]
+        },
+        {
+          "label": "刑侦",
+          "sceneIds": [
+            "mystery-folklore-02"
+          ]
+        },
+        {
+          "label": "盗墓探险",
+          "sceneIds": [
+            "mystery-folklore-03"
+          ]
+        },
+        {
+          "label": "规则怪谈",
+          "sceneIds": [
+            "mystery-folklore-04"
+          ]
+        },
+        {
+          "label": "诡异流",
+          "sceneIds": [
+            "mystery-folklore-04",
+            "mystery-folklore-05",
+            "mystery-folklore-06"
+          ]
+        },
+        {
+          "label": "中式民俗恐怖",
+          "sceneIds": [
+            "mystery-folklore-05"
+          ]
+        },
+        {
+          "label": "克系",
+          "sceneIds": [
+            "cosmic-gothic-01"
+          ]
+        },
+        {
+          "label": "都市异闻",
+          "sceneIds": [
+            "mystery-folklore-06"
+          ]
+        }
+      ],
+      "言情向": [
+        {
+          "label": "宫斗",
+          "sceneIds": [
+            "ancient-romance-01"
+          ]
+        },
+        {
+          "label": "宅斗",
+          "sceneIds": [
+            "ancient-romance-02"
+          ]
+        },
+        {
+          "label": "种田",
+          "sceneIds": [
+            "ancient-romance-03"
+          ]
+        },
+        {
+          "label": "科举",
+          "sceneIds": [
+            "ancient-romance-04"
+          ]
+        },
+        {
+          "label": "女尊",
+          "sceneIds": [
+            "ancient-romance-05"
+          ]
+        },
+        {
+          "label": "总裁",
+          "sceneIds": [
+            "modern-romance-01"
+          ]
+        },
+        {
+          "label": "民国",
+          "sceneIds": [
+            "modern-romance-03"
+          ]
+        },
+        {
+          "label": "兽世",
+          "sceneIds": [
+            "fantasy-romance-01"
+          ]
+        },
+        {
+          "label": "星际",
+          "sceneIds": [
+            "fantasy-romance-02"
+          ]
+        },
+        {
+          "label": "ABO",
+          "sceneIds": [
+            "fantasy-romance-03"
+          ]
+        },
+        {
+          "label": "哨向",
+          "sceneIds": [
+            "fantasy-romance-04"
+          ]
+        },
+        {
+          "label": "随身空间",
+          "sceneIds": [
+            "fantasy-romance-05"
+          ]
+        },
+        {
+          "label": "清穿/唐穿/明穿等朝代穿",
+          "sceneIds": [
+            "ancient-romance-06"
+          ]
+        }
+      ]
+    },
+    "L3": [
+      {
+        "label": "无限流",
+        "sceneIds": [
+          "world-hopping-01"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "诸天流",
+        "sceneIds": [
+          "world-hopping-02"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "快穿",
+        "sceneIds": [
+          "world-hopping-03"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "系统流",
+        "sceneIds": [
+          "world-hopping-04"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "凡人流",
+        "sceneIds": [
+          "xianxia-cultivation-01",
+          "xianxia-cultivation-02",
+          "xianxia-cultivation-03",
+          "xianxia-cultivation-04",
+          "xianxia-cultivation-05",
+          "xianxia-cultivation-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "洪荒流",
+        "sceneIds": [
+          "mythic-primordial-01"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "废柴流/退婚流",
+        "sceneIds": [
+          "eastern-fantasy-01",
+          "eastern-fantasy-02",
+          "eastern-fantasy-03",
+          "eastern-fantasy-04",
+          "eastern-fantasy-05",
+          "eastern-fantasy-06",
+          "urban-extraordinary-01",
+          "urban-extraordinary-02",
+          "urban-extraordinary-03",
+          "urban-extraordinary-04",
+          "urban-extraordinary-05",
+          "urban-extraordinary-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "种田流",
+        "sceneIds": [
+          "ancient-romance-03"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "基建流",
+        "sceneIds": [
+          "urban-life-01",
+          "urban-life-02",
+          "urban-life-03",
+          "urban-life-04",
+          "urban-life-05",
+          "urban-life-06",
+          "apocalypse-survival-01",
+          "apocalypse-survival-02",
+          "apocalypse-survival-03",
+          "apocalypse-survival-04",
+          "apocalypse-survival-05",
+          "apocalypse-survival-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "苟道流",
+        "sceneIds": [
+          "xianxia-cultivation-01",
+          "xianxia-cultivation-02",
+          "xianxia-cultivation-03",
+          "xianxia-cultivation-04",
+          "xianxia-cultivation-05",
+          "xianxia-cultivation-06",
+          "apocalypse-survival-01",
+          "apocalypse-survival-02",
+          "apocalypse-survival-03",
+          "apocalypse-survival-04",
+          "apocalypse-survival-05",
+          "apocalypse-survival-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "无敌流",
+        "sceneIds": [
+          "eastern-fantasy-01",
+          "eastern-fantasy-02",
+          "eastern-fantasy-03",
+          "eastern-fantasy-04",
+          "eastern-fantasy-05",
+          "eastern-fantasy-06",
+          "urban-extraordinary-01",
+          "urban-extraordinary-02",
+          "urban-extraordinary-03",
+          "urban-extraordinary-04",
+          "urban-extraordinary-05",
+          "urban-extraordinary-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "迪化流",
+        "sceneIds": [
+          "eastern-fantasy-01",
+          "eastern-fantasy-02",
+          "eastern-fantasy-03",
+          "eastern-fantasy-04",
+          "eastern-fantasy-05",
+          "eastern-fantasy-06",
+          "urban-extraordinary-01",
+          "urban-extraordinary-02",
+          "urban-extraordinary-03",
+          "urban-extraordinary-04",
+          "urban-extraordinary-05",
+          "urban-extraordinary-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "幕后流",
+        "sceneIds": [
+          "history-courts-01",
+          "history-courts-02",
+          "history-courts-03",
+          "history-courts-04",
+          "history-courts-05",
+          "history-courts-06",
+          "modern-romance-01",
+          "modern-romance-02",
+          "modern-romance-03",
+          "modern-romance-04",
+          "modern-romance-05",
+          "modern-romance-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "模拟器流",
+        "sceneIds": [
+          "world-hopping-01",
+          "world-hopping-02",
+          "world-hopping-03",
+          "world-hopping-04",
+          "world-hopping-05",
+          "world-hopping-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "签到流",
+        "sceneIds": [
+          "world-hopping-01",
+          "world-hopping-02",
+          "world-hopping-03",
+          "world-hopping-04",
+          "world-hopping-05",
+          "world-hopping-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "第四天灾流",
+        "sceneIds": [
+          "world-hopping-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "聊天群流",
+        "sceneIds": [
+          "world-hopping-01",
+          "world-hopping-02",
+          "world-hopping-03",
+          "world-hopping-04",
+          "world-hopping-05",
+          "world-hopping-06",
+          "youth-anime-01",
+          "youth-anime-02",
+          "youth-anime-03",
+          "youth-anime-04",
+          "youth-anime-05",
+          "youth-anime-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "马甲流",
+        "sceneIds": [
+          "urban-extraordinary-01",
+          "urban-extraordinary-02",
+          "urban-extraordinary-03",
+          "urban-extraordinary-04",
+          "urban-extraordinary-05",
+          "urban-extraordinary-06",
+          "mystery-folklore-01",
+          "mystery-folklore-02",
+          "mystery-folklore-03",
+          "mystery-folklore-04",
+          "mystery-folklore-05",
+          "mystery-folklore-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "巫师流",
+        "sceneIds": [
+          "cosmic-gothic-05"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "游戏现实融合流",
+        "sceneIds": [
+          "game-sports-05"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "兵王流",
+        "sceneIds": [
+          "military-operations-01",
+          "military-operations-02",
+          "military-operations-03",
+          "military-operations-04",
+          "military-operations-05",
+          "military-operations-06",
+          "urban-extraordinary-01",
+          "urban-extraordinary-02",
+          "urban-extraordinary-03",
+          "urban-extraordinary-04",
+          "urban-extraordinary-05",
+          "urban-extraordinary-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "霸道总裁流",
+        "sceneIds": [
+          "modern-romance-01"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "龙傲天/起点流",
+        "sceneIds": [
+          "eastern-fantasy-01",
+          "eastern-fantasy-02",
+          "eastern-fantasy-03",
+          "eastern-fantasy-04",
+          "eastern-fantasy-05",
+          "eastern-fantasy-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "反派流",
+        "sceneIds": [
+          "cosmic-gothic-01",
+          "cosmic-gothic-02",
+          "cosmic-gothic-03",
+          "cosmic-gothic-04",
+          "cosmic-gothic-05",
+          "cosmic-gothic-06",
+          "history-courts-01",
+          "history-courts-02",
+          "history-courts-03",
+          "history-courts-04",
+          "history-courts-05",
+          "history-courts-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "炮灰流",
+        "sceneIds": [
+          "ancient-romance-01",
+          "ancient-romance-02",
+          "ancient-romance-03",
+          "ancient-romance-04",
+          "ancient-romance-05",
+          "ancient-romance-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "女配流",
+        "sceneIds": [
+          "ancient-romance-01",
+          "ancient-romance-02",
+          "ancient-romance-03",
+          "ancient-romance-04",
+          "ancient-romance-05",
+          "ancient-romance-06",
+          "modern-romance-01",
+          "modern-romance-02",
+          "modern-romance-03",
+          "modern-romance-04",
+          "modern-romance-05",
+          "modern-romance-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "神豪流",
+        "sceneIds": [
+          "urban-extraordinary-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "文抄/文娱流",
+        "sceneIds": [
+          "reality-era-05"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "读档流",
+        "sceneIds": [
+          "world-hopping-05"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "御兽流",
+        "sceneIds": [
+          "eastern-fantasy-04"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "召唤流",
+        "sceneIds": [
+          "eastern-fantasy-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "弹幕流",
+        "sceneIds": [
+          "youth-anime-01",
+          "youth-anime-02",
+          "youth-anime-03",
+          "youth-anime-04",
+          "youth-anime-05",
+          "youth-anime-06",
+          "game-sports-01",
+          "game-sports-02",
+          "game-sports-03",
+          "game-sports-04",
+          "game-sports-05",
+          "game-sports-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "天幕流",
+        "sceneIds": [
+          "mythic-primordial-01",
+          "mythic-primordial-02",
+          "mythic-primordial-03",
+          "mythic-primordial-04",
+          "mythic-primordial-05",
+          "mythic-primordial-06",
+          "world-hopping-01",
+          "world-hopping-02",
+          "world-hopping-03",
+          "world-hopping-04",
+          "world-hopping-05",
+          "world-hopping-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "囤货流",
+        "sceneIds": [
+          "apocalypse-survival-01",
+          "apocalypse-survival-02",
+          "apocalypse-survival-03",
+          "apocalypse-survival-04",
+          "apocalypse-survival-05",
+          "apocalypse-survival-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "论坛体",
+        "sceneIds": [
+          "youth-anime-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      },
+      {
+        "label": "对话体",
+        "sceneIds": [
+          "youth-anime-06"
+        ],
+        "composition": "在所选时代与题材场景上组合；流派不强制更改地貌"
+      }
+    ],
+    "L4": [
+      {
+        "label": "穿越",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "history-courts-02"
+        ]
+      },
+      {
+        "label": "重生",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "转生",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "群穿",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "系统",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "world-hopping-04"
+        ]
+      },
+      {
+        "label": "签到",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "随身空间",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "fantasy-romance-05"
+        ]
+      },
+      {
+        "label": "金手指",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "异能",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "urban-extraordinary-01"
+        ]
+      },
+      {
+        "label": "读心术",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "预知",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "灵气复苏",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "mythic-primordial-03"
+        ]
+      },
+      {
+        "label": "全民觉醒",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "性别转换",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "变身",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "无女主/多女主/无CP",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "甜宠",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "modern-romance-05"
+        ]
+      },
+      {
+        "label": "虐文",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "爽文",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "追妻火葬场",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "modern-romance-06"
+        ]
+      },
+      {
+        "label": "破镜重圆",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "modern-romance-06"
+        ]
+      },
+      {
+        "label": "先婚后爱",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "modern-romance-05"
+        ]
+      },
+      {
+        "label": "青梅竹马",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "youth-anime-01"
+        ]
+      },
+      {
+        "label": "姐弟恋",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "年下",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "团宠",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "打脸",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "复仇虐渣",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "真假千金/少爷",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "白月光",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "美强惨",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "修罗场",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "群像",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": [
+          "youth-anime-05"
+        ]
+      },
+      {
+        "label": "大女主/女强",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "轻松爆笑",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "正剧",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "烧脑",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      },
+      {
+        "label": "BE/HE",
+        "dimension": "元素或叙事标签",
+        "sceneryRule": "依题材、时代、地点选景；关系、人设、结局标签不指定固定地貌",
+        "sceneIds": []
+      }
+    ]
+  },
+  "dimensions": {
+    "受众": [
+      "男频",
+      "女频",
+      "通用"
+    ],
+    "篇幅": [
+      "长篇",
+      "中篇",
+      "短篇",
+      "微短剧"
+    ],
+    "形式": [
+      "常规",
+      "对话体",
+      "论坛体",
+      "互动小说",
+      "同人衍生"
+    ],
+    "时代背景": [
+      "古代",
+      "近代",
+      "现代",
+      "未来",
+      "架空"
+    ],
+    "调性": [
+      "爽文",
+      "虐文",
+      "治愈",
+      "正剧"
+    ]
+  }
+}

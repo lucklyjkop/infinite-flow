@@ -1,0 +1,24 @@
+{
+  "id": "fantasy-romance",
+  "label": "幻想言情",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/fantasy-romance.txt",
+  "file": "atlases/fantasy-romance.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "a17e4437df325b7fc320e30a36fe1ba589884fb078864526c343bbd98a7156d7",
+  "bytes": 3084366,
+  "original_preserved": true
+}

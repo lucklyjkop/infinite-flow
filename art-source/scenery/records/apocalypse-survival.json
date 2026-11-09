@@ -1,0 +1,23 @@
+{
+  "id": "apocalypse-survival",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/apocalypse-survival.txt",
+  "file": "atlases/apocalypse-survival.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "5ad4a54d95757e8404ffad905e17b4cfee2bcb6fd1baef5514d2ff5b742c0052",
+  "bytes": 3227587,
+  "original_preserved": true
+}

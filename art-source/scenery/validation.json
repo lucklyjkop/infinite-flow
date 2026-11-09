@@ -1,0 +1,802 @@
+{
+  "sheets": 19,
+  "scenes": 114,
+  "classificationCounts": {
+    "L1": 39,
+    "L2": 74,
+    "L3": 36,
+    "L4": 38
+  },
+  "checks": [
+    "all PNGs RGBA 1536x1024",
+    "real zero-alpha background",
+    "six non-empty cells per atlas",
+    "no significant opacity on outside image edges",
+    "SHA-256 matches records",
+    "all L1 L2 L3 references nonempty and valid",
+    "L4 narrative labels indexed independently",
+    "all metadata valid JSON"
+  ],
+  "note": "保留原图，部分细枝/薄雾在等分格线上仍有像素。frame是等分区域；后续精拆可按轮廓保留边距。本批没有导出独立单景PNG或游戏页面。",
+  "assets": [
+    {
+      "id": "xianxia-cultivation",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 32,
+      "sha256": "a5737447e834b1e66447a28afefaf90158d1ef7da447a70680b2eba62a954871",
+      "cells": [
+        {
+          "sceneId": "xianxia-cultivation-01",
+          "occupiedFraction": 0.6168
+        },
+        {
+          "sceneId": "xianxia-cultivation-02",
+          "occupiedFraction": 0.5395
+        },
+        {
+          "sceneId": "xianxia-cultivation-03",
+          "occupiedFraction": 0.577
+        },
+        {
+          "sceneId": "xianxia-cultivation-04",
+          "occupiedFraction": 0.4805
+        },
+        {
+          "sceneId": "xianxia-cultivation-05",
+          "occupiedFraction": 0.6636
+        },
+        {
+          "sceneId": "xianxia-cultivation-06",
+          "occupiedFraction": 0.644
+        }
+      ]
+    },
+    {
+      "id": "scifi-frontiers",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "7fc5c278ccd911892d6ade9231f443fba9ea01613ac9dde6147a361f8609ef3d",
+      "cells": [
+        {
+          "sceneId": "scifi-frontiers-01",
+          "occupiedFraction": 0.4708
+        },
+        {
+          "sceneId": "scifi-frontiers-02",
+          "occupiedFraction": 0.4802
+        },
+        {
+          "sceneId": "scifi-frontiers-03",
+          "occupiedFraction": 0.584
+        },
+        {
+          "sceneId": "scifi-frontiers-04",
+          "occupiedFraction": 0.5465
+        },
+        {
+          "sceneId": "scifi-frontiers-05",
+          "occupiedFraction": 0.6229
+        },
+        {
+          "sceneId": "scifi-frontiers-06",
+          "occupiedFraction": 0.5822
+        }
+      ]
+    },
+    {
+      "id": "apocalypse-survival",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 64,
+      "sha256": "5ad4a54d95757e8404ffad905e17b4cfee2bcb6fd1baef5514d2ff5b742c0052",
+      "cells": [
+        {
+          "sceneId": "apocalypse-survival-01",
+          "occupiedFraction": 0.5162
+        },
+        {
+          "sceneId": "apocalypse-survival-02",
+          "occupiedFraction": 0.5695
+        },
+        {
+          "sceneId": "apocalypse-survival-03",
+          "occupiedFraction": 0.5885
+        },
+        {
+          "sceneId": "apocalypse-survival-04",
+          "occupiedFraction": 0.5386
+        },
+        {
+          "sceneId": "apocalypse-survival-05",
+          "occupiedFraction": 0.6083
+        },
+        {
+          "sceneId": "apocalypse-survival-06",
+          "occupiedFraction": 0.5229
+        }
+      ]
+    },
+    {
+      "id": "mystery-folklore",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "9bab4d308df40501b3e4e866557eda646bed80d3e4a6029c4b3662d7b24f29ed",
+      "cells": [
+        {
+          "sceneId": "mystery-folklore-01",
+          "occupiedFraction": 0.5461
+        },
+        {
+          "sceneId": "mystery-folklore-02",
+          "occupiedFraction": 0.5104
+        },
+        {
+          "sceneId": "mystery-folklore-03",
+          "occupiedFraction": 0.6078
+        },
+        {
+          "sceneId": "mystery-folklore-04",
+          "occupiedFraction": 0.581
+        },
+        {
+          "sceneId": "mystery-folklore-05",
+          "occupiedFraction": 0.5658
+        },
+        {
+          "sceneId": "mystery-folklore-06",
+          "occupiedFraction": 0.6124
+        }
+      ]
+    },
+    {
+      "id": "cosmic-gothic",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 18,
+      "sha256": "3324d2e54b79a27a0a6346fbb7a2e82378f9737f1d554fed0282884b9f8b98e2",
+      "cells": [
+        {
+          "sceneId": "cosmic-gothic-01",
+          "occupiedFraction": 0.4741
+        },
+        {
+          "sceneId": "cosmic-gothic-02",
+          "occupiedFraction": 0.5126
+        },
+        {
+          "sceneId": "cosmic-gothic-03",
+          "occupiedFraction": 0.5444
+        },
+        {
+          "sceneId": "cosmic-gothic-04",
+          "occupiedFraction": 0.5924
+        },
+        {
+          "sceneId": "cosmic-gothic-05",
+          "occupiedFraction": 0.6385
+        },
+        {
+          "sceneId": "cosmic-gothic-06",
+          "occupiedFraction": 0.5757
+        }
+      ]
+    },
+    {
+      "id": "world-hopping",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 76,
+      "sha256": "c3c7fa0f009e86c27bab5b37de29ba3b8edf0bd9d9ea2cc62bc882b722c3f56c",
+      "cells": [
+        {
+          "sceneId": "world-hopping-01",
+          "occupiedFraction": 0.5717
+        },
+        {
+          "sceneId": "world-hopping-02",
+          "occupiedFraction": 0.468
+        },
+        {
+          "sceneId": "world-hopping-03",
+          "occupiedFraction": 0.5046
+        },
+        {
+          "sceneId": "world-hopping-04",
+          "occupiedFraction": 0.4784
+        },
+        {
+          "sceneId": "world-hopping-05",
+          "occupiedFraction": 0.5227
+        },
+        {
+          "sceneId": "world-hopping-06",
+          "occupiedFraction": 0.5761
+        }
+      ]
+    },
+    {
+      "id": "mythic-primordial",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 119,
+      "sha256": "8e00a4d0df5d19586898025f4ead801e5d7b161dbe5a8dbf67f339d584ffc069",
+      "cells": [
+        {
+          "sceneId": "mythic-primordial-01",
+          "occupiedFraction": 0.5557
+        },
+        {
+          "sceneId": "mythic-primordial-02",
+          "occupiedFraction": 0.5848
+        },
+        {
+          "sceneId": "mythic-primordial-03",
+          "occupiedFraction": 0.5874
+        },
+        {
+          "sceneId": "mythic-primordial-04",
+          "occupiedFraction": 0.5538
+        },
+        {
+          "sceneId": "mythic-primordial-05",
+          "occupiedFraction": 0.6566
+        },
+        {
+          "sceneId": "mythic-primordial-06",
+          "occupiedFraction": 0.5611
+        }
+      ]
+    },
+    {
+      "id": "eastern-fantasy",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "2cbf4300ef4312b7e0c5498d5aeb807375106e8ced9fd8d86af96f5017f3c0af",
+      "cells": [
+        {
+          "sceneId": "eastern-fantasy-01",
+          "occupiedFraction": 0.5317
+        },
+        {
+          "sceneId": "eastern-fantasy-02",
+          "occupiedFraction": 0.356
+        },
+        {
+          "sceneId": "eastern-fantasy-03",
+          "occupiedFraction": 0.5626
+        },
+        {
+          "sceneId": "eastern-fantasy-04",
+          "occupiedFraction": 0.6224
+        },
+        {
+          "sceneId": "eastern-fantasy-05",
+          "occupiedFraction": 0.6012
+        },
+        {
+          "sceneId": "eastern-fantasy-06",
+          "occupiedFraction": 0.6721
+        }
+      ]
+    },
+    {
+      "id": "wuxia-jianghu",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "d8418c8435badccc40aaa286e3d2237cd2958b0bdffd8b105c7b190183328c8f",
+      "cells": [
+        {
+          "sceneId": "wuxia-jianghu-01",
+          "occupiedFraction": 0.5044
+        },
+        {
+          "sceneId": "wuxia-jianghu-02",
+          "occupiedFraction": 0.5236
+        },
+        {
+          "sceneId": "wuxia-jianghu-03",
+          "occupiedFraction": 0.5348
+        },
+        {
+          "sceneId": "wuxia-jianghu-04",
+          "occupiedFraction": 0.5755
+        },
+        {
+          "sceneId": "wuxia-jianghu-05",
+          "occupiedFraction": 0.6167
+        },
+        {
+          "sceneId": "wuxia-jianghu-06",
+          "occupiedFraction": 0.6375
+        }
+      ]
+    },
+    {
+      "id": "urban-life",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "99ad0c6ffa288df93e6bc4f1c806e5f37ce3bc43fab21f6de79c7e0d63e6397f",
+      "cells": [
+        {
+          "sceneId": "urban-life-01",
+          "occupiedFraction": 0.5134
+        },
+        {
+          "sceneId": "urban-life-02",
+          "occupiedFraction": 0.5597
+        },
+        {
+          "sceneId": "urban-life-03",
+          "occupiedFraction": 0.5359
+        },
+        {
+          "sceneId": "urban-life-04",
+          "occupiedFraction": 0.5468
+        },
+        {
+          "sceneId": "urban-life-05",
+          "occupiedFraction": 0.6374
+        },
+        {
+          "sceneId": "urban-life-06",
+          "occupiedFraction": 0.6124
+        }
+      ]
+    },
+    {
+      "id": "urban-extraordinary",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "366d286192efb6159273438783574d3ac4923e97a2ba7b681c61536515a5fa95",
+      "cells": [
+        {
+          "sceneId": "urban-extraordinary-01",
+          "occupiedFraction": 0.4719
+        },
+        {
+          "sceneId": "urban-extraordinary-02",
+          "occupiedFraction": 0.5827
+        },
+        {
+          "sceneId": "urban-extraordinary-03",
+          "occupiedFraction": 0.621
+        },
+        {
+          "sceneId": "urban-extraordinary-04",
+          "occupiedFraction": 0.6102
+        },
+        {
+          "sceneId": "urban-extraordinary-05",
+          "occupiedFraction": 0.5962
+        },
+        {
+          "sceneId": "urban-extraordinary-06",
+          "occupiedFraction": 0.589
+        }
+      ]
+    },
+    {
+      "id": "reality-era",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "91a8b08b1ec9e0a24d45ee83444b1e098485c319addb0961c1451c41af4f0333",
+      "cells": [
+        {
+          "sceneId": "reality-era-01",
+          "occupiedFraction": 0.6125
+        },
+        {
+          "sceneId": "reality-era-02",
+          "occupiedFraction": 0.5968
+        },
+        {
+          "sceneId": "reality-era-03",
+          "occupiedFraction": 0.5858
+        },
+        {
+          "sceneId": "reality-era-04",
+          "occupiedFraction": 0.6219
+        },
+        {
+          "sceneId": "reality-era-05",
+          "occupiedFraction": 0.6132
+        },
+        {
+          "sceneId": "reality-era-06",
+          "occupiedFraction": 0.6206
+        }
+      ]
+    },
+    {
+      "id": "history-courts",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 9,
+      "sha256": "0429795fd07c3bedc05b335b4d3d445d57ea55bb7249b858becaa5447bb7545b",
+      "cells": [
+        {
+          "sceneId": "history-courts-01",
+          "occupiedFraction": 0.5469
+        },
+        {
+          "sceneId": "history-courts-02",
+          "occupiedFraction": 0.6223
+        },
+        {
+          "sceneId": "history-courts-03",
+          "occupiedFraction": 0.5274
+        },
+        {
+          "sceneId": "history-courts-04",
+          "occupiedFraction": 0.561
+        },
+        {
+          "sceneId": "history-courts-05",
+          "occupiedFraction": 0.6486
+        },
+        {
+          "sceneId": "history-courts-06",
+          "occupiedFraction": 0.5988
+        }
+      ]
+    },
+    {
+      "id": "military-operations",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "788f4451815d8285566c4c0129c84cf78f3b883a55c7ffb76b07524d861eb511",
+      "cells": [
+        {
+          "sceneId": "military-operations-01",
+          "occupiedFraction": 0.4798
+        },
+        {
+          "sceneId": "military-operations-02",
+          "occupiedFraction": 0.5827
+        },
+        {
+          "sceneId": "military-operations-03",
+          "occupiedFraction": 0.5855
+        },
+        {
+          "sceneId": "military-operations-04",
+          "occupiedFraction": 0.606
+        },
+        {
+          "sceneId": "military-operations-05",
+          "occupiedFraction": 0.5583
+        },
+        {
+          "sceneId": "military-operations-06",
+          "occupiedFraction": 0.5896
+        }
+      ]
+    },
+    {
+      "id": "ancient-romance",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 29,
+      "sha256": "ddffe994e99d84770c46bdc1e810db0be25e9fab09e10e8af16f3053fc04801d",
+      "cells": [
+        {
+          "sceneId": "ancient-romance-01",
+          "occupiedFraction": 0.5708
+        },
+        {
+          "sceneId": "ancient-romance-02",
+          "occupiedFraction": 0.6438
+        },
+        {
+          "sceneId": "ancient-romance-03",
+          "occupiedFraction": 0.5967
+        },
+        {
+          "sceneId": "ancient-romance-04",
+          "occupiedFraction": 0.614
+        },
+        {
+          "sceneId": "ancient-romance-05",
+          "occupiedFraction": 0.6381
+        },
+        {
+          "sceneId": "ancient-romance-06",
+          "occupiedFraction": 0.6336
+        }
+      ]
+    },
+    {
+      "id": "modern-romance",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "9ec2783115c058429ab224740ce79bd90f0f9a25b41056645fea79efa8dd84db",
+      "cells": [
+        {
+          "sceneId": "modern-romance-01",
+          "occupiedFraction": 0.5744
+        },
+        {
+          "sceneId": "modern-romance-02",
+          "occupiedFraction": 0.5279
+        },
+        {
+          "sceneId": "modern-romance-03",
+          "occupiedFraction": 0.6016
+        },
+        {
+          "sceneId": "modern-romance-04",
+          "occupiedFraction": 0.6553
+        },
+        {
+          "sceneId": "modern-romance-05",
+          "occupiedFraction": 0.5943
+        },
+        {
+          "sceneId": "modern-romance-06",
+          "occupiedFraction": 0.5907
+        }
+      ]
+    },
+    {
+      "id": "fantasy-romance",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 7,
+      "sha256": "a17e4437df325b7fc320e30a36fe1ba589884fb078864526c343bbd98a7156d7",
+      "cells": [
+        {
+          "sceneId": "fantasy-romance-01",
+          "occupiedFraction": 0.5412
+        },
+        {
+          "sceneId": "fantasy-romance-02",
+          "occupiedFraction": 0.5385
+        },
+        {
+          "sceneId": "fantasy-romance-03",
+          "occupiedFraction": 0.5158
+        },
+        {
+          "sceneId": "fantasy-romance-04",
+          "occupiedFraction": 0.4681
+        },
+        {
+          "sceneId": "fantasy-romance-05",
+          "occupiedFraction": 0.5641
+        },
+        {
+          "sceneId": "fantasy-romance-06",
+          "occupiedFraction": 0.61
+        }
+      ]
+    },
+    {
+      "id": "game-sports",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "c3137cae9afbb21639848f7b5d6d4df07a217912ac9d779655f0c7d122adcacf",
+      "cells": [
+        {
+          "sceneId": "game-sports-01",
+          "occupiedFraction": 0.4454
+        },
+        {
+          "sceneId": "game-sports-02",
+          "occupiedFraction": 0.4588
+        },
+        {
+          "sceneId": "game-sports-03",
+          "occupiedFraction": 0.4811
+        },
+        {
+          "sceneId": "game-sports-04",
+          "occupiedFraction": 0.4642
+        },
+        {
+          "sceneId": "game-sports-05",
+          "occupiedFraction": 0.5168
+        },
+        {
+          "sceneId": "game-sports-06",
+          "occupiedFraction": 0.5533
+        }
+      ]
+    },
+    {
+      "id": "youth-anime",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        254
+      ],
+      "outerEdgePixelsAbove32": 0,
+      "gridLinePixelsAbove32": 0,
+      "sha256": "4de10d38fa40d64db2ac32d4175929f9146df3ff34a9e854bca3637600d1a31b",
+      "cells": [
+        {
+          "sceneId": "youth-anime-01",
+          "occupiedFraction": 0.5669
+        },
+        {
+          "sceneId": "youth-anime-02",
+          "occupiedFraction": 0.5256
+        },
+        {
+          "sceneId": "youth-anime-03",
+          "occupiedFraction": 0.5163
+        },
+        {
+          "sceneId": "youth-anime-04",
+          "occupiedFraction": 0.4818
+        },
+        {
+          "sceneId": "youth-anime-05",
+          "occupiedFraction": 0.5973
+        },
+        {
+          "sceneId": "youth-anime-06",
+          "occupiedFraction": 0.6009
+        }
+      ]
+    }
+  ]
+}

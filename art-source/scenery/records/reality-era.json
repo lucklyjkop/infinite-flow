@@ -1,0 +1,24 @@
+{
+  "id": "reality-era",
+  "label": "现实年代",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/reality-era.txt",
+  "file": "atlases/reality-era.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "91a8b08b1ec9e0a24d45ee83444b1e098485c319addb0961c1451c41af4f0333",
+  "bytes": 3199825,
+  "original_preserved": true
+}

@@ -1,0 +1,24 @@
+{
+  "id": "modern-romance",
+  "label": "现代言情",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/modern-romance.txt",
+  "file": "atlases/modern-romance.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "9ec2783115c058429ab224740ce79bd90f0f9a25b41056645fea79efa8dd84db",
+  "bytes": 3072772,
+  "original_preserved": true
+}

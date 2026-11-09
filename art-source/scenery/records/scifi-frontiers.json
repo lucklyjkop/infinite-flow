@@ -1,0 +1,23 @@
+{
+  "id": "scifi-frontiers",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/scifi-frontiers.txt",
+  "file": "atlases/scifi-frontiers.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "7fc5c278ccd911892d6ade9231f443fba9ea01613ac9dde6147a361f8609ef3d",
+  "bytes": 3099866,
+  "original_preserved": true
+}

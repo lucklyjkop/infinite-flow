@@ -1,0 +1,24 @@
+{
+  "id": "ancient-romance",
+  "label": "古代言情",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/ancient-romance.txt",
+  "file": "atlases/ancient-romance.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "ddffe994e99d84770c46bdc1e810db0be25e9fab09e10e8af16f3053fc04801d",
+  "bytes": 3371668,
+  "original_preserved": true
+}

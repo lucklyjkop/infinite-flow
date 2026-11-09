@@ -1,0 +1,23 @@
+{
+  "id": "mystery-folklore",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/mystery-folklore.txt",
+  "file": "atlases/mystery-folklore.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "9bab4d308df40501b3e4e866557eda646bed80d3e4a6029c4b3662d7b24f29ed",
+  "bytes": 2995733,
+  "original_preserved": true
+}

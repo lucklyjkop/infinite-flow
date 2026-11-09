@@ -1,0 +1,24 @@
+{
+  "id": "urban-extraordinary",
+  "label": "都市异能",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/urban-extraordinary.txt",
+  "file": "atlases/urban-extraordinary.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "366d286192efb6159273438783574d3ac4923e97a2ba7b681c61536515a5fa95",
+  "bytes": 3126294,
+  "original_preserved": true
+}

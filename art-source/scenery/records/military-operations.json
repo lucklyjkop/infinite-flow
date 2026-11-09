@@ -1,0 +1,24 @@
+{
+  "id": "military-operations",
+  "label": "军事谍战",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/military-operations.txt",
+  "file": "atlases/military-operations.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "788f4451815d8285566c4c0129c84cf78f3b883a55c7ffb76b07524d861eb511",
+  "bytes": 3113427,
+  "original_preserved": true
+}

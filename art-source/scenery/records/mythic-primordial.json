@@ -1,0 +1,34 @@
+{
+  "id": "mythic-primordial",
+  "label": "洪荒神话",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/mythic-primordial.txt",
+  "file": "atlases/mythic-primordial.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "8e00a4d0df5d19586898025f4ead801e5d7b161dbe5a8dbf67f339d584ffc069",
+  "bytes": 3291158,
+  "original_preserved": true,
+  "passes": [
+    {
+      "operation": "scene generation",
+      "prompt": "prompts/mythic-primordial.txt"
+    },
+    {
+      "operation": "background removal via image_gen",
+      "prompt": "prompts/mythic-primordial-alpha-pass.txt"
+    }
+  ]
+}

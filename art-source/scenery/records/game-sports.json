@@ -1,0 +1,24 @@
+{
+  "id": "game-sports",
+  "label": "游戏体育",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/game-sports.txt",
+  "file": "atlases/game-sports.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "c3137cae9afbb21639848f7b5d6d4df07a217912ac9d779655f0c7d122adcacf",
+  "bytes": 2933021,
+  "original_preserved": true
+}

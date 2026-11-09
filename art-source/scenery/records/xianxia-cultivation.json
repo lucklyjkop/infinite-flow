@@ -1,0 +1,23 @@
+{
+  "id": "xianxia-cultivation",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/xianxia-cultivation.txt",
+  "file": "atlases/xianxia-cultivation.png",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "a5737447e834b1e66447a28afefaf90158d1ef7da447a70680b2eba62a954871",
+  "bytes": 3260955,
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "original_preserved": true
+}

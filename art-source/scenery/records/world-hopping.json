@@ -1,0 +1,33 @@
+{
+  "id": "world-hopping",
+  "entry": "built-in image_gen",
+  "date": "2026-11-09",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高精度",
+  "transparent_background": true,
+  "reference": "loading-page/assets/world-map/landmarks.png",
+  "reference_role": "style only",
+  "prompt": "prompts/world-hopping.txt",
+  "file": "atlases/world-hopping.png",
+  "columns": 3,
+  "rows": 2,
+  "order": "row-major",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "c3c7fa0f009e86c27bab5b37de29ba3b8edf0bd9d9ea2cc62bc882b722c3f56c",
+  "bytes": 3183783,
+  "original_preserved": true,
+  "passes": [
+    {
+      "operation": "scene generation",
+      "prompt": "prompts/world-hopping.txt"
+    },
+    {
+      "operation": "background removal via image_gen",
+      "prompt": "prompts/world-hopping-alpha-pass.txt"
+    }
+  ]
+}
