@@ -1,0 +1,59 @@
+[
+  {
+    "package": "earcut",
+    "version": "3.0.2",
+    "license": "ISC",
+    "source": "https://registry.npmjs.org/earcut/-/earcut-3.0.2.tgz",
+    "file": "earcut-LICENSE.txt"
+  },
+  {
+    "package": "eventemitter3",
+    "version": "5.0.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-5.0.1.tgz",
+    "file": "eventemitter3-LICENSE.txt"
+  },
+  {
+    "package": "ismobilejs",
+    "version": "1.1.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/ismobilejs/-/ismobilejs-1.1.1.tgz",
+    "file": "ismobilejs-LICENSE.txt"
+  },
+  {
+    "package": "parse-svg-path",
+    "version": "0.2.0",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/parse-svg-path/-/parse-svg-path-0.2.0.tgz",
+    "file": "parse-svg-path-LICENSE.txt"
+  },
+  {
+    "package": "gifuct-js",
+    "version": "2.1.2",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/gifuct-js/-/gifuct-js-2.1.2.tgz",
+    "file": "gifuct-js-LICENSE.txt"
+  },
+  {
+    "package": "@xmldom/xmldom",
+    "version": "0.8.13",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.13.tgz",
+    "file": "xmldom-xmldom-LICENSE.txt"
+  },
+  {
+    "package": "@pixi/sound",
+    "version": "6.0.1",
+    "license": "MIT",
+    "source": "https://registry.npmjs.org/@pixi/sound/-/sound-6.0.1.tgz",
+    "file": "pixi-sound-LICENSE.txt"
+  },
+  {
+    "package": "@pixi/colord",
+    "version": "2.9.6",
+    "license": "MIT",
+    "source": "https://raw.githubusercontent.com/omgovich/colord/master/LICENSE.md",
+    "file": "colord-LICENSE.txt",
+    "note": "Original colord upstream license, retained by the Pixi fork."
+  }
+]

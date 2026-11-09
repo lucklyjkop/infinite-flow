@@ -1,6 +1,6 @@
 # 无限流
 
-以红妆、樱枝和雨幕为主题的游戏入口原型：资源加载、空间照片标题页、纸艺系统设置、方块转场与主神选择。开始游戏后进入「主神空间」，选择红妆并确认可进入「系统空间」：中央 Q 版正面角色、两侧悬浮功能和底部输入框。角色当前为透明插画动态预览，已预留 Live2D 接口；实际模型绑定、对话服务与首个可玩世界尚未接入。
+以红妆、樱枝和雨幕为主题的游戏入口原型：资源加载、空间照片标题页、纸艺系统设置、方块转场与主神选择。开始游戏后进入「主神空间」，选择红妆并确认可进入「系统空间」：中央 Q 版正面 Live2D 红妆、两侧悬浮功能和底部输入框。角色已接入原生 Cubism 模型，支持眨眼、视线跟随、呼吸和头发物理；对话服务与首个可玩世界尚未接入。
 
 ## 在另一台电脑继续开发
 
@@ -13,6 +13,8 @@ python loading-page/serve.py
 ```
 
 macOS / Linux 如果没有 `python` 命令，改用 `python3`。预览不需要 npm 安装，不需要生图密钥。
+
+首次启动会从 Live2D 官方下载经过校验的 Cubism Core 到本机缓存，之后可离线使用。下载失败时页面保留角色插画；可运行 `python scripts/setup-live2d-runtime.py` 重试。Core 缓存在 `output/`，不随 Git 提交。
 
 - 完整加载流程：[http://127.0.0.1:4173/](http://127.0.0.1:4173/)
 - 直接进入标题：[http://127.0.0.1:4173/?screen=title](http://127.0.0.1:4173/?screen=title)
@@ -41,7 +43,7 @@ python loading-page/serve.py --host 0.0.0.0
 
 ## 开发与验证
 
-页面是原生 HTML / CSS / JavaScript。修改后刷新浏览器即可；静态图片、音效、渲染器均包含在仓库中，无需外部素材 CDN。
+页面是原生 HTML / CSS / JavaScript。修改后刷新浏览器即可；静态图片、音效、Live2D 模型和渲染器封装均包含在仓库中。Cubism Core 按上面的首次启动步骤缓存，浏览器从本机预览服务加载。
 
 ```sh
 # 可选：安装 Node.js 22+ 后执行资源引用和语法检查
@@ -60,7 +62,7 @@ python -m unittest discover -s tests -p "test_*.py"
 | `.devcontainer/` | GitHub Codespaces / VS Code 开发容器 |
 | `.github/workflows/` | 自动资源与语法检查 |
 
-详细的游戏接入接口见 [loading-page/README.md](loading-page/README.md)。素材来源与许可见 [音效来源](loading-page/assets/audio/SOURCES.md) 和 [空间渲染器来源](loading-page/vendor/depth-flow/SOURCE.md)。本仓库没有将项目美术或代码整体授予开源许可。
+详细的游戏接入接口见 [loading-page/README.md](loading-page/README.md)。Live2D 可编辑工程、图层和制作步骤见 [红妆制作说明](art-source/live2d/hongzhuang/README.md)。素材来源与许可见 [音效来源](loading-page/assets/audio/SOURCES.md)、[空间渲染器来源](loading-page/vendor/depth-flow/SOURCE.md) 和 [Live2D 运行依赖](loading-page/vendor/live2d/SOURCE.md)。本仓库没有将项目美术或代码整体授予开源许可。
 
 设置页的模型 ID 使用纸艺下拉框，填写接口地址和密钥后打开即可获取模型；支持筛选、刷新和手动输入。该功能依赖随项目提供的 Python `/api/models` 服务，详见 [模型列表接口](loading-page/MODEL_CATALOG.md)。
 

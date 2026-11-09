@@ -1,0 +1,358 @@
+{
+  "format": "psd2live-layout",
+  "version": 1,
+  "name": "hongzhuang",
+  "canvas": {
+    "width": 1024,
+    "height": 1536
+  },
+  "layers": [
+    {
+      "id": "back-hair",
+      "name": "back hair",
+      "image": {
+        "path": "back-hair.png",
+        "width": 439,
+        "height": 481
+      },
+      "rect": {
+        "left": 82,
+        "top": 110,
+        "width": 860,
+        "height": 1080
+      },
+      "tags": [
+        "hair",
+        "back"
+      ]
+    },
+    {
+      "id": "topwear",
+      "name": "topwear",
+      "image": {
+        "path": "topwear.png",
+        "width": 941,
+        "height": 1144
+      },
+      "rect": {
+        "left": 150,
+        "top": 650,
+        "width": 720,
+        "height": 880
+      },
+      "tags": [
+        "top"
+      ]
+    },
+    {
+      "id": "face",
+      "name": "face",
+      "image": {
+        "path": "face.png",
+        "width": 1129,
+        "height": 1001
+      },
+      "rect": {
+        "left": 265,
+        "top": 215,
+        "width": 490,
+        "height": 440
+      },
+      "tags": [
+        "face"
+      ]
+    },
+    {
+      "id": "eyewhite-right",
+      "name": "eyewhite right",
+      "image": {
+        "path": "eyewhite-right.png",
+        "width": 343,
+        "height": 269
+      },
+      "rect": {
+        "left": 326,
+        "top": 453,
+        "width": 135,
+        "height": 122
+      },
+      "tags": [
+        "eye",
+        "white",
+        "right"
+      ]
+    },
+    {
+      "id": "eyelash-right",
+      "name": "eyelash right",
+      "image": {
+        "path": "eyelash-right.png",
+        "width": 343,
+        "height": 269
+      },
+      "rect": {
+        "left": 326,
+        "top": 453,
+        "width": 135,
+        "height": 122
+      },
+      "tags": [
+        "eye",
+        "lash",
+        "right"
+      ]
+    },
+    {
+      "id": "eyewhite-left",
+      "name": "eyewhite left",
+      "image": {
+        "path": "eyewhite-left.png",
+        "width": 343,
+        "height": 268
+      },
+      "rect": {
+        "left": 557,
+        "top": 453,
+        "width": 135,
+        "height": 122
+      },
+      "tags": [
+        "eye",
+        "white",
+        "left"
+      ]
+    },
+    {
+      "id": "eyelash-left",
+      "name": "eyelash left",
+      "image": {
+        "path": "eyelash-left.png",
+        "width": 343,
+        "height": 268
+      },
+      "rect": {
+        "left": 557,
+        "top": 453,
+        "width": 135,
+        "height": 122
+      },
+      "tags": [
+        "eye",
+        "lash",
+        "left"
+      ]
+    },
+    {
+      "id": "irides-right",
+      "name": "irides right",
+      "image": {
+        "path": "irides-right.png",
+        "width": 245,
+        "height": 279
+      },
+      "rect": {
+        "left": 354,
+        "top": 475,
+        "width": 82,
+        "height": 94
+      },
+      "tags": [
+        "eye",
+        "iris",
+        "right"
+      ]
+    },
+    {
+      "id": "irides-left",
+      "name": "irides left",
+      "image": {
+        "path": "irides-left.png",
+        "width": 243,
+        "height": 279
+      },
+      "rect": {
+        "left": 584,
+        "top": 475,
+        "width": 82,
+        "height": 94
+      },
+      "tags": [
+        "eye",
+        "iris",
+        "left"
+      ]
+    },
+    {
+      "id": "eyebrow-right",
+      "name": "eyebrow right",
+      "image": {
+        "path": "eyebrow-right.png",
+        "width": 331,
+        "height": 74
+      },
+      "rect": {
+        "left": 346,
+        "top": 394,
+        "width": 86,
+        "height": 12
+      },
+      "tags": [
+        "brow",
+        "right"
+      ]
+    },
+    {
+      "id": "eyebrow-left",
+      "name": "eyebrow left",
+      "image": {
+        "path": "eyebrow-left.png",
+        "width": 332,
+        "height": 75
+      },
+      "rect": {
+        "left": 579,
+        "top": 394,
+        "width": 86,
+        "height": 12
+      },
+      "tags": [
+        "brow",
+        "left"
+      ]
+    },
+    {
+      "id": "mouth-close",
+      "name": "mouth close",
+      "image": {
+        "path": "mouth-close.png",
+        "width": 168,
+        "height": 37
+      },
+      "rect": {
+        "left": 480,
+        "top": 596,
+        "width": 50,
+        "height": 10
+      },
+      "tags": [
+        "mouth",
+        "closed"
+      ]
+    },
+    {
+      "id": "mouth-open",
+      "name": "mouth open",
+      "image": {
+        "path": "mouth-open.png",
+        "width": 166,
+        "height": 76
+      },
+      "rect": {
+        "left": 488,
+        "top": 591,
+        "width": 35,
+        "height": 22
+      },
+      "tags": [
+        "mouth",
+        "open"
+      ]
+    },
+    {
+      "id": "front-hair",
+      "name": "front hair",
+      "image": {
+        "path": "front-hair.png",
+        "width": 464,
+        "height": 360
+      },
+      "rect": {
+        "left": 147,
+        "top": 120,
+        "width": 704,
+        "height": 483
+      },
+      "tags": [
+        "hair",
+        "front"
+      ]
+    },
+    {
+      "id": "front-hair-right",
+      "name": "front hair right",
+      "image": {
+        "path": "front-hair-right.png",
+        "width": 160,
+        "height": 444
+      },
+      "rect": {
+        "left": 225,
+        "top": 420,
+        "width": 140,
+        "height": 440
+      },
+      "tags": [
+        "hair",
+        "front",
+        "right"
+      ]
+    },
+    {
+      "id": "front-hair-left",
+      "name": "front hair left",
+      "image": {
+        "path": "front-hair-left.png",
+        "width": 141,
+        "height": 443
+      },
+      "rect": {
+        "left": 660,
+        "top": 420,
+        "width": 140,
+        "height": 440
+      },
+      "tags": [
+        "hair",
+        "front",
+        "left"
+      ]
+    },
+    {
+      "id": "front-hair-ahoge",
+      "name": "front hair ahoge",
+      "image": {
+        "path": "front-hair-ahoge.png",
+        "width": 338,
+        "height": 223
+      },
+      "rect": {
+        "left": 300,
+        "top": 9,
+        "width": 300,
+        "height": 145
+      },
+      "tags": [
+        "hair",
+        "front"
+      ]
+    },
+    {
+      "id": "headwear",
+      "name": "headwear",
+      "image": {
+        "path": "headwear.png",
+        "width": 315,
+        "height": 419
+      },
+      "rect": {
+        "left": 690,
+        "top": 210,
+        "width": 165,
+        "height": 315
+      },
+      "tags": [
+        "headwear"
+      ]
+    }
+  ]
+}

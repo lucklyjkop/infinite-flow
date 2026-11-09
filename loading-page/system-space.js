@@ -1,5 +1,5 @@
-/* The central illustration is a preview. A future Cubism renderer can own the
-   mount without changing the surrounding controls. */
+/* System hub controls. The portrait stays visible until the Cubism adapter has
+   painted its first complete frame, and remains a load-failure fallback. */
 (() => {
   'use strict';
   const world=document.getElementById('world'); if(!world)return;
@@ -65,6 +65,7 @@
   function aim(a=0,b=0){goalX=a;goalY=b;if(!frame&&phase==='ready'&&animated()&&!blocked())frame=requestAnimationFrame(draw);}
   function clearTransition(){clearTimeout(timer);timer=0;animation?.cancel();animation=null;finishPending?.(false);finishPending=null;settleTransition=null;}
   function preload(){
+    window.InfiniteSystemLive2D?.prepare();
     if(!preloadJob){const urls=['assets/system-space/sanctuary.webp','assets/system-space/hongzhuang.webp','assets/system-space/panel.webp','assets/system-space/floating-medallion.webp','assets/system-space/composer.webp','assets/system-space/composer-rounded.webp'];
       const job=Promise.all(urls.map(async url=>{const image=new Image();image.src=url;try{await image.decode();return true;}catch{return false;}})).then(results=>{failedAssets=urls.filter((_,i)=>!results[i]);const state={ready:results[0]&&results[1],complete:results.every(Boolean),failed:[...failedAssets]};if(!state.complete&&preloadJob===job)preloadJob=null;return state;});preloadJob=job;
     }return preloadJob;
@@ -90,7 +91,7 @@
       const unhandled=window.dispatchEvent(request);if(unhandled&&!waiting.length){restore();return;}Promise.all(waiting).then(results=>{if(results.some(result=>result===false))restore();else leave();},restore);
     });
   }
-  function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('ui-tap');say(lines[spoken++%lines.length]);}
+  function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('ui-tap');renderer?.greet?.();say(lines[spoken++%lines.length]);}
   async function sendMessage(event){
     event.preventDefault();const text=input.value.trim();if(!text||sending||composing||phase!=='ready')return;cue('ui-tap');const token=++messageSerial,waiting=[];
     const request=new CustomEvent('infinite:systemmessage',{cancelable:true,detail:{text,deity:{...deity},waitUntil(promise){waiting.push(Promise.resolve(promise));},respond(value){if(token===messageSerial&&phase==='ready'&&typeof value==='string')say(value);}}});
@@ -111,5 +112,5 @@
   const observer=new MutationObserver(syncMotion);for(const dialog of document.querySelectorAll('dialog'))observer.observe(dialog,{attributes:true,attributeFilter:['open']});
   function changedMotion(){syncMotion();if(document.hidden||!animated())settleTransition?.();}
   for(const name of ['infinite:settings','infinite:settingssaved'])window.addEventListener(name,changedMotion);media.addEventListener('change',changedMotion);document.addEventListener('visibilitychange',changedMotion);window.addEventListener('blur',resetAim);window.addEventListener('resize',()=>{resetAim();if(!root.hidden)resizeInput();});window.addEventListener('pagehide',()=>close({returnToDeity:false,immediate:true}));
-  window.InfiniteSystemSpace=Object.freeze({open,close,preload,prepare:preload,getCharacterMount:()=>mount,setCharacterRenderer(value){renderer?.dispose?.();renderer=value||null;root.dataset.characterRenderer=renderer?'external':'illustration';syncMotion();},getState:()=>({phase,visible:!root.hidden,selected,deity:{...deity},moving:Boolean(frame),paused:root.classList.contains('system-paused'),characterRenderer:root.dataset.characterRenderer,detailsOpen:details.open,sending,failedAssets:[...failedAssets]})});
+  window.InfiniteSystemSpace=Object.freeze({open,close,preload,prepare:preload,getCharacterMount:()=>mount,setCharacterRenderer(value){if(renderer===value){syncMotion();return;}renderer?.dispose?.();renderer=value||null;root.dataset.characterRenderer=renderer?.kind||(renderer?'external':'illustration');syncMotion();},getState:()=>({phase,visible:!root.hidden,selected,deity:{...deity},moving:Boolean(frame),paused:root.classList.contains('system-paused'),characterRenderer:root.dataset.characterRenderer,detailsOpen:details.open,sending,failedAssets:[...failedAssets]})});
 })();

@@ -5,15 +5,49 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import json
+import importlib.util
+import os
+import threading
 import time
 from urllib.parse import urlsplit
 
 from models_api import CatalogueError, fetch_catalogue
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+RUNTIME_ROUTE = "/runtime/live2dcubismcore.min.js"
+_runtime_lock = threading.Lock()
+_runtime_setup = None
+
+
+def live2d_runtime_path():
+    """Resolve only the official Core cache; never accept a client file path."""
+    global _runtime_setup
+    with _runtime_lock:
+        if _runtime_setup is None:
+            script = PROJECT_ROOT / "scripts" / "setup-live2d-runtime.py"
+            spec = importlib.util.spec_from_file_location("infinite_live2d_setup", script)
+            if spec is None or spec.loader is None:
+                raise RuntimeError("Live2D setup module unavailable")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            _runtime_setup = module
+        return Path(_runtime_setup.ensure_runtime())
+
+
+def warm_live2d_runtime():
+    try:
+        live2d_runtime_path()
+    except Exception:
+        # The scene retains its illustration when the optional runtime is offline.
+        print("Live2D runtime not ready; retry: python scripts/setup-live2d-runtime.py", flush=True)
+
 
 class GamePreviewServer(ThreadingHTTPServer):
     # Cold browser tabs can request many independent images and scripts at once.
     request_queue_size = 128
+    # SO_REUSEADDR on Windows can silently let an old preview answer requests
+    # alongside a new process. Refuse the second bind instead.
+    allow_reuse_address = os.name != "nt"
 
 
 class AssetHandler(SimpleHTTPRequestHandler):
@@ -21,6 +55,39 @@ class AssetHandler(SimpleHTTPRequestHandler):
     timeout = 20
     rejection_drain_limit = 65536
     rejection_drain_timeout = .25
+
+    def send_live2d_runtime(self, *, head=False):
+        try:
+            body = live2d_runtime_path().read_bytes()
+        except Exception:
+            body = b"Live2D runtime unavailable"
+            self.send_response(503)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Retry-After", "5")
+        else:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/javascript; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.end_headers()
+        if not head:
+            try:
+                self.wfile.write(body)
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+                pass
+
+    def do_GET(self):
+        if urlsplit(self.path).path == RUNTIME_ROUTE:
+            self.send_live2d_runtime()
+        else:
+            super().do_GET()
+
+    def do_HEAD(self):
+        if urlsplit(self.path).path == RUNTIME_ROUTE:
+            self.send_live2d_runtime(head=True)
+        else:
+            super().do_HEAD()
 
     def drain_rejected_body(self):
         """Avoid a TCP reset for an ordinary split-header/body rejected POST.
@@ -119,6 +186,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
     handler = partial(AssetHandler, directory=str(Path(__file__).resolve().parent))
     with GamePreviewServer((options.host, options.port), handler) as server:
+        threading.Thread(target=warm_live2d_runtime, daemon=True).start()
         print(f"Game preview: http://127.0.0.1:{server.server_port}/", flush=True)
         try:
             server.serve_forever()

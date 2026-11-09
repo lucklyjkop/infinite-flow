@@ -1,0 +1,93 @@
+{
+  "generator": "PSD2Live 3.6.7 portable",
+  "runtime": "Cubism 5.0 MOC v5",
+  "tool_executable_sha256": "983c02686933909fa04a2192b0fc0f65f6e97ee1908ccf239fa23c07aa3e0e70",
+  "layout_sha256": "eaee0043b81ff6770978bf5ab75ffaa0b1f5c7e4c6ce0d8d91812d7fdc9139e5",
+  "settings": {
+    "atlasSize": 2048,
+    "meshSpacing": 30,
+    "headStrength": 0.32,
+    "bodyStrength": 0.24,
+    "generateDeformers": true,
+    "generatePhysics": true,
+    "seeThroughEyes": false,
+    "seeThroughBrows": false,
+    "exportCmo3": true,
+    "exportMoc3": true,
+    "exportJson": true,
+    "exportMotions": true
+  },
+  "source": "18 registered layers from built-in image generation; no borrowed character model",
+  "runtime_files": [
+    {
+      "file": "hongzhuang.layout.2048/texture_00.png",
+      "bytes": 4528138,
+      "sha256": "11d6a8fb50381c2e5ec4218f50ae17355ffaff0286e8499cc2ec808e4bdbf17c"
+    },
+    {
+      "file": "hongzhuang.layout.2048/texture_01.png",
+      "bytes": 1161359,
+      "sha256": "233fe1d5461027ec8424726461688857496f1c33716f8eff25b6dcbe19b327dc"
+    },
+    {
+      "file": "hongzhuang.layout.angry.exp3.json",
+      "bytes": 669,
+      "sha256": "98bacc260d618079f916df94f201c22d8ccde920c029c01fc793ae4dd670e756"
+    },
+    {
+      "file": "hongzhuang.layout.blink.motion3.json",
+      "bytes": 1155,
+      "sha256": "399f91b7bfac0666f589ab7c6daace5e33e5c6d6e7c6e7ca4024b6db48a65110"
+    },
+    {
+      "file": "hongzhuang.layout.cdi3.json",
+      "bytes": 4069,
+      "sha256": "24780acab912be34dc449c71f1a064d0da736227e0d819d74582ebea0819d80a"
+    },
+    {
+      "file": "hongzhuang.layout.idle.motion3.json",
+      "bytes": 15999,
+      "sha256": "14674d50d8765df706ac253975629f7cffe97a2442248a41af59f68d9cd3f2dc"
+    },
+    {
+      "file": "hongzhuang.layout.moc3",
+      "bytes": 251840,
+      "sha256": "04b827faacf7f540b2e001913215078bf694eb867684693311f8869dde040a16"
+    },
+    {
+      "file": "hongzhuang.layout.nod.motion3.json",
+      "bytes": 1751,
+      "sha256": "bfd9a247d5ec8479145c2dddfd5fdbf03e1c46df8d7460f07badd146c1e19418"
+    },
+    {
+      "file": "hongzhuang.layout.physics3.json",
+      "bytes": 8586,
+      "sha256": "385846be2c653e6bf3eda4a4e49353ba7c8ea6051a0e88aa86b5e2db749b30e1"
+    },
+    {
+      "file": "hongzhuang.layout.sad.exp3.json",
+      "bytes": 671,
+      "sha256": "e0f88d2ce01fa6f4718051ec6a15c803d70064011cf370cee15e50bf19978c82"
+    },
+    {
+      "file": "hongzhuang.layout.shake.motion3.json",
+      "bytes": 1573,
+      "sha256": "81f50690b925cab5487c64cd1fc9781485a141f758a1f7085d36f0596bbfe54b"
+    },
+    {
+      "file": "hongzhuang.layout.smile.exp3.json",
+      "bytes": 668,
+      "sha256": "59e6869c12dad404623dc587086b79909262b1d027bdcf1a27a58aa8c2d50377"
+    },
+    {
+      "file": "hongzhuang.layout.surprised.exp3.json",
+      "bytes": 669,
+      "sha256": "9b7850b565e3c2edef7534fb62fa364285063c254b76d079328dc8ee747b9097"
+    },
+    {
+      "file": "hongzhuang.model3.json",
+      "bytes": 1410,
+      "sha256": "047d5b3ffbf5409691896f54d1eba3aa874e261eefe27dbdc635d26818a6d5ca"
+    }
+  ]
+}

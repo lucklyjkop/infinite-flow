@@ -1,0 +1,69 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "hongzhuang.layout.moc3",
+    "Textures": [
+      "hongzhuang.layout.2048/texture_00.png",
+      "hongzhuang.layout.2048/texture_01.png"
+    ],
+    "Physics": "hongzhuang.layout.physics3.json",
+    "DisplayInfo": "hongzhuang.layout.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "Smile",
+        "File": "hongzhuang.layout.smile.exp3.json"
+      },
+      {
+        "Name": "Sad",
+        "File": "hongzhuang.layout.sad.exp3.json"
+      },
+      {
+        "Name": "Angry",
+        "File": "hongzhuang.layout.angry.exp3.json"
+      },
+      {
+        "Name": "Surprised",
+        "File": "hongzhuang.layout.surprised.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "hongzhuang.layout.idle.motion3.json"
+        }
+      ],
+      "Blink": [
+        {
+          "File": "hongzhuang.layout.blink.motion3.json"
+        }
+      ],
+      "Nod": [
+        {
+          "File": "hongzhuang.layout.nod.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "hongzhuang.layout.shake.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ]
+}

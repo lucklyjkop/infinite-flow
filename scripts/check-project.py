@@ -53,18 +53,30 @@ for file in GAME.glob("*.css"):
     for match in re.finditer(r"url\(\s*['\"]?([^)'\"]+)", file.read_text(encoding="utf-8")):
         asset(file, match[1].strip())
 for file in GAME.glob("*.js"):
-    for match in re.finditer(r"(['\"])(assets/[^'\"]+)\1", file.read_text(encoding="utf-8")):
+    for match in re.finditer(r"(['\"])((?:assets|vendor)/[^'\"]+)\1", file.read_text(encoding="utf-8")):
         if '${' not in match[2] and re.search(r"\.(?:webp|png|jpg|jpeg|ogg|json|js|woff2)(?:[?#].*)?$", match[2]):
             asset(file, match[2])
 for file in GAME.rglob("*.json"):
     try:
-        json.loads(file.read_text(encoding="utf-8"))
+        document = json.loads(file.read_text(encoding="utf-8"))
+        if file.name.endswith('.model3.json'):
+            refs = document.get('FileReferences', {})
+            for name in ('Moc', 'Physics', 'Pose', 'DisplayInfo'):
+                asset(file, refs.get(name))
+            for texture in refs.get('Textures', []):
+                asset(file, texture)
+            for expression in refs.get('Expressions', []):
+                asset(file, expression.get('File'))
+            for motions in refs.get('Motions', {}).values():
+                for motion in motions:
+                    asset(file, motion.get('File'))
+                    asset(file, motion.get('Sound'))
     except (ValueError, UnicodeError) as exc:
         errors.append(f"Invalid JSON: {file.relative_to(ROOT)}: {exc}")
 manifest = GAME / "assets/audio/manifest.json"
 for sample in json.loads(manifest.read_text(encoding="utf-8"))["assets"]:
     asset(manifest, sample["file"])
-for file in [*GAME.glob("*.py"), *ROOT.joinpath("scripts").glob("*.py"), *ROOT.joinpath("tests").glob("test_*.py")]:
+for file in [*GAME.glob("*.py"), *ROOT.joinpath("scripts").rglob("*.py"), *ROOT.joinpath("tests").glob("test_*.py")]:
     try:
         ast.parse(file.read_text(encoding="utf-8"), filename=str(file))
     except SyntaxError as exc:
@@ -73,7 +85,7 @@ node = shutil.which("node")
 if not node:
     errors.append("Node.js is needed for JavaScript syntax checks (not for previewing the game).")
 else:
-    for file in [*GAME.glob("*.js"), *GAME.joinpath("assets/loading-ui").glob("*.js")]:
+    for file in [*GAME.glob("*.js"), *GAME.joinpath("assets/loading-ui").glob("*.js"), *ROOT.joinpath("scripts/live2d").glob("*.cjs")]:
         result = subprocess.run([node, "--check", str(file)], capture_output=True, text=True)
         if result.returncode:
             errors.append(result.stderr.strip())

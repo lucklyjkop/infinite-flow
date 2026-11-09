@@ -109,12 +109,18 @@ window.addEventListener('infinite:deityselected', event => {
 
 `system-space.js/.css` 使用中央正面 Q 版红妆、左右六个悬浮徽记与底部固定输入框。世界入口、轮回记录、行囊、主神契约点击后才展开详情；系统设置与返回主神是实际入口。空档案和行囊如实显示为空，不创建虚假存档。徽记错落展开并轻微浮动，输入框保持稳定；减少动态、弹窗与页面隐藏时暂停动态。返回时先准备好主神场景，再收起当前界面。
 
-当前角色是透明插画动态预览，并非已绑定的 Live2D 模型。`InfiniteSystemSpace.getCharacterMount()` 与 `.setCharacterRenderer(renderer)` 为未来渲染器预留挂载点、视线及暂停接口。大肥鱼项目只作为 Q 版比例与画风参考，没有复制其模型。新贴图、完整提示词和导出记录位于 `../art-source/imagegen/system-space/`；使用内置生图工具，工具未披露具体模型版本和质量档位。
+角色使用 `system-live2d.js/.css` 加载真正的 Cubism MOC3，入口为 `assets/live2d/hongzhuang/hongzhuang.model3.json`。18 个网格、20 个参数支持独立眨眼、瞳孔跟随、头身轻转、呼吸、嘴型与头发物理。网页默认闭嘴，点击人物轻轻点头；未来语音口型需另接驱动。衣袖、手与红线属于同一个连续身体网格，首版未独立制作抬臂和手指动作。
+
+渲染器通过 `InfiniteSystemSpace.getCharacterMount()` 和 `.setCharacterRenderer(renderer)` 接收视线及暂停状态。原插画保留到模型完整首帧绘制后再切换；加载失败仍显示插画。只有一个受控 ticker 更新参数、物理和渲染，隐藏、详情弹窗及设置页打开时暂停，减少动态模式显示静态原生模型。`InfiniteSystemLive2D.getState()`、`.inspectModel()` 和 `.setDebugPose(parameters|null)` 用于开发验收。
+
+Cubism Core 由 `../scripts/setup-live2d-runtime.py` 从官方地址下载到忽略的 `../output/live2d-runtime/`，校验 SHA-256 后经 `serve.py` 的 `/runtime/live2dcubismcore.min.js` 提供；启动服务时自动预热，有缓存后不需要联网。模型贴图与运行依赖的其他部分都在仓库内，详见 `vendor/live2d/SOURCE.md`。仅用通用静态文件服务器时不会提供该 Core 路由，应使用项目的 Python 服务。
+
+大肥鱼项目作为 Q 版比例、画风与制作流程参考，没有复制它的角色模型或贴图。原 UI 源图在 `../art-source/imagegen/system-space/`；本次拆层素材、完整提示词、PSD、Cubism `.cmo3` 与绑定工程在 `../art-source/live2d/hongzhuang/`。使用内置生图工具，工具未披露具体模型版本和质量档位。
 
 底部输入支持 Enter 发送、Shift+Enter 换行及中文输入法。发送派发可取消的 `infinite:systemmessage`，尚无对话服务时保留输入并提示“对话尚未连接”，不模拟 AI 应答。正式对话模块可接管该事件；世界入口的 `infinite:journeyrequest` 同理，未接入时仅显示未启程状态。
 
 ### 项目检查
 
-从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频清单、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。模型列表接口另运行 `python -m unittest discover -s tests -p "test_*.py"`。GitHub Actions 会在 push 和 Pull Request 中运行上述检查。
+从仓库根目录运行 `python scripts/check-project.py`，检查当前页面的静态引用、路径大小写、音频与 Live2D 模型引用、JSON 与 Python / JavaScript 语法（语法检查需要 Node.js 22+）。模型列表接口和 Core 本地路由另运行 `python -m unittest discover -s tests -p "test_*.py"`。GitHub Actions 会在 push 和 Pull Request 中运行上述检查。修改 Live2D 绑定后，在官方 Core 缓存就绪时运行 `node scripts/live2d/check-model.cjs`，检查实际 MOC、全部参数极值、组合姿态、遮罩及物理引用；再在浏览器确认动作外观。
 
 修改交互或动画后还应实测：完整加载到标题、鼠标和键盘选中/点击、设置保存与放弃草稿、关闭转场、开始游戏单次波浪、前后台切换、窄屏布局及系统减少动态偏好。音频需要真实操作解锁；无存档时继续按钮保持禁用。该自动检查不代替这些视觉和听感验证。
