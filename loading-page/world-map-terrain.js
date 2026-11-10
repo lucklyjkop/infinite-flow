@@ -444,12 +444,25 @@
       return prepareGeometry(chapterIndex,columns,rows,backend).then(geometry=>Boolean(geometry)&&!disposed);
     }
     function project({u=0,v=0,lift=0}={}){u=clamp(Number(u)||0);v=clamp(Number(v)||0);const point=position(u,v,heightAt(u,v,state.chapterIndex),width,height,state);point.y-=Number(lift)||0;return point;}
+    // Sample the actual, quantized voxel tops. Weather never regenerates geometry.
+    function getWeatherSurfaces(){
+      if(disposed||state.progress<.94)return [];
+      const points=[],visible=new Map();
+      for(let row=1;row<rows;row+=2)for(let col=1;col<columns;col+=2){
+        const cell=cellData[row*columns+col];if(!cell||cell.alpha<.65)continue;
+        const p=position(cell.u,cell.v,cell.h,width,height,state),depth=cell.v*.70+cell.h*.28;
+        const key=Math.round(p.x/7)+':'+Math.round(p.y/5),previous=visible.get(key);
+        if(previous&&previous.depth>=depth)continue;
+        visible.set(key,{x:p.x,y:p.y,depth,id:state.chapterIndex+':'+row+':'+col,kind:cell.habitat.water>.45?'water':cell.h>.25?'mountain':'ground',light:cell.u<state.litCount/6?1:.48});
+      }
+      for(const point of visible.values())points.push(point);return points;
+    }
     function contextLost(event){event.preventDefault();if(disposed)return;lost=true;useFallback();resize();render();report(new Error('WebGL context lost; using the 2D terrain.'));}
     function contextRestored(){if(disposed)return;try{lost=false;if(setupGL()){error='';fallbackCanvas?.remove();fallbackCanvas=null;ctx=null;canvas.style.visibility=originalVisibility;resize();render();}}catch(problem){report(problem);useFallback();resize();render();}}
     function dispose(){if(disposed)return;disposed=true;canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);fallbackCanvas?.remove();canvas.style.visibility=originalVisibility;if(gl&&!gl.isContextLost()){[meshBuffer,cellBuffer].forEach(value=>value&&gl.deleteBuffer(value));[sourceTexture,pigmentTexture].forEach(value=>value&&gl.deleteTexture(value));shaders.forEach(value=>gl.deleteShader(value));if(program)gl.deleteProgram(program);}sourceImage=pigmentImage=null;currentGeometry=null;cellData=[];}
     try{if(!setupGL())useFallback();}catch(problem){report(problem);useFallback();}
     canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);resize();
-    return Object.freeze({prepare,prepareChapter,setState,render,project,resize,dispose,getDecorations:()=>decorationsFor(state.chapterIndex),getState:()=>({backend,progress:state.progress,completedCount:state.completedCount,litCount:state.litCount,chapterIndex:state.chapterIndex,sourceOffsetX:state.sourceOffsetX,sourceViewportWidth:state.sourceViewportWidth,selectedIndex:state.selectedIndex,columns,rows,instances:backend==='webgl'?instanceCount:cellData.length,width,height,frames,lost,disposed,error,geometryCached,geometryBuildMs,geometryUploadMs,geometryMaxSliceMs:currentGeometry?.maxSliceMs||0,geometryCacheEntries:geometryCache.size,geometryPending:geometryJobs.size})});
+    return Object.freeze({prepare,prepareChapter,setState,render,project,getWeatherSurfaces,resize,dispose,getDecorations:()=>decorationsFor(state.chapterIndex),getState:()=>({backend,progress:state.progress,completedCount:state.completedCount,litCount:state.litCount,chapterIndex:state.chapterIndex,sourceOffsetX:state.sourceOffsetX,sourceViewportWidth:state.sourceViewportWidth,selectedIndex:state.selectedIndex,columns,rows,instances:backend==='webgl'?instanceCount:cellData.length,width,height,frames,lost,disposed,error,geometryCached,geometryBuildMs,geometryUploadMs,geometryMaxSliceMs:currentGeometry?.maxSliceMs||0,geometryCacheEntries:geometryCache.size,geometryPending:geometryJobs.size})});
   }
   const api=Object.freeze({create,stops:STOPS.map(value=>Object.freeze({...value})),heightAt});
   if(typeof module==='object'&&module.exports)module.exports={heightAt,silhouetteAt,localPhase,position,pathAt,riverAt,habitatAt,materialColors,decorationsFor,updateState,sourceLayout,getGeometry,prepareGeometry,geometryKey,stops:STOPS};
