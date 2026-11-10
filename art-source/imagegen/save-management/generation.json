@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-10",
+  "entry": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "quality": "工具未披露画质档位；提示词请求最高细节与质量",
+  "transparent_background": true,
+  "dimensions": [
+    1610,
+    977
+  ],
+  "runtime": "loading-page/assets/common-ui/confirmation-panel.png",
+  "source": "confirmation-panel.png",
+  "prompt": "Use case: ui-mockup. Production game UI texture asset, NOT a complete screen.\nCreate ONE textless reusable confirmation dialog panel for a restrained elegant Chinese fantasy game themed around a red-robed goddess, dark silk, crimson threads and cherry blossoms. Landscape front view, orthographic absolutely no perspective; the actual panel outer bounds have aspect ratio approximately 1.65:1 and occupy about 94 percent of the canvas width. Warm charcoal and very dark burgundy matte fine woven silk interior, delicate aged champagne gold rim with gently rounded R corners, a very fine crimson inner seam. Tiny naturalistic muted red cherry blossoms and a slender twig at the TOP RIGHT corner ONLY, one flowing fine red thread hugging the bottom inner rim. Soft tactile depth, premium realistic 3D material, warm low-gloss rim highlights, very restrained ornament. Keep central 80% wide area and lower 30% utterly quiet for live game text and interactive buttons that will be added by code. No image within a scene, no room, no person, no lettering, no button placeholders, no icons, no watermark. The silk interior is opaque. Outside the silhouette is genuine transparent alpha, no colored background, no opaque rectangular shadow, no checkerboard. Narrow empty alpha margin. Small subtle contact shadow follows only the silhouette. Highest available image detail and quality, crisp hand-crafted material with realistic clean edges. This is a new panel matching the established red/gold/charcoal game, and should remain understated rather than heavily baroque.",
+  "processing": "原始 RGBA PNG 原样复制，保留透明通道。按钮复用现有 settings-folio 生图贴图。"
+}

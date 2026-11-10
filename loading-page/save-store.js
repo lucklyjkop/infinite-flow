@@ -72,8 +72,9 @@
     if(new Set(saves.map(save=>save.id)).size!==saves.length)throw error('存档编号有冲突，原数据已保留。');
     return {version:VERSION,saves};
   }
-  function write(value){
+  function write(value,afterPersist){
     try{localStorage.setItem(KEY,JSON.stringify(value));}catch{throw error('存档未能保存，浏览器存储空间可能已满；原存档仍然保留。');}
+    afterPersist?.();
     emit('infinite:saveschange',{id:activeId,count:value.saves.length});
   }
   function list(){return clone(read().saves.sort((a,b)=>b.updatedAt-a.updatedAt||a.id.localeCompare(b.id)));}
@@ -91,6 +92,17 @@
   }
   function active(){return activeId?get(activeId):null;}
   function clearActive(){activeId=null;emit('infinite:saveactive',{id:null,save:null});}
+  function remove(id){
+    // Read at confirmation time so a newer save from another tab is preserved.
+    const document=read(),index=document.saves.findIndex(save=>save.id===id);
+    if(index<0){if(activeId===id)clearActive();return false;}
+    document.saves.splice(index,1);
+    // Clearing the current journey must happen only after persistence succeeds,
+    // and before observers receive the changed list.
+    try{write(document,()=>{if(activeId===id)clearActive();});}
+    catch(cause){throw Object.assign(error('未能删除存档，请重试。'),{cause});}
+    return true;
+  }
   function change(id,mutate){
     const document=read(),index=document.saves.findIndex(save=>save.id===id);
     if(index<0)throw error('这份存档已不存在，请重新选择。');
@@ -118,5 +130,5 @@
     if(activeId){try{if(!get(activeId))clearActive();}catch{clearActive();}}
     emit('infinite:saveschange',{external:true,id:activeId});
   });
-  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,clearActive,worldStageIds,worldStageIdAt,worldStageIndexOf});
+  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,remove,clearActive,worldStageIds,worldStageIdAt,worldStageIndexOf});
 })();

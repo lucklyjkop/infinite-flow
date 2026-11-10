@@ -23,7 +23,8 @@
   <link rel="stylesheet" href="deity-space.css?v=depth-title-8">
   <link rel="stylesheet" href="deity-selection.css?v=contour-writing">
   <link rel="stylesheet" href="system-space.css?v=minimal-sakura-hub">
-  <link rel="stylesheet" href="save-pages.css?v=named-journeys">
+  <link rel="stylesheet" href="save-pages.css?v=save-management">
+  <link rel="stylesheet" href="common-dialog.css?v=cherry-silk">
   <link rel="stylesheet" href="system-live2d.css?v=hongzhuang-first-rig">
   <link rel="stylesheet" href="world-map.css?v=voxel-weather">
   <link rel="icon" href="data:,">
@@ -49,10 +50,11 @@
   <script defer src="settings-paper-select.js?v=paper-select"></script>
   <script defer src="settings-folio.js?v=builtin-voices"></script>
   <script defer src="model-catalog.js?v=texture-only-4"></script>
-  <script defer src="save-store.js?v=chapter-progress"></script>
+  <script defer src="save-store.js?v=save-management"></script>
   <script defer src="world-progress.js?v=chapter-progress"></script>
-  <script defer src="save-pages.js?v=startup-weather-2"></script>
-  <script defer src="title-menu.js?v=save-archive"></script>
+  <script defer src="common-dialog.js?v=cherry-silk"></script>
+  <script defer src="save-pages.js?v=save-management"></script>
+  <script defer src="title-menu.js?v=save-management"></script>
   <script defer src="title-return.js?v=cube-handoff"></script>
   <script defer src="deity-assembly.js?v=clean-first-frame"></script>
   <script defer src="deity-transition.js?v=sakura-writing"></script>
@@ -220,11 +222,11 @@
       <div class="folio-branch branch-upper" aria-hidden="true"></div>
     </div>
   </dialog>
-  <dialog class="menu-dialog compact-dialog" id="exit-dialog" aria-labelledby="exit-title">
+  <dialog class="menu-dialog compact-dialog common-dialog" id="exit-dialog" aria-labelledby="exit-title">
     <h2 id="exit-title">退出游戏</h2><p>是否离开此界？</p>
     <div class="dialog-actions"><button class="quiet-button" type="button" data-close-dialog autofocus>返回</button><button id="confirm-exit" class="primary-button" type="button">退出</button></div>
   </dialog>
-  <dialog class="menu-dialog compact-dialog" id="notice-dialog" aria-labelledby="notice-message">
+  <dialog class="menu-dialog compact-dialog common-dialog" id="notice-dialog" aria-labelledby="notice-message">
     <p id="notice-message"></p><div class="dialog-actions"><button class="primary-button" type="button" data-close-dialog autofocus>返回</button></div>
   </dialog>
   <noscript><div class="noscript">请启用 JavaScript 以播放入场动画。</div></noscript>

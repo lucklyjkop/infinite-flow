@@ -51,3 +51,48 @@ test('long chat truncation preserves complete Unicode characters',()=>{
   assert.equal(chat[0].content,'😀'.repeat(4000));
   assert.equal(chat[1].content,'🌸'.repeat(12000));
 });
+test('deleting one named save preserves all fields of every other save',()=>{
+  const x=setup(),one=x.api.create({name:'同名',deity}),two=x.api.create({name:'同名',deity});
+  x.api.appendMessagePair(two.id,'留下问题','留下回答');x.api.update(two.id,{progress:{selected:'records'}});x.api.activate(two.id);
+  const kept=JSON.stringify(x.api.get(two.id));
+  assert.equal(x.api.remove(one.id),true);assert.equal(x.api.get(one.id),null);
+  assert.equal(JSON.stringify(x.api.get(two.id)),kept);assert.equal(x.api.active().id,two.id);
+  assert.equal(setup(x.data).api.list().length,1);
+});
+test('deleting the current save clears active state before list-change notification',()=>{
+  const x=setup(),save=x.api.create({name:'当前旅程',deity});x.api.activate(save.id);const start=x.events.length;
+  assert.equal(x.api.remove(save.id),true);assert.equal(x.api.active(),null);assert.equal(x.api.list().length,0);
+  const changes=x.events.slice(start);
+  assert.deepEqual(changes.map(event=>event.type),['infinite:saveactive','infinite:saveschange']);
+  assert.equal(changes[0].detail.id,null);assert.equal(changes[1].detail.id,null);assert.equal(changes[1].detail.count,0);
+  assert.equal(setup(x.data).api.list().length,0);
+});
+test('failed deletion preserves storage, active journey and success notifications',()=>{
+  const x=setup(),save=x.api.create({name:'不可丢失',deity});x.api.activate(save.id);
+  const original=x.data.get('infinite.saves.v1'),events=x.events.length;x.failWrite();
+  assert.throws(()=>x.api.remove(save.id),error=>error.userMessage==='未能删除存档，请重试。');
+  assert.equal(x.data.get('infinite.saves.v1'),original);assert.equal(x.api.active().id,save.id);assert.equal(x.events.length,events);
+});
+test('confirmation-time deletion preserves newer saves and updates from another tab',()=>{
+  const a=setup(),one=a.api.create({name:'待删除',deity}),b=setup(a.data),two=b.api.create({name:'另一份',deity});
+  b.api.appendMessagePair(two.id,'新问题','新回复');
+  assert.equal(a.api.remove(one.id),true);assert.equal(b.api.get(one.id),null);assert.equal(b.api.get(two.id).chat[1].content,'新回复');
+  assert.throws(()=>b.api.update(one.id,{name:'迟到的更新'}));assert.equal(a.api.get(one.id),null);
+});
+test('already deleted saves are idempotent and clear a stale active selection without writing',()=>{
+  const a=setup(),save=a.api.create({name:'跨页删除',deity}),b=setup(a.data);a.api.activate(save.id);
+  b.api.remove(save.id);a.failWrite();const original=a.data.get('infinite.saves.v1');
+  assert.equal(a.api.remove(save.id),false);assert.equal(a.api.active(),null);assert.equal(a.data.get('infinite.saves.v1'),original);
+  const count=a.events.length;assert.equal(a.api.remove(save.id),false);assert.equal(a.events.length,count);
+});
+test('storage event clears the active save deleted by another tab',()=>{
+  const a=setup(),save=a.api.create({name:'跨页旅程',deity}),b=setup(a.data);a.api.activate(save.id);b.api.remove(save.id);
+  a.handlers.storage({key:'infinite.saves.v1'});
+  assert.equal(a.api.active(),null);assert.equal(a.events.at(-1).type,'infinite:saveschange');assert.equal(a.events.at(-1).detail.external,true);
+});
+test('deletion never overwrites corrupted or incompatible storage',()=>{
+  for(const raw of ['{broken',JSON.stringify({version:99,saves:[]})]){
+    const x=setup(new Map([['infinite.saves.v1',raw]]));
+    assert.throws(()=>x.api.remove('save_missing'));assert.equal(x.data.get('infinite.saves.v1'),raw);assert.equal(x.events.length,0);
+  }
+});

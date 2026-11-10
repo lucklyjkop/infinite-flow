@@ -59,7 +59,7 @@
     let count = 0;
     try { count = window.InfiniteSaves?.list?.().length || 0; } catch { /* The archive view owns the readable retry state. */ }
     continueButton.disabled = false;
-    continueButton.title = count ? `选择存档 · ${count} 段旅程` : '查看轮回存档';
+    continueButton.title = count ? `存档管理 · ${count} 份存档` : '存档管理';
     continueButton.setAttribute('aria-haspopup', 'dialog');
   }
 
