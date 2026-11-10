@@ -40,7 +40,7 @@
     window.InfiniteTitle?.hide();
     if(run.source==='save'){run.sourceRoot=document.getElementById('save-page');run.sourceVisibility=run.sourceRoot.style.visibility;run.sourceRoot.style.visibility='hidden';}
     let sounded=false;
-    const completed=await run.cover.play(target,{direction:'right-to-left',duration:2200,reducedMotion:reduced(),onProgress(progress){if(!sounded&&progress<1){sounded=true;emit('infinite:soundcue',{name:'deity-cube-assemble',group:'system-arrival',variation:false});}}});requireCurrent(run);
+    const completed=await run.cover.play(target,{direction:'right-to-left',simple:run.source==='save',duration:run.source==='save'?320:2200,reducedMotion:reduced(),onProgress(progress){if(!sounded&&progress<1){sounded=true;emit('infinite:soundcue',{name:'deity-cube-assemble',group:'system-arrival',variation:false});}}});requireCurrent(run);
     if(!completed)throw new Error('页面切换已取消，请重新载入存档。');
     // The archive is above the hub. Remove it while the completed wave still
     // owns the screen, so it cannot reappear for one frame on release.

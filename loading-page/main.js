@@ -38,8 +38,6 @@
       });
     },
   }) : null;
-  const demoDuration = 4200;
-  const demoLeadIn = 400;
   const rainFadeInAt = 2000; // Matches the existing CSS delay before the rain becomes visible.
   const stages = [
     { at: 0, text: '正在定位世界坐标' },
@@ -138,10 +136,6 @@
     elapsed += Math.min(now - previous, 100);
     previous = now;
     if (before < rainFadeInAt && elapsed >= rainFadeInAt) applyMotion();
-    if (!external) {
-      // Cinematic preview timeline. Production may supply real resource progress below.
-      setProgress(100 * (elapsed - demoLeadIn) / demoDuration);
-    }
     if (world.dataset.state === 'loading') raf = requestAnimationFrame(frame);
   }
 
@@ -164,7 +158,7 @@
     petals?.setReducedMotion(media.matches);
     rain?.setReducedMotion(media.matches);
     const state = world.dataset.state;
-    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity', 'system-arriving', 'system', 'system-returning', 'archives'].includes(state);
+    const backstage = ['exited', 'start-ended', 'deity-arriving', 'deity', 'system-arriving', 'system', 'system-returning', 'archives', 'world-map'].includes(state);
     const returning = world.classList.contains('deity-returning');
     // A warm camera can track during a replay. The first full-resolution GL
     // upload waits for the menu entrance to finish instead of stalling the opening.
@@ -230,6 +224,9 @@
 
   function reportBootIssue(message, reload = false) {
     reloadOnRetry = reload;
+    // Loading artwork normally hides this overlay; failures must make the
+    // existing retry button visible and clickable while progress stays put.
+    world.classList.remove('is-running');
     bootText.textContent = message;
     retryButton.textContent = reload ? '重新打开' : '重新加载';
     bootMessage.hidden = false;
@@ -240,11 +237,11 @@
     cancelImageWait?.();
     reloadOnRetry = false;
     bootMessage.hidden = true;
-    const query = retryImage ? '?retry=' + request : '';
+    const query = retryImage && !art.naturalWidth ? '?retry=' + request : '';
     // A slow image can still finish after the notice. Keep its load listener alive.
     const timer = setTimeout(() => reportBootIssue('正在等待背景图片…'), 12000);
     try {
-      let ready = await waitForArtwork(retryImage ? backgroundSource + query : null);
+      let ready = await waitForArtwork(query ? backgroundSource + query : null);
       if (!ready && request === assetRequest) ready = await waitForArtwork(backgroundFallback + query);
       if (request !== assetRequest) return;
       if (!ready) {
@@ -258,19 +255,29 @@
       return;
     }
     loaded = true;
+    useExternalProgress();
+    pendingProgress = 0;
     if (titlePreview) {
-      external = true;
-      pendingProgress = 100;
       world.classList.add('skip-intro');
     }
     try {
       replay();
+      if (!window.InfiniteGamePreload) {
+        reportBootIssue('资源加载脚本未能载入', true);
+        return;
+      }
+      await window.InfiniteGamePreload.prepare({onProgress(value) {
+        if (request !== assetRequest) return;
+        pendingProgress = Math.min(99, value);
+        if (world.dataset.state === 'loading') setProgress(pendingProgress);
+      }});
+      if (request !== assetRequest) return;
+      pendingProgress = 100;
+      setProgress(100);
     } catch (error) {
-      loaded = false;
-      world.classList.remove('is-running');
-      world.dataset.state = 'boot';
-      console.error('Game opening failed to initialize', error);
-      reportBootIssue('开场画面初始化失败', true);
+      if (request !== assetRequest) return;
+      console.error('Game resources could not be prepared', error);
+      reportBootIssue('部分资源未能载入，请重试。');
     }
   }
 

@@ -32,6 +32,8 @@
   const nameForm = naming.querySelector('form'), nameInput = naming.querySelector('input'), nameError = naming.querySelector('.save-name-error'), nameCount = naming.querySelector('#save-name-count');
   let phase = 'hidden', generation = 0, animation = null, busyId = null, opener = null, lastFocusAt = 0;
   let nameRequest = null, nameAnimation = null, composing = false, closingName = false, preloadJob = null, readError = '';
+  const preloadedImages = new Map();
+  const failedPreloadImages = new Set();
   const motion = () => !reduced.matches && window.InfiniteSettings?.getState?.().motion !== false && !document.hidden;
   const emit = (name, detail = {}) => window.dispatchEvent(new CustomEvent(name, {detail}));
   const cue = name => { if (!document.hidden) emit('infinite:soundcue', {name, group:'save-ui', gain:.7}); };
@@ -81,9 +83,27 @@
     if (focusId) [...grid.children].find(card => card.dataset.saveId === focusId)?.focus({preventScroll:true});
   }
   function preload() {
-    if (!preloadJob) preloadJob = Promise.all(['assets/save-ui/archive-backdrop.png', 'assets/save-ui/archive-card.png', 'assets/save-ui/name-panel.png', 'assets/deity-space/nai-avatar.webp'].map(url => {
-      const image = new Image(); image.src = url; return image.decode().catch(() => false);
-    }));
+    if (!preloadJob) {
+      const job = Promise.all(['assets/save-ui/archive-backdrop.png', 'assets/save-ui/archive-card.png', 'assets/save-ui/name-panel.png', 'assets/deity-space/nai-avatar.webp'].map(async url => {
+        let image = preloadedImages.get(url);
+        if (!image) {
+          image = [...root.querySelectorAll('img')].find(element => element.getAttribute('src') === url) || new Image();
+          preloadedImages.set(url, image);
+        }
+        if ((image.complete && !image.naturalWidth) || failedPreloadImages.has(url)) image.removeAttribute('src');
+        if (!image.getAttribute('src')) image.src = url;
+        const success = await new Promise(resolve => {
+          const timer = setTimeout(() => resolve(false),30000);
+          image.decode().then(() => { clearTimeout(timer); resolve(image.naturalWidth > 0); },() => { clearTimeout(timer); resolve(false); });
+        });
+        if (success) failedPreloadImages.delete(url); else failedPreloadImages.add(url);
+        return success;
+      })).then(results => {
+        if (results.includes(false) && preloadJob === job) preloadJob = null;
+        return results;
+      });
+      preloadJob = job;
+    }
     return preloadJob;
   }
   async function show({opener:trigger = document.activeElement} = {}) {

@@ -381,7 +381,7 @@
     }
     function resize(){
       if(disposed)return;
-      const rect=canvas.getBoundingClientRect();width=Math.max(1,rect.width||canvas.clientWidth||innerWidth);height=Math.max(1,rect.height||canvas.clientHeight||innerHeight);
+      const rect=canvas.getBoundingClientRect(),size=callbacks.getSize?.()||{};width=Math.max(1,rect.width||size.width||canvas.clientWidth||innerWidth);height=Math.max(1,rect.height||size.height||canvas.clientHeight||innerHeight);
       const max=backend==='webgl'?Math.min(4096,gl.getParameter(gl.MAX_RENDERBUFFER_SIZE)):2800;
       const dpr=Math.max(.5,Math.min(window.devicePixelRatio||1,backend==='webgl'?1.5:1.2,max/width,max/height));
       const target=fallbackCanvas||canvas,pixelWidth=Math.max(1,Math.round(width*dpr)),pixelHeight=Math.max(1,Math.round(height*dpr));
@@ -431,10 +431,10 @@
       ctx.globalAlpha=1;
     }
     function render(){if(disposed)return false;try{if(backend==='webgl'&&!lost)drawGL();else draw2D();frames++;callbacks.onFrame?.({progress:state.progress,backend});return true;}catch(problem){report(problem);useFallback();resize();draw2D();return false;}}
-    function prepare({source=null,texture=null}={}){
-      if(disposed)return false;sourceImage=source; pigmentImage=texture;
-      if(backend==='webgl'&&!lost){try{upload(sourceTexture,sourceImage,[6,9,12,255]);upload(pigmentTexture,pigmentImage,[60,74,65,255]);}catch(problem){report(problem);useFallback();resize();}}
-      render();return true;
+    function prepare({source=sourceImage,texture=pigmentImage,draw=true}={}){
+      if(disposed)return false;const sourceChanged=source!==sourceImage,textureChanged=texture!==pigmentImage;sourceImage=source;pigmentImage=texture;
+      if(backend==='webgl'&&!lost){try{if(sourceChanged)upload(sourceTexture,sourceImage,[6,9,12,255]);if(textureChanged)upload(pigmentTexture,pigmentImage,[60,74,65,255]);}catch(problem){report(problem);useFallback();resize();}}
+      if(draw)render();return true;
     }
     function setState(value={}){
       const before=state.chapterIndex;updateState(state,value);if(before!==state.chapterIndex&&!disposed)buildCells();return state;

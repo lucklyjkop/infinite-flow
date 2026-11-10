@@ -61,10 +61,11 @@
     if (encoded.has(name)) return Promise.resolve(encoded.get(name));
     if (fetching.has(name)) return fetching.get(name);
     const revision = bank[name]?.revision ? `?v=${bank[name].revision}` : '';
-    const job = fetch(`assets/audio/${name}.ogg${revision}`, {cache: 'force-cache'})
+    const job = fetch(`assets/audio/${name}.ogg${revision}`, {cache: 'force-cache', signal: AbortSignal.timeout(30000)})
       .then(response => { if (!response.ok) throw Error('Audio asset unavailable'); return response.arrayBuffer(); })
-      .then(bytes => { encoded.set(name, bytes); return bytes; })
-      .catch(() => { failed.add(name); return null; });
+      .then(bytes => { encoded.set(name, bytes); failed.delete(name); return bytes; })
+      .catch(() => { failed.add(name); return null; })
+      .finally(() => fetching.delete(name));
     fetching.set(name, job);
     return job;
   }
@@ -74,7 +75,8 @@
     if (!context) return Promise.resolve(null);
     const job = fetchSample(name).then(bytes => bytes ? context.decodeAudioData(bytes.slice(0)) : null)
       .then(buffer => { if (buffer) decoded.set(name, buffer); return buffer; })
-      .catch(() => { failed.add(name); return null; });
+      .catch(() => { failed.add(name); return null; })
+      .finally(() => decoding.delete(name));
     decoding.set(name, job);
     return job;
   }
@@ -82,6 +84,8 @@
   async function preload() {
     const names = Object.keys(bank);
     for (let i = 0; i < names.length; i += 3) await Promise.all(names.slice(i, i + 3).map(fetchSample));
+    const missing = names.filter(name => !encoded.has(name));
+    return {ready: !missing.length, failed: missing};
   }
 
   function ramp(parameter, target, seconds = .05) {
@@ -383,7 +387,7 @@
     }
   });
 
-  window.InfiniteAudio = Object.freeze({unlock, play, stopGroup, sync,
+  window.InfiniteAudio = Object.freeze({unlock, play, stopGroup, sync, preload,
     getState: () => {
       voices.forEach(recordStarted);
       return {context: context?.state || 'locked', unlocked,

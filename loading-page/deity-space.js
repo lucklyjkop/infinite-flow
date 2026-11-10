@@ -68,6 +68,7 @@
   let canvas = root.querySelector('#deity-assembly');
   const status = root.querySelector('#deity-selection-status');
   const images = [...root.querySelectorAll('img')];
+  const failedImages = new Set();
   const waiting = new Map();
   let generation = 0, phase = 'hidden', assembly = null, preloadJob = null;
   let selected = null, confirmed = false, launching = false;
@@ -103,7 +104,6 @@
   }
   function imageReady(image) {
     return new Promise(resolve => {
-      if (image.complete) { resolve(image.naturalWidth > 0); return; }
       let done = false;
       const finish = success => {
         if (done) return;
@@ -111,21 +111,39 @@
         clearTimeout(timeout);
         image.removeEventListener('load', loaded);
         image.removeEventListener('error', failed);
+        if (success) failedImages.delete(image); else failedImages.add(image);
         resolve(success);
       };
-      const loaded = () => finish(true), failed = () => finish(false);
-      const timeout = setTimeout(() => finish(false), 6500);
+      const loaded = async () => { try { await image.decode(); finish(image.naturalWidth > 0); } catch { finish(false); } };
+      const failed = () => finish(false);
+      const timeout = setTimeout(() => finish(false), 30000);
       image.addEventListener('load', loaded, {once: true});
       image.addEventListener('error', failed, {once: true});
+      if ((image.complete && !image.naturalWidth) || failedImages.has(image)) {
+        // A failed DOM <img> must receive a new load, not a cached false promise.
+        const source = image.getAttribute('src');
+        if (!source) { finish(false); return; }
+        image.removeAttribute('src'); image.src = source;
+      } else if (image.complete) void loaded();
     });
   }
   function preload() {
-    if (!preloadJob) preloadJob = Promise.all(images.map(imageReady)).then(results => {
-      loads = results.filter(Boolean).length;
-      failures = results.length - loads;
-      root.classList.toggle('has-title-art', titleArt.naturalWidth > 0);
-      return Promise.all([window.DeityReturnCapture?.ready, occlusion?.ready, selectionTrace?.ready]).then(() => ({loaded: loads, failed: failures}));
-    });
+    if (!preloadJob) {
+      const job = Promise.all(images.map(imageReady)).then(async results => {
+        loads = results.filter(Boolean).length;
+        failures = results.length - loads;
+        root.classList.toggle('has-title-art', titleArt.naturalWidth > 0);
+        // Decorative tracing/occlusion can use their existing still fallback;
+        // a stalled auxiliary request must not retain this preload job forever.
+        await new Promise(resolve => {
+          const timer = setTimeout(resolve,10000);
+          Promise.allSettled([window.DeityReturnCapture?.ready, occlusion?.ready, selectionTrace?.ready]).then(() => { clearTimeout(timer); resolve(); });
+        });
+        if (failures && preloadJob === job) preloadJob = null;
+        return {loaded: loads, failed: failures};
+      });
+      preloadJob = job;
+    }
     return preloadJob;
   }
   titleArt.addEventListener('load', () => root.classList.add('has-title-art'));

@@ -14,8 +14,11 @@
   let attachSerial = 0, elapsed = 0, dt = 1 / 60, frames = 0;
   let lookX = 0, lookY = 0, blinkAt = -10, nextBlink = 2.6, greetAt = -10, speechLevel = 0;
   let phase = 'idle', error = '', physicsOutputs = [], parameterIds = [];
+  let retryable = true;
   let originalNatural = null, originalCoreUpdate = null;
   let debugPose = null;
+  let layoutWidth = 0, layoutHeight = 0;
+  let stillCanvas = null, stillReady = false;
   const smooth = new Map(), lookup = new Map(), outputIds = new Set();
   const drawn = {};
   const reduced = () => media.matches || window.InfiniteSettings?.getState?.().motion === false;
@@ -82,10 +85,13 @@
       smooth.set(id, next); parameters.values[index] = next;
     }
   }
-  function layout() {
-    if (!app || !model || !mount) return;
-    const box = mount.getBoundingClientRect();
-    const width = Math.max(1, box.width || 512), height = Math.max(1, box.height || 768);
+  function layout(size) {
+    if (!app || !model || !mount) return false;
+    // Hidden ResizeObserver notifications must not shrink a warmed character.
+    // client sizes also exclude the illustration's breathing transform.
+    const width = Math.round(size?.width || mount.clientWidth), height = Math.round(size?.height || mount.clientHeight);
+    if (!width || !height || (width === layoutWidth && height === layoutHeight)) return false;
+    layoutWidth = width; layoutHeight = height;
     app.renderer.resize(width, height);
     const modelWidth = model.internalModel.originalWidth || model.internalModel.width;
     const modelHeight = model.internalModel.originalHeight || model.internalModel.height;
@@ -93,24 +99,44 @@
     model.scale.set(scale); model.anchor.set(.5, .5);
     model.position.set(width * .5, height - modelHeight * scale * .5);
     renderStill();
+    return true;
+  }
+  function prepareLayout() {
+    if (!root.hidden) return layout();
+    // Measure the actual responsive slot during boot without exposing a frame
+    // or changing scene state. The synchronous measurement restores visibility.
+    const visibility = root.style.visibility, inert = root.inert;
+    try {
+      root.style.visibility = 'hidden'; root.inert = true; root.hidden = false;
+      return layout({width:mount.clientWidth,height:mount.clientHeight});
+    } finally { root.hidden = true; root.style.visibility = visibility; root.inert = inert; }
   }
   function renderStill() {
     if (!app || !model) return;
     dt = 1 / 60;
     model.update(dt * 1000);
     app.render();
+    // Copy only stopped poses. Normal animation keeps its non-preserved GL
+    // buffer and pays no per-frame readback or extra rendering cost.
+    stillCanvas.width = app.canvas.width; stillCanvas.height = app.canvas.height;
+    stillCanvas.getContext('2d').drawImage(app.canvas,0,0);
+    stillReady = true;
   }
   function tick(ticker) {
     if (paused || !visible() || reduced() || debugPose) { app?.ticker.stop(); return; }
     dt = clamp(ticker.deltaMS / 1000, .001, .05);
     elapsed += dt; model.update(dt * 1000); frames++;
+    if (!stillCanvas.hidden) queueMicrotask(() => {
+      // Pixi's render callback has painted before the frozen cover is removed.
+      if (app && !paused && visible() && !reduced() && !debugPose) stillCanvas.hidden = true;
+    });
   }
   function syncPlayback() {
     if (!app || !model) return;
     if (!attached || paused || !visible() || reduced() || debugPose) {
       app.ticker.stop();
-      if (attached && visible() && (reduced() || debugPose)) renderStill();
-    } else app.ticker.start();
+      if (stillReady) { app.canvas.hidden = true; stillCanvas.hidden = false; }
+    } else { app.canvas.hidden = false; app.ticker.start(); }
   }
   function setLook(x = 0, y = 0) { lookX = clamp(x, -1, 1); lookY = clamp(y, -1, 1); }
   function setPaused(value) {
@@ -133,8 +159,9 @@
     debugPose = value && typeof value === 'object'
       ? Object.fromEntries(Object.entries(value).filter(([id, number]) => lookup.has(id) && !outputIds.has(id) && Number.isFinite(number)))
       : null;
-    smooth.clear(); syncPlayback();
+    smooth.clear();
     if (prepared) renderStill();
+    syncPlayback();
     return getState();
   }
   function inspectModel() {
@@ -153,7 +180,10 @@
     resizeObserver?.disconnect(); resizeObserver = null;
     try { model?.destroy({children:true}); } catch {}
     try { app?.destroy(true, {children:true, texture:false, textureSource:false}); } catch {}
+    stillCanvas?.remove(); if (stillCanvas) stillCanvas.width = stillCanvas.height = 1;
+    stillCanvas = null; stillReady = false;
     model = app = core = parameters = null;
+    layoutWidth = layoutHeight = 0;
     originalNatural = originalCoreUpdate = null;
     lookup.clear(); smooth.clear(); outputIds.clear();
     if (root?.dataset.characterRenderer === 'live2d') root.dataset.characterRenderer = 'illustration';
@@ -161,7 +191,9 @@
   async function attach() {
     if (!prepared || !app || !model || !root || root.hidden || disposed) return false;
     const token = ++attachSerial;
-    layout(); app.canvas.hidden = false; renderStill();
+    layout();
+    if (!stillReady) renderStill();
+    app.canvas.hidden = true; stillCanvas.hidden = false;
     // Keep the existing image underneath until a fully decoded MOC draw has
     // reached the compositor; never reveal an empty first canvas.
     if (!document.hidden) await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
@@ -177,11 +209,13 @@
     dispose() { if (disposed) return; disposed = true; clearModel(); phase = 'disposed'; }};
   function prepare() {
     if (disposed) return Promise.resolve({ready:false, error:'Renderer disposed.'});
+    if (phase === 'fallback' && !retryable) return Promise.resolve({ready:false,error,retryable:false});
     if (prepared) { if (root && !root.hidden && !attached) void attach(); return Promise.resolve({ready:true}); }
     if (loading) return loading;
     phase = 'loading'; error = '';
     const job = (async () => {
       await Promise.resolve();
+      let failureStage = 'assets';
       try {
         mount = window.InfiniteSystemSpace?.getCharacterMount(); root = document.getElementById('system-space');
         if (!mount || !root) throw new Error('System character mount is unavailable.');
@@ -196,15 +230,19 @@
         await script(CORE_URL, () => Boolean(window.Live2DCubismCore));
         await script(VENDOR_URL, () => Boolean(window.__dshLive2dPetVendor));
         const vendor = window.__dshLive2dPetVendor;
+        failureStage = 'renderer';
         if (!vendor.__infiniteRegistered) { vendor.extensions.add(vendor.Live2DPlugin); vendor.configureCubismSDK({memorySizeMB:64}); vendor.__infiniteRegistered = true; }
         app = new vendor.Application();
         await app.init({width:512,height:768,backgroundAlpha:0,antialias:true,resolution:Math.min(2,devicePixelRatio || 1),autoDensity:true,preference:'webgl',autoStart:false,preserveDrawingBuffer:false});
         app.canvas.className = 'system-live2d-canvas'; app.canvas.hidden = true; app.canvas.setAttribute('aria-hidden','true'); mount.append(app.canvas);
+        stillCanvas = document.createElement('canvas'); stillCanvas.className = 'system-live2d-canvas'; stillCanvas.hidden = true; stillCanvas.setAttribute('aria-hidden','true'); mount.append(stillCanvas);
+        failureStage = 'assets';
         model = await vendor.Live2DModel.from(new URL(MODEL_URL, location.href).href, {
           autoUpdate:false,autoFocus:false,autoHitTest:false,eyeBlink:false,
           idleMotionGroup:'__infinite_manual__',motionPreload:'NONE',textureOptions:{lod:'full'},checkMocConsistency:true,
         });
         app.stage.addChild(model); core = model.internalModel.coreModel; parameters = core._model.parameters;
+        failureStage = 'renderer';
         parameterIds = Array.from(parameters.ids); parameterIds.forEach((id,index) => lookup.set(id,index));
         originalNatural = model.internalModel.updateNaturalMovements;
         originalCoreUpdate = core.update;
@@ -217,14 +255,15 @@
         };
         model.internalModel.motionManager?.stopAllMotions();
         app.ticker.maxFPS = 60; app.ticker.add(tick);
-        resizeObserver = new ResizeObserver(layout); resizeObserver.observe(mount);
-        prepared = true; phase = 'ready'; layout();
+        resizeObserver = new ResizeObserver(() => { if (!root.hidden) layout(); }); resizeObserver.observe(mount);
+        prepared = true; phase = 'ready'; prepareLayout();
         if (visible()) await attach();
         return {ready:true};
       } catch (failure) {
         error = failure instanceof Error ? failure.message : 'Live2D model could not be loaded.';
+        retryable = failureStage === 'assets';
         clearModel(); phase = 'fallback';
-        return {ready:false,error};
+        return {ready:false,error,retryable};
       } finally { if (loading === job) loading = null; }
     })();
     loading = job; return job;
@@ -237,12 +276,20 @@
   window.addEventListener('pagehide', () => { setPaused(true); });
   function getState() {
     return {phase,ready:prepared,attached,paused,ticking:Boolean(app?.ticker.started),debugPose:debugPose ? {...debugPose} : null,
-      frames,elapsed,modelUrl:MODEL_URL,parameterIds:[...parameterIds],physicsOutputs:[...physicsOutputs],
+      frames,elapsed,stillReady,modelUrl:MODEL_URL,parameterIds:[...parameterIds],physicsOutputs:[...physicsOutputs],
       physicsLoaded:Boolean(model?.internalModel.physics),drawableCount:core?._model?.drawables?.count ?? 0,
-      drawn:{...drawn},error};
+      drawn:{...drawn},error,retryable};
   }
-  // Force a draw without advancing model time. The caller copies this buffer
-  // synchronously before WebGL's non-preserved drawing buffer can be cleared.
-  function captureSource() { if (!prepared || !attached || !app) return null; app.render(); return app.canvas; }
+  // Paused scene handoffs reuse the warmed pose; live captures still copy the
+  // non-preserved drawing buffer synchronously before it can be cleared.
+  function captureSource() {
+    if (!prepared || !attached || !app) return null;
+    if (paused || reduced() || debugPose) {
+      if (!stillReady) renderStill();
+      app.canvas.hidden = true; stillCanvas.hidden = false;
+      return stillCanvas;
+    }
+    app.render(); return app.canvas;
+  }
   window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel,captureSource,setSpeechLevel});
 })();

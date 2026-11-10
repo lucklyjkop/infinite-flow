@@ -50,6 +50,19 @@
       async play(to,options={}){
         if(released||!to?.image)return false;
         direction=options.direction==='left-to-right'?'left-to-right':'right-to-left';
+        if(options.simple||options.reducedMotion){
+          // Continuing a save is ordinary navigation. The live destination is
+          // already ready behind this cover; no new GL context is needed.
+          const duration=options.reducedMotion||document.hidden?0:Math.min(320,options.duration||320);
+          if(!duration){progress=1;layer.style.opacity='0';return true;}
+          const fade=layer.animate([{opacity:1},{opacity:0}],{duration,easing:'ease-out',fill:'forwards'});
+          const finish=()=>fade.finish();
+          document.addEventListener('visibilitychange',finish);
+          player={cancel:()=>fade.cancel(),getState:()=>({mode:'fade',running:fade.playState==='running'})};
+          try{await fade.finished;progress=1;return !released;}
+          catch{return false;}
+          finally{document.removeEventListener('visibilitychange',finish);}
+        }
         if(!window.playDeityReturnWave)throw new Error('方块过渡尚未准备好。');
         player=window.playDeityReturnWave(canvas,from.image,to.image,{...options,width:from.width,height:from.height,direction,onProgress(value){reveal(value);options.onProgress?.(value);}});
         canvas.hidden=false;hold.remove();

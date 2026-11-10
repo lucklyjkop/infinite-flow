@@ -24,7 +24,7 @@
     images.set(key, entry);
     entry.ready = new Promise(resolve => {
       image.onload = async () => { try { await image.decode(); } catch {} resolve(image); };
-      image.onerror = () => resolve(null);
+      image.onerror = () => { if (images.get(key) === entry) images.delete(key); resolve(null); };
       image.src = key;
     });
     return entry;

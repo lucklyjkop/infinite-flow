@@ -7,7 +7,7 @@ const source=fs.readFileSync(path.join(__dirname,'../loading-page/world-map-weat
 function setup(options={}){
   let now=0,nextFrame=0,work=0;const callbacks=new Map(),canvases=[],changes=[];
   const target=()=>{const handlers=new Map();return{handlers,addEventListener(name,fn){handlers.set(name,fn);},removeEventListener(name,fn){if(handlers.get(name)===fn)handlers.delete(name);},emit(name,event={}){handlers.get(name)?.(event);}};};
-  const context=()=>{const calls={clear:0,fill:0,stroke:0,paths:[]};let points=[];return{calls,setTransform(){},clearRect(){calls.clear++;},drawImage(){calls.fill++;work+=options.operationMs||0;},createLinearGradient(){return{addColorStop(){}};},createRadialGradient(){return{addColorStop(){}};},fillRect(){calls.fill++;work+=options.operationMs||0;},beginPath(){points=[];},moveTo(x,y){points.push([x,y]);},lineTo(x,y){points.push([x,y]);},closePath(){},fill(){calls.fill++;work+=options.operationMs||0;},stroke(){calls.stroke++;if(options.capturePaths)calls.paths.push(points.slice());}};};
+  const context=()=>{const calls={clear:0,fill:0,stroke:0,gradients:0,paths:[]};let points=[];return{calls,setTransform(){},clearRect(){calls.clear++;},drawImage(){calls.fill++;work+=options.operationMs||0;},createLinearGradient(){calls.gradients++;return{addColorStop(){}};},createRadialGradient(){calls.gradients++;return{addColorStop(){}};},fillRect(){calls.fill++;work+=options.operationMs||0;},beginPath(){points=[];},moveTo(x,y){points.push([x,y]);},lineTo(x,y){points.push([x,y]);},closePath(){},ellipse(){},fill(){calls.fill++;work+=options.operationMs||0;},stroke(){calls.stroke++;work+=options.operationMs||0;if(options.capturePaths)calls.paths.push(points.slice());}};};
   const host={style:{cssText:'color:red'},children:[],setAttribute(){},getBoundingClientRect:()=>({width:options.width||1440,height:options.height||900}),appendChild(canvas){host.children.push(canvas);canvas.parent=host;}};
   const document={...target(),hidden:false,createElement(){const ctx=context(),canvas={...target(),style:{},width:0,height:0,getContext:type=>type==='2d'?ctx:null,remove(){if(this.parent)this.parent.children.splice(this.parent.children.indexOf(this),1);},ctx};canvases.push(canvas);return canvas;}};
   const window={...target(),innerWidth:1440,innerHeight:900,devicePixelRatio:2};
@@ -18,8 +18,8 @@ function setup(options={}){
   return{api,host,window,document,changes,callbacks,canvases,step,render};
 }
 test('weather starts stopped with two bounded canvases and no image resource dependency',()=>{
-  const x=setup(),s=x.api.getState();assert.equal(s.drawing,false);assert.equal(s.frames,0);assert.equal(x.host.children.length,2);assert.equal(s.backend,'canvas2d');assert.equal(s.cloudCubes,252);assert.equal(s.cloudGroups,7);assert.ok(s.particleCount>500&&s.particleCount<=900);assert.equal(s.dpr,1);
-  assert.ok(x.host.children.every(c=>c.width===1440&&c.height===900));assert.equal(x.callbacks.size,0);
+  const x=setup(),s=x.api.getState();assert.equal(s.drawing,false);assert.equal(s.frames,0);assert.equal(x.host.children.length,2);assert.equal(s.backend,'canvas2d');assert.equal(s.cloudCubes,252);assert.equal(s.cloudGroups,7);assert.ok(s.particleCount>100&&s.particleCount<=260);assert.equal(s.dpr,1);
+  assert.equal(x.host.children[0].width,1080);assert.equal(x.host.children[0].height,675);assert.equal(x.host.children[1].width,1440);assert.equal(x.host.children[1].height,900);assert.equal(x.callbacks.size,0);
 });
 test('manual timestamps visit clear, overcast, rain, mist and return to clear',()=>{
   const x=setup();x.api.setState({active:true,motion:true,progress:1});x.render(0);assert.equal(x.api.getState().phase,'clear');assert.equal(x.api.getState().values.rain,0);
@@ -35,8 +35,11 @@ test('state synchronization never paints or allocates new canvases during motion
   for(let i=0;i<300;i++)x.api.setState({progress:1,camera:i*100,pageWidth:1440,chapterIndex:1000000+i});
   assert.equal(x.api.getState().frames,before);assert.equal(x.canvases.length,canvases);assert.equal(x.callbacks.size,1);
 });
-test('independent animation paints no more than 24 frames per second',()=>{
-  const x=setup();x.api.setState({active:true,progress:1});for(let t=0;t<=1000;t+=8)x.step(t);const frames=x.api.getState().frames;assert.ok(frames>=18&&frames<=25);assert.equal(x.callbacks.size,1);
+test('rain has a smooth independent clock while atmosphere stays at eight frames per second',()=>{
+  const x=setup();x.api.setState({active:true,progress:1});x.render(0);x.render(66000);const before=x.api.getState();for(let t=66016;t<=67000;t+=16.667)x.step(t);const state=x.api.getState(),frames=state.frames-before.frames;assert.ok(frames>=55&&frames<=60);assert.ok(state.airFrames-before.airFrames<=8);assert.equal(x.callbacks.size,1);
+});
+test('clear weather paints only the slow atmosphere clock',()=>{
+  const x=setup();x.api.setState({active:true,progress:1});for(let t=0;t<=1000;t+=8)x.step(t);assert.ok(x.api.getState().frames<=9);
 });
 test('reduced motion stops callbacks and freezes weather while retaining static atmosphere',()=>{
   const x=setup();x.api.setState({active:true,progress:1});x.render(0);x.render(66000);x.api.setState({motion:false});const before=x.api.getState();assert.equal(before.drawing,false);assert.equal(before.opacity,1);assert.equal(x.callbacks.size,0);
@@ -50,7 +53,7 @@ test('entering opacity follows progress and fully disappears at either exit stat
   const x=setup();x.api.setState({active:true,progress:0});assert.equal(x.api.getState().opacity,0);x.api.setState({progress:.5});assert.ok(x.api.getState().opacity>0&&x.api.getState().opacity<1);x.api.setState({progress:1});assert.equal(x.api.getState().opacity,1);x.api.setState({progress:0});assert.equal(x.api.getState().opacity,0);x.api.setState({progress:1,active:false});assert.equal(x.api.getState().opacity,0);
 });
 test('rain strokes appear only during rainfall and are bounded by the particle budget',()=>{
-  const x=setup();x.api.setState({active:true,progress:1});x.render(0);const rain=x.host.children.find(c=>c.style.zIndex==='1').ctx;assert.equal(rain.calls.stroke,0);x.render(66000);assert.ok(x.api.getState().paintedDrops>100);assert.ok(x.api.getState().paintedDrops<=x.api.getState().particleCount);assert.ok(rain.calls.stroke<=4,'rain is batched into four paths');const previous=rain.calls.stroke;x.api.setState({motion:false});x.render(67000);assert.equal(rain.calls.stroke,previous);
+  const x=setup();x.api.setState({active:true,progress:1});x.render(0);const rain=x.host.children.find(c=>c.style.zIndex==='1').ctx;assert.equal(rain.calls.stroke,0);x.render(66000);assert.ok(x.api.getState().paintedDrops>100);assert.ok(x.api.getState().paintedDrops<=x.api.getState().particleCount);assert.ok(rain.calls.stroke<=6,'rain and contact effects use six bounded paths');const previous=rain.calls.stroke;x.api.setState({motion:false});x.render(67000);assert.equal(rain.calls.stroke,previous);
 });
 test('weather callbacks are rate limited and do not share mutable state',()=>{
   const x=setup();x.api.setState({active:true,progress:1});x.render(0);for(let t=24000;t<=33000;t+=100)x.render(t);
@@ -63,31 +66,36 @@ test('dispose releases canvases, frame callback and all lifecycle listeners',()=
 test('drops terminate at supplied surfaces and spawn bounded contact splashes',()=>{
   const x=setup({capturePaths:true,getSurfaces:()=>[{x:720,y:510,kind:'scenery',light:1}]});
   x.api.setState({active:true,progress:1});x.render(0);const ctx=x.host.children.find(c=>c.style.zIndex==='1').ctx;ctx.calls.paths=[];x.render(66000);
-  const state=x.api.getState();assert.equal(state.surfaceCount,1);assert.ok(state.paintedSplashes>30);assert.ok(state.contacts.scenery>30);
+  const state=x.api.getState();assert.equal(state.surfaceCount,1);assert.ok(state.paintedSplashes>0&&state.paintedSplashes<=24);assert.ok(state.contacts.scenery>0);
   for(const path of ctx.calls.paths.slice(0,3))for(const [,y]of path)assert.ok(y<=510,'falling streak must never go through contact surface');
   assert.ok(state.paintedSplashes<=state.particleCount);
 });
 test('surface geometry is cached while idle and refreshes only after view changes',()=>{
   let reads=0;const x=setup({getSurfaces:()=>{reads++;return[{x:500,y:450,kind:'mountain'}];}});
-  x.api.setState({active:true,progress:1});x.render(0);for(let t=50;t<=2000;t+=50)x.render(t);assert.equal(reads,1);
-  x.api.setState({camera:100});x.render(2100);assert.equal(reads,2);x.api.setState({surfaceRevision:2});x.render(2120);assert.equal(reads,2);x.render(2200);assert.equal(reads,3);
+  x.api.setState({active:true,progress:1});x.render(0);assert.equal(reads,0,'clear sky does not sample map collision geometry');x.render(66000);for(let t=66050;t<=68000;t+=50)x.render(t);assert.equal(reads,1);
+  x.api.setState({camera:100});x.render(68100);assert.equal(reads,2);x.api.setState({surfaceRevision:2});x.render(68120);assert.equal(reads,2);x.render(68200);assert.equal(reads,3);
 });
 test('snow chapter uses drifting snow instead of rain and keeps rain audio off',()=>{
   const x=setup({getSurfaces:()=>[{x:700,y:550,kind:'ground'}]});x.api.setState({active:true,progress:1,chapterIndex:2});x.render(0);x.render(66000);
   const s=x.api.getState();assert.equal(s.phase,'snow');assert.equal(s.values.rain,0);assert.equal(s.values.snow,1);assert.ok(s.paintedDrops>30);assert.ok(s.paintedSplashes>0);
 });
 test('small screens have a lower bounded precipitation population',()=>{
-  const x=setup({width:390,height:844});assert.ok(x.api.getState().particleCount<=320);assert.ok(x.api.getState().particleCount>=200);
+  const x=setup({width:390,height:844});assert.ok(x.api.getState().particleCount<=100);assert.ok(x.api.getState().particleCount>=50);
 });
 
 test('sustained expensive painting reduces the particle budget without growing the pool',()=>{
-  const x=setup({operationMs:1});x.api.setState({active:true,progress:1});const initial=x.api.getState().particleCount;
-  for(let t=0;t<4000;t+=50)x.render(t);
-  const s=x.api.getState();assert.ok(s.quality<1);assert.ok(s.particleCount<initial);assert.equal(s.particleCapacity,900);assert.ok(s.quality>=.45);
+  const x=setup({operationMs:2});x.api.setState({active:true,progress:1});const initial=x.api.getState().particleCount;x.render(0);
+  for(let t=66000;t<70000;t+=50)x.render(t);
+  const s=x.api.getState();assert.ok(s.quality<1);assert.ok(s.particleCount<initial);assert.equal(s.particleCapacity,260);assert.ok(s.quality>=.45);
 });
 test('cloud geometry is rasterized once per lighting step and stays within a small cache',()=>{
   const x=setup();x.api.setState({active:true,progress:1});x.render(0);const initial=x.api.getState();
   for(let t=50;t<6000;t+=50)x.render(t);
   assert.equal(x.api.getState().cloudBuilds,initial.cloudBuilds);assert.ok(x.api.getState().cloudTextureBytes<3000000);
   x.render(66000);assert.ok(x.api.getState().cloudBuilds>initial.cloudBuilds);
+});
+
+test('air gradients are created once and never rebuilt by animated rain or fog',()=>{
+  const x=setup();x.api.setState({active:true,progress:1});x.render(0);const gradients=()=>x.canvases.reduce((sum,c)=>sum+c.ctx.calls.gradients,0),initial=gradients();
+  for(let t=66000;t<67000;t+=17)x.render(t);for(let t=102000;t<103000;t+=125)x.render(t);assert.equal(gradients(),initial);
 });
