@@ -4,6 +4,7 @@
   const clamp = value => Math.max(0, Math.min(1, value));
   const ease = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
   const radians = Math.PI / 180;
+  const growthDuration = 1980;
   const burnDuration = 1530;
   const fadeDuration = 160;
   const sound = (name, group, gain, pan = 0) => {
@@ -197,7 +198,7 @@
       window.addEventListener('resize', this.resize);
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
-          if (this.state === 'burning') this.clear();
+          if (this.finished) this.clear();
           cancelAnimationFrame(this.raf); this.raf = 0;
         } else { this.last = 0; this.resize(); }
       });
@@ -222,17 +223,9 @@
     reset() {
       this.clear();
       this.loadArt();
-      this.state = 'growing'; this.age = 0; this.progress = 0; this.growth = .05; this.last = 0;
+      this.state = 'growing'; this.age = 0; this.growth = .05; this.last = 0;
       this.soundGrowthStage = -1;
       this.dirty = true;
-      this.request();
-    }
-
-    setProgress(percent) {
-      if (this.state !== 'growing') return;
-      const next = Math.max(this.progress, clamp((Number(percent) || 0) / 100));
-      if (next === this.progress) return;
-      this.progress = next;
       this.request();
     }
 
@@ -253,17 +246,22 @@
     }
 
     finish() {
-      if (this.state === 'burning') return this.finished;
+      if (this.finished) return this.finished;
       if (this.state !== 'growing' || document.hidden || !this.assets.some(Boolean) || !this.ctx) {
         this.clear(); return Promise.resolve();
       }
+      this.finished = new Promise(resolve => { this.resolve = resolve; });
+      if (!this.motion || this.growth >= 1) this.beginBurn();
+      else this.request();
+      return this.finished;
+    }
+
+    beginBurn() {
       this.state = 'burning'; this.burnAt = performance.now(); this.fadeOnly = !this.motion;
       stopSound('loading-branches');
       sound('fire-burn', 'loading-burn', this.fadeOnly ? .4 : .75);
       this.lastBins.length = 0;
-      this.finished = new Promise(resolve => { this.resolve = resolve; });
       this.request();
-      return this.finished;
     }
 
     clear() {
@@ -307,10 +305,9 @@
       let advancing = false;
       if (!burning) {
         this.age += dt;
-        const target = this.motion ? .10 + .48*ease(this.age/1980) + .42*this.progress : .64 + .36*this.progress;
-        const next = this.motion ? Math.min(target, this.growth + dt * .0014) : target;
-        advancing = this.motion && (this.age < 1980 || next < target - .0005);
-        this.growth = next;
+        const target = this.motion ? .05 + .95 * ease(this.age / growthDuration) : 1;
+        this.growth = Math.max(this.growth, target);
+        advancing = this.motion && this.growth < 1;
         if (this.assets.some(Boolean) && this.growth >= .1) {
           const stage = this.growth >= .65 ? 2 : this.growth >= .35 ? 1 : 0;
           if (stage > this.soundGrowthStage) {
@@ -341,6 +338,7 @@
         if (b) this.emit(art, i, g, b, fromRoot, now, x, y, sw, sh, angle, flip);
       }
       if (burning) this.drawSparks(now);
+      if (!burning && this.finished && this.growth >= 1) this.beginBurn();
       if (burning || advancing) this.request();
     }
 

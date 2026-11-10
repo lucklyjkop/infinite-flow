@@ -103,14 +103,13 @@
     }
 
     // Both the fan shatter and the travelling embers finish before the menu opens.
-    titleTimer = setTimeout(show, 3200);
+    // A cached load may finish before the short, independent branch growth.
+    titleTimer = setTimeout(show, 4500);
     Promise.allSettled([fan, boughs].map(async effect => effect?.finish())).then(show);
   }
 
   function setProgress(value) {
     const percent = Math.max(0, Math.min(100, Number(value) || 0));
-    fan?.setProgress(percent / 100);
-    boughs?.setProgress(percent);
     const rounded = Math.floor(percent);
     if (rounded !== lastPercent) {
       number.textContent = rounded;
@@ -135,6 +134,7 @@
     const before = elapsed;
     elapsed += Math.min(now - previous, 100);
     previous = now;
+    if (world.dataset.state === 'loading') fan?.setProgress(manualPaused ? 1 : Math.min(1, elapsed / 1200));
     if (before < rainFadeInAt && elapsed >= rainFadeInAt) applyMotion();
     if (world.dataset.state === 'loading') raf = requestAnimationFrame(frame);
   }
@@ -183,6 +183,7 @@
     cancelAnimationFrame(raf);
     clearTimeout(titleTimer);
     fan?.reset?.();
+    fan?.setProgress(0);
     window.InfiniteTitle?.hide();
     world.classList.remove('title-active', 'title-unfold');
     document.getElementById('loading').removeAttribute('aria-hidden');
