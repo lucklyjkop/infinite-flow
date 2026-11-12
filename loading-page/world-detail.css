@@ -26,7 +26,7 @@
 }
 #world-level-detail[open] { animation: world-dossier-in .34s cubic-bezier(.2,.8,.25,1) both; }
 #world-level-detail::backdrop { background: #02080b9e; backdrop-filter: blur(3px); animation: world-dossier-shade-in .26s ease both; }
-#world-level-detail.is-closing::backdrop { animation: world-dossier-shade-out .16s ease both; }
+#world-level-detail.is-closing::backdrop { animation: world-dossier-shade-out .78s ease both; }
 #world-level-detail .world-detail-close {
   position: absolute; z-index: 3; right: 4.6%; top: 6%;
   width: 34px; height: 34px; padding: 0; border: 0;
@@ -147,3 +147,17 @@
   #world-level-detail[open],#world-level-detail::backdrop { animation:none; }
   #world-level-detail button { transition:none; }
 }
+/* Native atlas cells are square; avoid oversized or compressed scenery. */
+#world-level-detail .world-detail-landmark { width:min(100%,310px); height:auto; max-height:none; aspect-ratio:1; margin:0 auto; background-size:300% 200%; }
+.world-landmark { bottom:auto; height:auto; aspect-ratio:1; }
+#world-level-detail { height:fit-content; background-size:contain; }
+#world-level-detail[open] { animation:none; }
+#world-level-detail .world-detail-traits span, #world-level-detail .world-detail-dismiss { background-size:100% auto; }
+#world-level-detail.is-morph-preparing { visibility:hidden; }
+#world-level-detail.is-cubing { overflow:visible; background:transparent!important; }
+#world-level-detail.is-cubing::before { visibility:hidden; }
+#world-level-detail.is-cubing > :not(.world-detail-cubes) { opacity:0; pointer-events:none; }
+.world-detail-cubes { position:absolute; z-index:10; pointer-events:none; max-width:none; }
+@media(max-width:700px){#world-level-detail .world-detail-landmark{width:min(190px,45vw);margin:-15px auto -20px}}
+@media(max-width:700px) and (max-height:660px){#world-level-detail .world-detail-landmark{width:110px;margin:-5px auto -13px}}
+@media(min-width:701px) and (max-height:460px){#world-level-detail .world-detail-landmark{width:210px}}

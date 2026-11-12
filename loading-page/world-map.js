@@ -270,15 +270,16 @@
     releaseDrag();pan=null;aimX=pointerX;aimY=pointerY;fillDetail(item);
     detailVersion++;detail.classList.remove('is-closing');detail.dataset.state='open';detail.showModal();detail.scrollTop=0;
     cue('world-node-select');detail.querySelector('button').focus({preventScroll:true});
+    void window.InfiniteWorldDetailMorph?.play(detail,buttonFor(item.id),{motion:motion()});
   }
   async function closeDetail({immediate=false,focus=true}={}){
     if(!detail.open&&!detailClosing)return false;
     if(detailClosing&&!immediate)return false;
+    window.InfiniteWorldDetailMorph?.cancel();
     if(!immediate)cue('ui-back');
     const token=++detailVersion;detailAnimation?.cancel();detailAnimation=null;detailClosing=true;detail.classList.add('is-closing');detail.dataset.state='closing';
     if(!immediate&&motion()&&!document.hidden){
-      detailAnimation=detail.animate([{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(7px) scale(.985)'}],{duration:160,easing:'ease-in',fill:'both'});
-      await detailAnimation.finished.catch(()=>{});
+      await window.InfiniteWorldDetailMorph?.play(detail,buttonFor(detail.dataset.stageId),{reverse:true,motion:motion()});
     }
     if(token!==detailVersion)return false;
     detail.close();detailAnimation?.cancel();detailAnimation=null;detailClosing=false;detail.classList.remove('is-closing');detail.dataset.state='closed';
