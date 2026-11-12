@@ -70,6 +70,7 @@
   // A fresh photograph is the only texture that depends on the current scene.
   function prepare(){
     if(prepareJob)return prepareJob;
+    if(phase!=='hidden'&&phase!=='preparing')return Promise.resolve({ready:true});
     const job=(async()=>{
       await preload();pageWidth=Math.max(1320,innerWidth);
       let chapter=store().getState().selectedChapterIndex;
@@ -178,6 +179,14 @@
     page.decorations.forEach((item,i)=>{const p=page.renderer.project({u:item.u,v:item.v,lift:item.lift||0}),el=page.props.children[i];if(!p||!el)return;const scale=(item.scale||1)*(innerWidth>1600?1.15:1),size=(item.type===4?170:item.type===5?150:138)*scale;el.style.width=size+'px';el.style.height=size+'px';el.style.left=p.x+'px';el.style.top=p.y+'px';el.style.zIndex=String(Math.round(p.y));el.style.opacity=smooth((progress-(.14+item.u*.39))/.35).toFixed(3);el.dataset.lighted=String(item.u<litCount/6);});
   }
   function draw(now=performance.now()){
+    try{drawFrame(now);}catch(error){
+      console.error('World map frame failed',error);
+      const pending=transition;transition=null;progress=pending?.to??1;
+      for(const page of pages)page.renderKey='';
+      try{drawFrame(now);pending?.resolve(true);}catch(failure){pending?.resolve(false);const message=failure?.message||'地图载入失败，请重试。';cleanup({focus:true});emit('infinite:worldmaperror',{message});}
+    }
+  }
+  function drawFrame(now=performance.now()){
     frame=0;if(root.hidden||document.hidden||!snapshot)return;
     const dt=Math.min(.1,(now-(lastTime||now))/1000);lastTime=now;pointerX+=(aimX-pointerX)*(1-Math.exp(-dt*5));pointerY+=(aimY-pointerY)*(1-Math.exp(-dt*5));
     if(Math.abs(aimX-pointerX)<.0015)pointerX=aimX;if(Math.abs(aimY-pointerY)<.0015)pointerY=aimY;
@@ -215,7 +224,7 @@
     const token=++serial;setPhase('preparing');opener=trigger||document.getElementById('system-control-world');lastError='';errorNode.hidden=true;system().setTransitioning(true);opener?.setAttribute('aria-busy','true');opener?.classList.add('world-map-pending');
     try{
       await waitFor(preload(),18000,'地图资源加载较慢，请重试。');if(token!==serial)return false;
-      if(pages.length<2)await waitFor(prepare(),18000,'地图尚未准备好，请重试。');if(token!==serial)return false;
+      if(prepareJob||pages.length<2)await waitFor(prepare(),18000,'地图尚未准备好，请重试。');if(token!==serial)return false;
       await waitFor(window.DeityReturnCapture?.prepare?.(document.getElementById('system-space')),12000,'当前画面尚未准备好，请重试。');if(token!==serial)return false;
       if(system()?.getState().phase!=='ready'||!system()?.getState().visible)throw new Error('请从系统空间重新打开地图。');
       snapshot=window.captureSceneReturnFrame?.(document.getElementById('system-space'));if(!snapshot?.image)throw new Error('当前画面尚未准备好，请重试。');
@@ -305,7 +314,7 @@
   function motionChange(){root.dataset.motion=motion()?'full':'reduced';if(transition&&!motion()){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan&&!motion()){camera=pan.to;pan=null;}requestDraw();}
   reducedQuery.addEventListener('change',motionChange);window.addEventListener('infinite:settings',motionChange);
   window.addEventListener('keydown',event=>{if(phase==='preparing'&&event.key==='Escape'){event.preventDefault();event.stopPropagation();void close({immediate:true});}},true);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){detailAnimation?.finish();cancelAnimationFrame(frame);frame=0;if(transition){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan){camera=pan.to;pan=null;}}else{lastTime=0;requestDraw();}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){detailAnimation?.finish();cancelAnimationFrame(frame);frame=0;if(transition){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan){camera=pan.to;pan=null;}}else{lastTime=0;for(const page of pages)page.renderKey='';requestDraw();}});
   for(const name of ['infinite:title','pagehide'])window.addEventListener(name,()=>{if(phase!=='hidden')void close({immediate:true,focus:false});});
   window.addEventListener('pagehide',()=>releaseRenderers({destroy:true}));
   window.InfiniteWorldMap=Object.freeze({open,close,preload,prepare,getState:()=>({phase,visible:!root.hidden,progress,completedCount:state?.completedCount||0,selectedId:state?.selectedId||null,saveId:state?.saveId||null,detailOpen:detail.open,detailId:detail.open?detail.dataset.stageId:null,moving:Boolean(frame),lastError,camera,pageWidth,viewChapterIndex:shownChapter,activeChapterIndex:state?.activeChapterIndex??0,maxPreviewChapterIndex:state?.maxPreviewChapterIndex??1,preparedRenderers:pages.length,renderedChapters:pages.filter(p=>!p.el.hidden).map(p=>p.index),renderer:pages.find(p=>!p.el.hidden)?.renderer.getState?.()||null,weather:weather?.getState()||null})});
