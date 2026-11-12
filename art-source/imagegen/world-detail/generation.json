@@ -1,0 +1,54 @@
+{
+  "created": "2026-11-12",
+  "entry": "内置 image_gen.imagegen",
+  "model": "未披露",
+  "quality": "未披露；提示词要求最高可用细节与质量",
+  "transparent_background": true,
+  "assets": [
+    {
+      "file": "dossier-panel.png",
+      "runtime": "loading-page/assets/world-detail/dossier-panel.png",
+      "prompt": "Use case: ui-mockup. Create one production textless game interface TEXTURE PLATE, not a full screen mockup. Wide landscape 3:2 aspect ratio. An elegant Chinese dark fantasy world dossier window, straight-on orthographic view, no perspective. Whole panel centered with narrow transparent margin, 94 percent canvas width. A very thin rounded aged bronze rim with soft R corners; deep midnight jade and charcoal silk-paper inside, tactile fine fibers and subtly embossed contour-line patterns hugging only the outer edges. The left 40 percent is a darker spacious empty exhibition well with a very subtle circular bronze ring near its lower half, for a miniature landscape to be overlaid later. The right 60 percent is plain dark ink-jade paper for readable gold text added by the game. A hairline vertical seam at 41 percent width divides the two fields. Very tiny muted crimson cherry blossoms and a fine red knotted cord decorate only the top right and bottom left corners, refined rather than opulent. Soft ambient dimensional bevels, matte surfaces, restrained warm highlights. Absolutely NO text, NO glyphs, NO numbers, NO lettering, NO world landscape, NO character, NO visible buttons, NO icons, NO content boxes in the central area. No scene background. Outside the plate is genuinely transparent alpha, with clean refined edges, no baked rectangular shadow and no checkerboard. Keep the inner 80 percent uncluttered. Highest available detail and quality, sharp game-ready texture.",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "64a876fad66c069348873b7d13ec9557dcf486e443f60f3c8d65dea8844db636"
+    },
+    {
+      "file": "trait-tag.png",
+      "runtime": "loading-page/assets/world-detail/trait-tag.png",
+      "prompt": "Use case: ui-mockup. One isolated production UI texture: a SINGLE very slim horizontal pill-shaped tag, width to height 4:1, dark desaturated jade silk and parchment composite, extremely fine muted antique-bronze hairline rim with rounded R ends, softened tactile 3D edge and subtle dark ruby red thread following one short end. Empty center, quiet and legible for a two-to-four-character game trait label added later in code. Front orthographic view, no perspective, high precision Chinese dark fantasy game art. One single pill object tightly framed with narrow transparent margin. No text, letters, numbers, symbols, icons, scenery or decorative flower, no rectangles behind it. Real transparent alpha outside the silhouette, crisp soft antialiasing, no checkerboard, no big cast shadow. Premium matte material, finest available quality and detail.",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "sha256": "908b3093a5a20ecf2c0964204845689442d4af81618e2bd40d940637ddeda847"
+    },
+    {
+      "file": "difficulty-seal.png",
+      "runtime": "loading-page/assets/world-detail/difficulty-seal.png",
+      "prompt": "Use case: ui-mockup. One isolated production game UI icon for difficulty indication: a SINGLE small six-petaled plum blossom seal made of muted deep crimson carved lacquer and aged champagne bronze, elegant Chinese dark fantasy style, warm inner amber-red center, tactile matte relief, no cartoon, no excessive glow, no gems. Perfect frontal symmetrical orthographic view, not tilted. Square canvas, the icon occupies 82 percent width, center composition and genuine transparent alpha all around it. Crisp silhouette that reads clearly when scaled down to 20 pixels. No square or round backing plate, no letters, no calligraphy, no numbers, no scene, no watermark, no checkerboard. The seal will be repeated by code to indicate difficulty. Highest available precision and quality.",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "sha256": "a2e8001d7ab89572a29ed9850a26a0bc33c88a5d8cca52fc7a53cd8d3b062476"
+    },
+    {
+      "file": "dossier-mobile.png",
+      "runtime": "loading-page/assets/world-detail/dossier-mobile.png",
+      "prompt": "Use case: ui-mockup. Generate one portrait game world-dossier panel texture, aspect ratio 3:4, narrow transparent exterior margins. Frontal orthographic UI plate, no perspective, no scene background. Extremely thin aged bronze rim with softly rounded corners surrounds opaque deep midnight jade silk-paper, refined tactile fibers, a few barely visible bronze contour lines hugging only the perimeter. Tiny muted crimson cherry blossoms and a fine red string decorate top right corner and lower left rim. The ENTIRE interior is one quiet uninterrupted empty field for live game interface content. NO vertical divider, NO horizontal lines across the field, NO pre-drawn circles, NO icons, NO buttons, NO text, NO letters, NO numbers, NO scenery, NO person. Matte material and very subtle dimensional bevel, understated Chinese dark fantasy premium game interface. Genuine transparent alpha outside panel, no checkerboard or baked rectangular backdrop. Highest available detail and quality.",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGBA",
+      "sha256": "80e0c402d349fd9eed478ae6a826fb2d3204630b3edea11365698b04f208e8da"
+    }
+  ],
+  "processing": "保留原始 RGBA PNG；未裁剪或重绘。运行版与源稿相同。"
+}

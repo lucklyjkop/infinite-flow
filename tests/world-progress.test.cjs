@@ -167,3 +167,39 @@ test('developer templates extend chapter metadata without changing stage identit
   assert.ok(Object.isFrozen(registered));assert.ok(Object.isFrozen(registered.stages));assert.throws(()=>x.world.registerTemplate(definition),/模板/);
   assert.throws(()=>x.world.registerTemplate({...definition,id:'bad',atlas:'https://invalid/atlas.png'}),/模板/);
 });
+
+test('world details have stable difficulty, traits and objectives without writing progress',()=>{
+  const x=setup(),save=create(x);x.saves.update(save.id,{progress:{world:{completedCount:12}}});
+  const before=x.data.get(KEY);
+  for(let chapterIndex=0;chapterIndex<4;chapterIndex++){
+    const chapter=x.world.getChapter(chapterIndex);
+    for(const stage of chapter.stages){
+      assert.ok(Number.isInteger(stage.difficulty.level)&&stage.difficulty.level>=1&&stage.difficulty.level<=5);
+      assert.ok(stage.difficulty.label);assert.equal(stage.traits.length,3);assert.equal(new Set(stage.traits).size,3);
+      assert.ok(stage.traits.every(trait=>typeof trait==='string'&&trait.trim()));assert.ok(stage.objective);
+    }
+  }
+  assert.deepEqual(plain(x.world.getChapter(3).stages.map(({difficulty,traits,objective})=>({difficulty,traits,objective}))),plain(x.world.getChapter(0).stages.map(({difficulty,traits,objective})=>({difficulty,traits,objective}))));
+  assert.equal(x.data.get(KEY),before);assert.equal(x.world.getState().completedCount,12);
+});
+
+test('detail metadata is detached from template inputs and cannot mutate later views',()=>{
+  const x=setup(),save=create(x);x.saves.update(save.id,{progress:{world:{completedCount:18}}});
+  const definition={id:'deep-copy',name:'新卷',atlas:'assets/world-map/landmarks-custom.png',theme:'mist',stages:Array.from({length:6},()=>({name:'新境',difficulty:{level:4,label:'艰险'},traits:['迷雾','古道','幻影'],objective:'寻找出口。'}))};
+  const registered=x.world.registerTemplate(definition);
+  definition.stages[0].difficulty.level=1;definition.stages[0].traits[0]='changed';
+  const stage=x.world.getChapter(3).stages[0];stage.difficulty.level=2;stage.traits[0]='replaced';
+  assert.equal(x.world.getChapter(3).stages[0].difficulty.level,4);assert.equal(x.world.getChapter(3).stages[0].traits[0],'迷雾');
+  assert.ok(Object.isFrozen(registered.stages[0].difficulty));assert.ok(Object.isFrozen(registered.stages[0].traits));
+});
+
+test('invalid detail metadata cannot partially register a template or change the journey',()=>{
+  const x=setup(),save=create(x);x.saves.update(save.id,{progress:{world:{completedCount:18}}});const before=x.data.get(KEY);
+  const base={id:'invalid-details',name:'新卷',atlas:'assets/world-map/landmarks-custom.png',theme:'mist'};
+  for(const patch of [{difficulty:{level:0}},{difficulty:{level:6}},{difficulty:{level:1.5}},{traits:['缺失']},{traits:['','','']}]){
+    assert.throws(()=>x.world.registerTemplate({...base,stages:Array.from({length:6},()=>({name:'新境',...patch}))}),/难度|特性/);
+    assert.equal(x.world.getChapter(3).templateId,'mountains');assert.equal(x.data.get(KEY),before);
+  }
+  const registered=x.world.registerTemplate({...base,stages:Array.from({length:6},()=>({name:'新境'}))});
+  assert.ok(registered.stages.every(stage=>stage.difficulty.label&&stage.traits.length===3&&stage.objective));
+});

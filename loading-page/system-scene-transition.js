@@ -4,6 +4,44 @@
   'use strict';
   const clamp = value => Math.max(0, Math.min(1, value));
   let current = null, last = null;
+  function createLive(source) {
+    if (!source?.isConnected || source.hidden) throw new Error('当前页面尚未准备好，请重试。');
+    current?.release();
+    // Archive cards include masked, independently positioned art slices. Keep
+    // the browser-painted page intact instead of approximating it on a canvas.
+    const original = {opacity: source.style.opacity, willChange: source.style.willChange, inert: source.inert};
+    source.inert = true;
+    const layer = document.createElement('div');
+    layer.id = 'system-scene-transition'; layer.setAttribute('aria-hidden', 'true');
+    Object.assign(layer.style, {position:'fixed',inset:'0',zIndex:'40',pointerEvents:'auto'});
+    document.body.append(layer);
+    let released = false, fade = null, progress = 0, started = false;
+    const finish = () => { if (document.hidden && fade?.playState === 'running') fade.finish(); };
+    const api = Object.freeze({
+      async play(_to, options = {}) {
+        if (released || started) return false;
+        started = true;
+        const duration = options.reducedMotion || document.hidden ? 0 : Math.min(320, options.duration || 320);
+        if (!duration) { source.style.opacity = '0'; progress = 1; return true; }
+        source.style.willChange = 'opacity';
+        fade = source.animate([{opacity:1},{opacity:0}], {duration,easing:'ease-out',fill:'forwards'});
+        document.addEventListener('visibilitychange', finish);
+        try { await fade.finished; progress = 1; return !released; }
+        catch { return false; }
+        finally { document.removeEventListener('visibilitychange', finish); }
+      },
+      release() {
+        if (released) return;
+        last = api.getState(); released = true;
+        document.removeEventListener('visibilitychange', finish);
+        fade?.cancel(); source.style.opacity = original.opacity; source.style.willChange = original.willChange;
+        if (!source.hidden) source.inert = original.inert;
+        layer.remove(); if (current === api) current = null;
+      },
+      getState: () => ({visible:!released,progress,direction:'right-to-left',stage:started?'fade':'preparing',wave:started?{mode:'live-fade',running:fade?.playState==='running'}:null}),
+    });
+    current = api; return api;
+  }
   function create(from) {
     if (!from?.image || !from.width || !from.height) throw new Error('页面画面尚未准备好，请重试。');
     current?.release();
@@ -74,5 +112,5 @@
     });
     current=api;return api;
   }
-  window.InfiniteSceneTransition=Object.freeze({create,getState:()=>current?.getState()||{visible:false,last}});
+  window.InfiniteSceneTransition=Object.freeze({create,createLive,getState:()=>current?.getState()||{visible:false,last}});
 })();

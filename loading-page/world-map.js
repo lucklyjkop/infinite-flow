@@ -20,11 +20,23 @@
     <div class="world-map-chapter"><span data-world-volume>第一卷</span><h2 data-world-chapter>山海初醒</h2><i aria-hidden="true"></i></div>
     <footer class="world-map-footer">
       <div class="world-map-reading"><span class="world-map-number" data-world-number>01</span><div><p class="world-map-status" data-world-status>待探索</p><h2 data-world-name>雾渡</h2></div><span class="world-map-reading-rule" aria-hidden="true"></span><p class="world-map-kind" data-world-kind></p>
-      </div><div class="world-map-actions"><button type="button" class="world-map-arrow" data-world-prev aria-label="向左移动地图">‹</button><span data-world-position>第一卷</span><button type="button" class="world-map-arrow" data-world-next aria-label="向右移动地图">›</button><button type="button" class="world-map-inspect" data-world-inspect>查看关卡 <span aria-hidden="true">↗</span></button></div>
+      </div><div class="world-map-actions"><button type="button" class="world-map-arrow" data-world-prev aria-label="向左移动地图">‹</button><span data-world-position>第一卷</span><button type="button" class="world-map-arrow" data-world-next aria-label="向右移动地图">›</button></div>
     </footer>
     <p class="world-map-error" role="status" aria-live="polite" hidden></p>
     <canvas class="world-map-hold" aria-hidden="true" hidden></canvas>
-    <dialog class="world-level-detail" aria-labelledby="world-detail-name"><button type="button" class="world-detail-close" aria-label="收起关卡详情">×</button><div class="world-detail-landmark" aria-hidden="true"></div><p class="world-detail-index"></p><h2 id="world-detail-name"></h2><p class="world-detail-kind"></p><p class="world-detail-description"></p><p class="world-detail-state"></p></dialog>`;
+    <dialog id="world-level-detail" class="world-level-detail" aria-labelledby="world-detail-name" aria-describedby="world-detail-description world-detail-state">
+      <button type="button" class="world-detail-close" aria-label="关闭世界详情" data-world-detail-close autofocus>×</button>
+      <div class="world-detail-layout">
+        <div class="world-detail-preview"><div class="world-detail-landmark" aria-hidden="true"></div><p class="world-detail-index"></p><p id="world-detail-state" class="world-detail-state"></p></div>
+        <div class="world-detail-copy"><p class="world-detail-kicker">世界档案</p><h2 id="world-detail-name"></h2><p class="world-detail-kind"></p>
+          <div class="world-detail-difficulty"><span>难度</span><span class="world-detail-stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><strong></strong></div>
+          <div class="world-detail-traits" aria-label="世界特性"><span></span><span></span><span></span></div>
+          <p id="world-detail-description" class="world-detail-description"></p>
+          <div class="world-detail-objective"><span>探索目标</span><p></p></div>
+          <footer class="world-detail-actions"><button type="button" class="world-detail-dismiss" data-world-detail-close>返回地图</button></footer>
+        </div>
+      </div>
+    </dialog>`;
   document.body.append(root);
   const viewport=root.querySelector('.world-map-viewport'),stage=root.querySelector('.world-map-stage'),hold=root.querySelector('.world-map-hold');
   const detail=root.querySelector('dialog'),errorNode=root.querySelector('.world-map-error');
@@ -32,7 +44,7 @@
   let surfaceSampler=null,surfaceRevision=0;
   let phase='hidden',serial=0,assets=null,preloadJob=null,opener=null,snapshot=null,state=null,weather=null;
   let frame=0,lastTime=0,progress=0,pointerX=0,pointerY=0,aimX=0,aimY=0,transition=null,pan=null,lastFocus=0,lastFocusId=null,drag=null,ignoreClickUntil=0,pageWidth=1320,camera=0,lastError='',revision=0,shownChapter=-1;
-  let warmTimer=0,lastWarmKey='',prepareJob=null;
+  let warmTimer=0,lastWarmKey='',prepareJob=null,detailAnimation=null,detailVersion=0,detailClosing=false;
   const pages=[];
   const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
   const smooth=v=>{const a=clamp(v);return a*a*(3-2*a);};
@@ -95,7 +107,7 @@
       if(page.nodes.contains(document.activeElement))root.focus({preventScroll:true});
       page.nodes.replaceChildren();
       for(const item of page.data.stages){
-        const button=document.createElement('button');button.type='button';button.className='world-level';button.dataset.worldStage=item.id;button.dataset.index=item.index;button.setAttribute('aria-pressed','false');
+        const button=document.createElement('button');button.type='button';button.className='world-level';button.dataset.worldStage=item.id;button.dataset.index=item.index;button.setAttribute('aria-pressed','false');button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','world-level-detail');
         button.innerHTML='<span class="world-landmark" aria-hidden="true"></span><span class="world-level-stem" aria-hidden="true"></span><span class="world-level-label"><span class="world-level-seal" aria-hidden="true"><b></b><i class="world-clear-seal"></i></span><span class="world-level-type"><span></span><small data-world-node-state></small></span></span><span class="world-level-aura" aria-hidden="true"></span>';
         const art=button.querySelector('.world-landmark');art.style.backgroundImage='url("'+page.data.atlas+'")';art.style.setProperty('--column',item.index%3);art.style.setProperty('--row',Math.floor(item.index/3));
         button.querySelector('b').textContent=item.number;button.querySelector('.world-level-type>span').textContent=item.name;page.nodes.append(button);
@@ -141,7 +153,12 @@
     const active=selectedStage();if(!active)return;
     root.dataset.completed=String(state.completedCount);root.dataset.selected=active.id;
     root.querySelector('[data-world-number]').textContent=active.number;root.querySelector('[data-world-name]').textContent=active.name;root.querySelector('[data-world-status]').textContent=statusName(active.status);root.querySelector('[data-world-kind]').textContent=active.kind||'';
-    syncChrome();if(detail.open)fillDetail(active);requestDraw();
+    syncChrome();
+    if(detail.open){
+      try{const displayed=store().getChapter(Number(detail.dataset.chapter)).stages.find(item=>item.id===detail.dataset.stageId);if(displayed)fillDetail(displayed);else void closeDetail({immediate:true});}
+      catch{void closeDetail({immediate:true});}
+    }
+    requestDraw();
   }
   function resize(){
     const fraction=camera/pageWidth;pageWidth=Math.max(1320,innerWidth);camera=clamp(fraction*pageWidth,0,maxCamera());pan=null;
@@ -216,45 +233,80 @@
     }catch(error){if(token!==serial)return false;fail(error);cleanup({focus:true});throw error;}
   }
   function cleanup({focus=true}={}){
-    cancelAnimation();releaseDrag();ignoreClickUntil=0;if(detail.open)detail.close();root.hidden=true;root.inert=true;root.classList.remove('is-dragging');setPhase('hidden');opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');opener?.classList.remove('world-map-pending');emit('infinite:soundstop',{group:'world-map',fade:.12});releaseRenderers();
+    cancelAnimation();releaseDrag();ignoreClickUntil=0;void closeDetail({immediate:true,focus:false});root.hidden=true;root.inert=true;root.classList.remove('is-dragging');setPhase('hidden');opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');opener?.classList.remove('world-map-pending');emit('infinite:soundstop',{group:'world-map',fade:.12});releaseRenderers();
     if(system()?.getState().visible){system().setTransitioning(false);world.dataset.state='system';if(focus&&!document.hidden)opener?.focus({preventScroll:true});}emit('infinite:worldmapclosed',{});
   }
   async function close({immediate=false,focus=true}={}){
     if(phase==='hidden'||phase==='closing')return false;const token=++serial;
     if(phase==='preparing'||immediate||!pages.length){cleanup({focus});return true;}
-    if(detail.open)detail.close();releaseDrag();setPhase('closing');root.inert=true;emit('infinite:worldweatherchange',{rain:0,active:false});emit('infinite:soundstop',{group:'world-map',fade:.1});cue('world-tectonic-fold');await animateTo(0,1350);if(token!==serial)return false;cleanup({focus});return true;
+    void closeDetail({immediate:true,focus:false});releaseDrag();setPhase('closing');root.inert=true;emit('infinite:worldweatherchange',{rain:0,active:false});emit('infinite:soundstop',{group:'world-map',fade:.1});cue('world-tectonic-fold');await animateTo(0,1350);if(token!==serial)return false;cleanup({focus});return true;
   }
   function select(id,{focus=false}={}){
-    if(phase!=='ready')return;
-    try{const old=state?.selectedId;store().select(id);syncState();if(old!==id){lastFocus=performance.now();lastFocusId=id;cue('world-node-select');const node=buttonFor(id);node?.classList.remove('world-node-written');void node?.offsetWidth;node?.classList.add('world-node-written');}if(focus)focusSelected();}catch(error){fail(error);}
+    if(phase!=='ready'||detail.open)return false;
+    try{const old=state?.selectedId;store().select(id);syncState();if(old!==id){lastFocus=performance.now();lastFocusId=id;const node=buttonFor(id);node?.classList.remove('world-node-written');void node?.offsetWidth;node?.classList.add('world-node-written');}if(focus)focusSelected();return true;}catch(error){fail(error);return false;}
   }
-  function focusCue(node){const now=performance.now();if(phase!=='ready'||now-lastFocus<220||(lastFocusId===node.dataset.worldStage&&now-lastFocus<650))return;lastFocus=now;lastFocusId=node.dataset.worldStage;cue('world-node-focus');}
+  function focusCue(node){const now=performance.now();if(phase!=='ready'||detail.open||now-lastFocus<220||(lastFocusId===node.dataset.worldStage&&now-lastFocus<650))return;lastFocus=now;lastFocusId=node.dataset.worldStage;cue('world-node-focus');}
   function fillDetail(item){
-    const chapter=store().getChapter(item.chapterIndex);detail.dataset.status=item.status;detail.dataset.lighted=String(item.lighted);const art=detail.querySelector('.world-detail-landmark');art.style.backgroundImage='url("'+chapter.atlas+'")';art.style.setProperty('--column',item.index%3);art.style.setProperty('--row',Math.floor(item.index/3));
+    const chapter=store().getChapter(item.chapterIndex);detail.dataset.stageId=item.id;detail.dataset.chapter=String(item.chapterIndex);detail.dataset.status=item.status;detail.dataset.lighted=String(item.lighted);const art=detail.querySelector('.world-detail-landmark');art.style.backgroundImage='url("'+chapter.atlas+'")';art.style.setProperty('--column',item.index%3);art.style.setProperty('--row',Math.floor(item.index/3));
     detail.querySelector('.world-detail-index').textContent=volume(item.chapterIndex)+' · '+item.number;detail.querySelector('h2').textContent=item.name;detail.querySelector('.world-detail-kind').textContent=item.kind||'';detail.querySelector('.world-detail-description').textContent=item.description||'';detail.querySelector('.world-detail-state').textContent=item.status!=='locked'?statusName(item.status):!chapter.unlocked?'前一卷通关后开启':'通关「'+(chapter.stages[item.index-1]?.name||'前一关')+'」后开启';
+    const difficulty=detail.querySelector('.world-detail-difficulty'),level=item.difficulty.level;
+    difficulty.setAttribute('aria-label','难度：'+item.difficulty.label+'，'+level+' / 5');difficulty.querySelector('strong').textContent=item.difficulty.label;
+    [...detail.querySelectorAll('.world-detail-stars i')].forEach((star,index)=>star.classList.toggle('is-lit',index<level));
+    [...detail.querySelectorAll('.world-detail-traits span')].forEach((tag,index)=>{tag.textContent=item.traits[index];});
+    detail.querySelector('.world-detail-objective p').textContent=item.objective;
   }
-  function inspect(){if(phase!=='ready')return;fillDetail(selectedStage());detail.showModal();cue('world-node-select');detail.querySelector('button').focus({preventScroll:true});}
-  root.addEventListener('click',event=>{if(performance.now()<ignoreClickUntil)return;const node=event.target.closest('[data-world-stage]');if(node)select(node.dataset.worldStage);else if(event.target.closest('[data-world-back]'))void close();else if(event.target.closest('[data-world-inspect]'))inspect();else if(event.target.closest('[data-world-prev]'))moveMap(-1);else if(event.target.closest('[data-world-next]'))moveMap(1);});
+  function inspect(){
+    if(phase!=='ready'||detail.open||detailClosing)return;
+    const item=selectedStage();if(!item)return;
+    releaseDrag();pan=null;aimX=pointerX;aimY=pointerY;fillDetail(item);
+    detailVersion++;detail.classList.remove('is-closing');detail.dataset.state='open';detail.showModal();detail.scrollTop=0;
+    cue('world-node-select');detail.querySelector('button').focus({preventScroll:true});
+  }
+  async function closeDetail({immediate=false,focus=true}={}){
+    if(!detail.open&&!detailClosing)return false;
+    if(detailClosing&&!immediate)return false;
+    if(!immediate)cue('ui-back');
+    const token=++detailVersion;detailAnimation?.cancel();detailAnimation=null;detailClosing=true;detail.classList.add('is-closing');detail.dataset.state='closing';
+    if(!immediate&&motion()&&!document.hidden){
+      detailAnimation=detail.animate([{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(7px) scale(.985)'}],{duration:160,easing:'ease-in',fill:'both'});
+      await detailAnimation.finished.catch(()=>{});
+    }
+    if(token!==detailVersion)return false;
+    detail.close();detailAnimation?.cancel();detailAnimation=null;detailClosing=false;detail.classList.remove('is-closing');detail.dataset.state='closed';
+    if(focus&&phase==='ready'&&!root.hidden&&!document.hidden)focusSelected();
+    return true;
+  }
+  root.addEventListener('click',event=>{if(performance.now()<ignoreClickUntil)return;const node=event.target.closest('[data-world-stage]');if(node){if(select(node.dataset.worldStage))inspect();}else if(event.target.closest('[data-world-back]'))void close();else if(event.target.closest('[data-world-prev]'))moveMap(-1);else if(event.target.closest('[data-world-next]'))moveMap(1);});
   stage.addEventListener('pointerover',event=>{const node=event.target.closest('[data-world-stage]');if(node&&!node.contains(event.relatedTarget))focusCue(node);});stage.addEventListener('focusin',event=>{const node=event.target.closest('[data-world-stage]');if(node)focusCue(node);});
-  root.addEventListener('pointermove',event=>{if(phase!=='ready'||!motion()||pan||drag?.moved)return;aimX=(event.clientX/innerWidth-.5)*2;aimY=(event.clientY/innerHeight-.5)*2;requestDraw();});root.addEventListener('pointerleave',()=>{if(!pan){aimX=aimY=0;requestDraw();}});
+  root.addEventListener('pointermove',event=>{if(phase!=='ready'||detail.open||!motion()||pan||drag?.moved)return;aimX=(event.clientX/innerWidth-.5)*2;aimY=(event.clientY/innerHeight-.5)*2;requestDraw();});root.addEventListener('pointerleave',()=>{if(!pan&&!detail.open){aimX=aimY=0;requestDraw();}});
   viewport.addEventListener('pointerdown',event=>{if(phase==='ready'&&event.button===0){pan=null;aimX=pointerX;aimY=pointerY;drag={id:event.pointerId,start:event.clientX,camera,moved:false};}});
   viewport.addEventListener('pointermove',event=>{if(!drag||drag.id!==event.pointerId)return;const delta=event.clientX-drag.start;if(Math.abs(delta)>7&&!drag.moved){drag.moved=true;viewport.setPointerCapture(event.pointerId);root.classList.add('is-dragging');}if(drag.moved){camera=clamp(drag.camera-delta,0,maxCamera());ignoreClickUntil=performance.now()+250;requestDraw();}});
   function releaseDrag(){const active=drag;drag=null;if(active&&viewport.hasPointerCapture(active.id))viewport.releasePointerCapture(active.id);root.classList.remove('is-dragging');}
   viewport.addEventListener('pointerup',releaseDrag);viewport.addEventListener('pointercancel',releaseDrag);viewport.addEventListener('lostpointercapture',event=>{if(event.target===viewport&&event.pointerId===drag?.id)releaseDrag();});
   viewport.addEventListener('wheel',event=>{if(phase!=='ready')return;event.preventDefault();pan=null;camera=clamp(camera+(Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY),0,maxCamera());requestDraw();},{passive:false});
-  detail.querySelector('button').addEventListener('click',()=>{detail.close();focusSelected();});detail.addEventListener('click',event=>{if(event.target!==detail)return;const r=detail.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom){detail.close();focusSelected();}});
+  for(const button of detail.querySelectorAll('[data-world-detail-close]'))button.addEventListener('click',()=>void closeDetail());
+  detail.addEventListener('cancel',event=>{event.preventDefault();void closeDetail();});
+  detail.addEventListener('keydown',event=>{
+    if(event.key!=='Tab'||!detail.open)return;
+    const controls=[...detail.querySelectorAll('button:not(:disabled)')].filter(button=>button.getClientRects().length),first=controls[0],last=controls.at(-1);
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus({preventScroll:true});}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus({preventScroll:true});}
+  });
+  detail.addEventListener('click',event=>{if(event.target!==detail)return;const r=detail.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)void closeDetail();});
   root.addEventListener('keydown',event=>{
-    if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(detail.open){detail.close();focusSelected();}else void close();return;}if(phase!=='ready'||detail.open)return;
+    if(event.key==='Escape'){event.preventDefault();event.stopPropagation();if(detail.open){void closeDetail();}else void close();return;}if(phase!=='ready'||detail.open)return;
+    const node=event.target.closest('[data-world-stage]');
+    if(node&&(event.key==='Enter'||event.key===' ')){event.preventDefault();event.stopPropagation();if(!event.repeat&&select(node.dataset.worldStage))inspect();return;}
     if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();if(event.key==='Home')panTo(0);else if(event.key==='End')panTo(maxCamera());else moveMap(event.key==='ArrowLeft'?-1:1);}
     if(event.key==='Tab'){const available=[...root.querySelectorAll('button:not(:disabled)')].filter(el=>{const r=el.getBoundingClientRect();return el.tabIndex>=0&&!detail.contains(el)&&r.width&&r.right>0&&r.left<innerWidth&&!el.closest('[hidden]');});const first=available[0],last=available.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}
   });
   window.addEventListener('infinite:worldprogress',event=>{if(phase==='hidden')return;if(event.detail?.error){fail({message:event.detail.error});return;}const before=state?.activeChapterIndex;syncState();if(event.detail?.reason==='completion'){root.classList.remove('world-color-bloom');void root.offsetWidth;root.classList.add('world-color-bloom');if(phase==='ready'&&state.activeChapterIndex!==before)panTo(state.activeChapterIndex*pageWidth);}});
-  window.addEventListener('infinite:saveactive',()=>{if(phase!=='hidden'){syncState();if(phase==='ready')showSelected({instant:true});}});window.addEventListener('resize',resize);
+  window.addEventListener('infinite:saveactive',()=>{if(phase!=='hidden'){void closeDetail({immediate:true,focus:false});syncState();if(phase==='ready')showSelected({instant:true});}});window.addEventListener('resize',resize);
   function motionChange(){root.dataset.motion=motion()?'full':'reduced';if(transition&&!motion()){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan&&!motion()){camera=pan.to;pan=null;}requestDraw();}
   reducedQuery.addEventListener('change',motionChange);window.addEventListener('infinite:settings',motionChange);
   window.addEventListener('keydown',event=>{if(phase==='preparing'&&event.key==='Escape'){event.preventDefault();event.stopPropagation();void close({immediate:true});}},true);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;if(transition){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan){camera=pan.to;pan=null;}}else{lastTime=0;requestDraw();}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){detailAnimation?.finish();cancelAnimationFrame(frame);frame=0;if(transition){const done=transition;transition=null;progress=done.to;if(done.to===0)camera=done.cameraEnd;done.resolve(true);}if(pan){camera=pan.to;pan=null;}}else{lastTime=0;requestDraw();}});
   for(const name of ['infinite:title','pagehide'])window.addEventListener(name,()=>{if(phase!=='hidden')void close({immediate:true,focus:false});});
   window.addEventListener('pagehide',()=>releaseRenderers({destroy:true}));
-  window.InfiniteWorldMap=Object.freeze({open,close,preload,prepare,getState:()=>({phase,visible:!root.hidden,progress,completedCount:state?.completedCount||0,selectedId:state?.selectedId||null,saveId:state?.saveId||null,detailOpen:detail.open,moving:Boolean(frame),lastError,camera,pageWidth,viewChapterIndex:shownChapter,activeChapterIndex:state?.activeChapterIndex??0,maxPreviewChapterIndex:state?.maxPreviewChapterIndex??1,preparedRenderers:pages.length,renderedChapters:pages.filter(p=>!p.el.hidden).map(p=>p.index),renderer:pages.find(p=>!p.el.hidden)?.renderer.getState?.()||null,weather:weather?.getState()||null})});
+  window.InfiniteWorldMap=Object.freeze({open,close,preload,prepare,getState:()=>({phase,visible:!root.hidden,progress,completedCount:state?.completedCount||0,selectedId:state?.selectedId||null,saveId:state?.saveId||null,detailOpen:detail.open,detailId:detail.open?detail.dataset.stageId:null,moving:Boolean(frame),lastError,camera,pageWidth,viewChapterIndex:shownChapter,activeChapterIndex:state?.activeChapterIndex??0,maxPreviewChapterIndex:state?.maxPreviewChapterIndex??1,preparedRenderers:pages.length,renderedChapters:pages.filter(p=>!p.el.hidden).map(p=>p.index),renderer:pages.find(p=>!p.el.hidden)?.renderer.getState?.()||null,weather:weather?.getState()||null})});
 })();

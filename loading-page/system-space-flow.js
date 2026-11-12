@@ -13,7 +13,7 @@
   function bounded(promise,ms,message){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),ms);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});}
   function inertDeity(value){const root=document.getElementById('deity-space');if(root&&!root.hidden)root.inert=value;}
   function requireCurrent(run){if(!current(run))throw new Error('页面切换已取消。');}
-  function release(run){run.cover?.release();run.cover=null;if(run.sourceRoot)run.sourceRoot.style.visibility=run.sourceVisibility;for(const value of run.frames||[])value.image.width=value.image.height=1;run.frames=[];}
+  function release(run){run.cover?.release();run.cover=null;for(const value of run.frames||[])value.image.width=value.image.height=1;run.frames=[];}
   function cancel(){++generation;const old=active;active=null;if(old)release(old);inertDeity(false);system()?.setTransitioning(false);document.getElementById('title-screen').inert=false;world.classList.remove('deity-returning');phase='idle';}
   function capture(run,root){const image=window.captureSceneReturnFrame?.(root);if(!image)throw new Error('当前页面尚未绘制完成，请重试。');run.frames.push(image);return image;}
   function cover(run,image){if(!image)throw new Error('当前页面尚未绘制完成，请重试。');if(!run.frames.includes(image))run.frames.push(image);run.cover=window.InfiniteSceneTransition.create(image);}
@@ -31,19 +31,18 @@
     if(!opened)throw new Error('系统空间打开失败，请重试。');
     run.opened=true;phase='entering';
     await twoFrames();requireCurrent(run);
-    await bounded(window.DeityReturnCapture?.prepare?.(document.getElementById('system-space')),12000,'页面素材加载超时，请重试。');requireCurrent(run);
+    if(run.source!=='save')await bounded(window.DeityReturnCapture?.prepare?.(document.getElementById('system-space')),12000,'页面素材加载超时，请重试。');requireCurrent(run);
     // attach() has its own two-frame readiness handoff; let it finish while the
     // complete old scene is still covering the screen.
     await twoFrames();requireCurrent(run);
-    const target=capture(run,document.getElementById('system-space'));
+    const target=run.source==='save'?null:capture(run,document.getElementById('system-space'));
     deity()?.close({returnToTitle:false,immediate:true});run.handedOff=true;
     window.InfiniteTitle?.hide();
-    if(run.source==='save'){run.sourceRoot=document.getElementById('save-page');run.sourceVisibility=run.sourceRoot.style.visibility;run.sourceRoot.style.visibility='hidden';}
     let sounded=false;
     const completed=await run.cover.play(target,{direction:'right-to-left',simple:run.source==='save',duration:run.source==='save'?320:2200,reducedMotion:reduced(),onProgress(progress){if(!sounded&&progress<1){sounded=true;emit('infinite:soundcue',{name:'deity-cube-assemble',group:'system-arrival',variation:false});}}});requireCurrent(run);
     if(!completed)throw new Error('页面切换已取消，请重新载入存档。');
-    // The archive is above the hub. Remove it while the completed wave still
-    // owns the screen, so it cannot reappear for one frame on release.
+    // Hide the now-transparent live archive before releasing its fade. Canceling
+    // the finished animation must never reveal the old page for another frame.
     if(run.source==='save')await window.InfiniteSaveUI?.hide({immediate:true});
     await twoFrames();requireCurrent(run);
     release(run);system().setTransitioning(false);inertDeity(false);
@@ -95,8 +94,9 @@
       run.value=save.deity;run.saveId=save.id;
       await prepareSystem(run);
       const page=document.getElementById('save-page');
-      await bounded(window.DeityReturnCapture.prepare(page),12000,'存档页面素材加载超时。');requireCurrent(run);
-      cover(run,capture(run,page));window.InfiniteSaves.activate(save.id);
+      // The original archive remains the cover while the live hub prepares;
+      // replacing its sliced card art with a hand-painted snapshot would flash.
+      run.cover=window.InfiniteSceneTransition.createLive(page);window.InfiniteSaves.activate(save.id);
       return await arrive(run,save);
     }catch(error){await recover(run,error);throw error;}
   }
