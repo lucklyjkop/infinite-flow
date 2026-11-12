@@ -158,7 +158,11 @@
 #world-level-detail.is-blossoming .world-detail-layout { mask-size:var(--detail-mask-size);mask-position:var(--detail-mask-offset);mask-repeat:no-repeat; -webkit-mask-size:var(--detail-mask-size);-webkit-mask-position:var(--detail-mask-offset);-webkit-mask-repeat:no-repeat; }
 #world-level-detail.is-blossoming .world-detail-close { opacity:var(--detail-controls,0); }
 .world-detail-reveal-paper { position:fixed;inset:0;z-index:-1;box-sizing:border-box;pointer-events:none; }
-.world-detail-boughs { position:fixed;inset:0;z-index:2;pointer-events:none; }
+/* The panel texture has a transparent gutter; anchor roots to its gold frame. */
+.world-detail-boughs { position:fixed;inset:4.6% 2.3%;z-index:2;pointer-events:none;overflow:hidden;border-radius:clamp(12px,3vw,34px); }
+@media(max-width:700px),(max-height:720px) {
+  .world-detail-boughs { inset:4px;border-radius:18px; }
+}
 /* Keep ornament and panel layers attached to the viewport of the scrolling dialog. */
 #world-level-detail::before,
 #world-level-detail .world-detail-close,
