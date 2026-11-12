@@ -275,11 +275,11 @@
   async function closeDetail({immediate=false,focus=true}={}){
     if(!detail.open&&!detailClosing)return false;
     if(detailClosing&&!immediate)return false;
-    window.InfiniteWorldDetailMorph?.cancel();
+    const interruptedMorph=window.InfiniteWorldDetailMorph?.cancel();
     if(!immediate)cue('ui-back');
     const token=++detailVersion;detailAnimation?.cancel();detailAnimation=null;detailClosing=true;detail.classList.add('is-closing');detail.dataset.state='closing';
     if(!immediate&&motion()&&!document.hidden){
-      await window.InfiniteWorldDetailMorph?.play(detail,buttonFor(detail.dataset.stageId),{reverse:true,motion:motion()});
+      await window.InfiniteWorldDetailMorph?.play(detail,buttonFor(detail.dataset.stageId),{reverse:true,motion:motion(),from:interruptedMorph?.dialog===detail?interruptedMorph.progress:undefined});
     }
     if(token!==detailVersion)return false;
     detail.close();detailAnimation?.cancel();detailAnimation=null;detailClosing=false;detail.classList.remove('is-closing');detail.dataset.state='closed';
