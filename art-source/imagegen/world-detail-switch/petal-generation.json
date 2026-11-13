@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-13",
+  "purpose": "Single large petal for the world dossier three-petal radial view selector",
+  "generation_entry": "built-in image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露；提示词要求最高可用保真度",
+  "tool_parameters": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "E:/无限流/loading-page/assets/world-detail/view-flower.png"
+    ],
+    "prompt": "Create one standalone flower PETAL UI texture for a Chinese fantasy radial menu. Use the reference image ONLY for its oxblood-red lacquer material and thin aged-gold rim; do not reproduce a full flower. Exactly ONE UPRIGHT ELONGATED PETAL, front orthographic view. Wide rounded gently notched/scalloped head at the TOP, sides smoothly tapering to a very narrow pointed attachment tip at BOTTOM CENTER. Overall silhouette approximately 1:2 width-to-height, suitable to fan out around its bottom tip. Portrait canvas. Fill canvas with even small transparent margins. Genuine RGBA transparency surrounding the silhouette. Refined shallow sculpted relief, matte deep crimson lacquer, fine worn bronze-gold rim, restrained patina. A few delicate petal veins only near the edges and narrow lower tip. Keep the upper middle wide area calm and dark for later UI text. Soft upper-left lighting. No text, no letters, no symbols, no flower center hub, no complete flower, no stem, no scenery, no rectangular panel, no jewel, no cast shadow, no glow. Premium polished game UI asset, highest available fidelity."
+  },
+  "source": "view-petal-source.png",
+  "runtime_asset": "../../../loading-page/assets/world-detail/view-petal.png",
+  "size": [
+    887,
+    1774
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "source_sha256": "c504380dc9414a1adaf4e7844a94243ab76b74e64f1707bb43ac40d58983e871",
+  "processing": "原始透明 PNG 原样复制；无裁剪、改色或缩放。显示尺寸与悬停状态由 CSS 控制。"
+}

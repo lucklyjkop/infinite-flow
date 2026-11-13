@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-13",
+  "purpose": "World detail view switch blossom button; one new five-petal red lacquer and aged-gold UI texture.",
+  "generation_entry": "built-in image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露；提示词要求工具可用最高保真度",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: ui-mockup.\nAsset type: a single premium game UI icon texture, isolated on a truly transparent RGBA background, for a small view-switch button on a dark jade-green Chinese fantasy dossier panel.\nPrimary request: one small five-petal plum/cherry-blossom shaped button seen perfectly straight on. Exactly five gently rounded petals, clearly separated by shallow inward notches. A small round bronze-gold center. Symmetrical balanced silhouette; one petal points upward.\nStyle: restrained refined Chinese fantasy game interface, finely crafted tactile shallow bas-relief. Petals are matte deep oxblood red lacquer/enamel with tiny subtle organic engraved veins and delicate wear. A slender aged-gold bronze rim follows the outside of every petal, with fine narrow internal separators. It should harmonize with an old gold framed dark green parchment panel and existing red/gold blossom controls.\nLighting: soft diffuse light from upper left; dark warm recesses, muted restrained gold highlights. Clear shape readable at 40 CSS pixels.\nComposition: one icon centered, icon occupies about 84 percent of a square canvas, even transparent breathing room all around. No perspective tilt, no pedestal, no cast shadow outside the flower.\nConstraints: the output is ONLY the flower button graphic. True transparent background. No text, no letters, no arrows, no UI panel, no page or screenshot, no separate other icons, no outline square, no sparkle, no gemstone, no glow, no sparkles, no pink hearts, no stems, no ribbons. Render at the highest available fidelity.\n"
+  },
+  "source": "view-flower-source.png",
+  "runtime_asset": "../../../loading-page/assets/world-detail/view-flower.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "visible_bounds": [
+    0,
+    25,
+    1235,
+    1254
+  ],
+  "source_sha256": "067538901700e501c00828f82b090eb9c6600478aa94816883d99c584169c44e",
+  "source_bytes": 1676282,
+  "processing": "原始生成PNG无损原样复制；未改色、未裁剪、未缩放。",
+  "reference_art": "loading-page/assets/world-detail/difficulty-seal.png（仅人工观察配色与浅浮雕质感，未作为imagegen输入）"
+}

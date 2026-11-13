@@ -263,6 +263,7 @@
     [...detail.querySelectorAll('.world-detail-stars i')].forEach((star,index)=>star.classList.toggle('is-lit',index<level));
     [...detail.querySelectorAll('.world-detail-traits span')].forEach((tag,index)=>{tag.textContent=item.traits[index];});
     detail.querySelector('.world-detail-objective p').textContent=item.objective;
+    window.InfiniteWorldDetailViews?.fill(item,chapter);
   }
   function inspect(){
     if(phase!=='ready'||detail.open||detailClosing)return;
@@ -275,6 +276,7 @@
   async function closeDetail({immediate=false,focus=true}={}){
     if(!detail.open&&!detailClosing)return false;
     if(detailClosing&&!immediate)return false;
+    window.InfiniteWorldDetailViews?.suspend();
     const interruptedMorph=window.InfiniteWorldDetailMorph?.cancel();
     if(!immediate)cue('ui-back');
     const token=++detailVersion;detailAnimation?.cancel();detailAnimation=null;detailClosing=true;detail.classList.add('is-closing');detail.dataset.state='closing';
@@ -298,7 +300,7 @@
   detail.addEventListener('cancel',event=>{event.preventDefault();void closeDetail();});
   detail.addEventListener('keydown',event=>{
     if(event.key!=='Tab'||!detail.open)return;
-    const controls=[...detail.querySelectorAll('button:not(:disabled)')].filter(button=>button.getClientRects().length),first=controls[0],last=controls.at(-1);
+    const controls=[...detail.querySelectorAll('button:not(:disabled)')].filter(button=>button.getClientRects().length&&!button.closest('[inert]')&&getComputedStyle(button).visibility!=='hidden'),first=controls[0],last=controls.at(-1);
     if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus({preventScroll:true});}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus({preventScroll:true});}
   });
