@@ -1,4 +1,5 @@
 /* Full-screen, transparent constellation; generated smoke-silk plaques stay quiet. */
+#world.covenant-covered,#world.covenant-covered *,#world.covenant-covered *::before,#world.covenant-covered *::after{animation-play-state:paused!important}
 .covenant-space{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;overflow:hidden;color:#e6cbaa;background:#080d11;font-family:'STKaiti','KaiTi','Noto Serif SC','SimSun',serif;isolation:isolate;user-select:none;-webkit-touch-callout:none;outline:0}
 .covenant-space::backdrop{background:#080d11}
 .covenant-space button{font:inherit;color:inherit;border:0;background-color:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -22,10 +23,16 @@
 .covenant-constellation{position:absolute;inset:0;min-width:0;min-height:0}
 .covenant-canvas,.covenant-nodes{position:absolute;inset:0 0 80px;width:100%;height:calc(100% - 80px)}
 .covenant-nodes{pointer-events:none}
-.covenant-node{position:absolute;transform:translate(-50%,-50%);padding:0;border-radius:50%;pointer-events:auto;outline:0;transition:filter 240ms}
+.covenant-node{position:absolute;left:0;top:0;transform:translate(-50%,-50%);padding:0;border-radius:50%;pointer-events:auto;outline:0;transition:filter 240ms}
 .covenant-node-label{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:5px;white-space:nowrap;text-align:center;font-size:clamp(16px,1.6vw,23px);letter-spacing:.14em;text-shadow:0 2px 6px #000;color:#c5b69d;transition:color 250ms}
 .covenant-node-label small{font-size:10px;letter-spacing:.14em;color:#8b8171}
+.covenant-node-label small::before{content:"";display:inline-block;width:5px;height:5px;margin-right:7px;vertical-align:1px;border:1px solid currentColor;transform:rotate(45deg);transition:background-color 800ms,color 800ms,box-shadow 800ms}
 .covenant-node[data-status="locked"] .covenant-node-label{color:#858680}
+.covenant-node[data-status="locked"] .covenant-node-label small{color:#686f72}
+.covenant-node[data-status="available"] .covenant-node-label small{color:#bba688}
+.covenant-node[data-status="unlocked"] .covenant-node-label{color:#ecd4ad}
+.covenant-node[data-status="unlocked"] .covenant-node-label small{color:#c1a078}
+.covenant-node[data-status="unlocked"] .covenant-node-label small::before{border-color:#d2aa6e;background:#b64d3f;box-shadow:0 0 6px #bb794963}
 .covenant-node[aria-pressed="true"] .covenant-node-label,.covenant-node:hover .covenant-node-label{color:#ffe6be;text-shadow:0 0 12px #ecd4ad55}
 .covenant-icon{display:block;flex:none;width:42px;aspect-ratio:1;background:url('assets/covenant/branch-icons.png') 0 50%/300% 100% no-repeat;pointer-events:none}
 .covenant-icon[data-icon="ward"]{background-position:50% 50%}

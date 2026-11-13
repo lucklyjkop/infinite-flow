@@ -139,7 +139,14 @@
             }
           }),
         ];
-        const renderers = [task('map-preparation',10,() => requireAPI(window.InfiniteWorldMap,'prepare'))];
+        const renderers = [
+          task('map-preparation',10,() => requireAPI(window.InfiniteWorldMap,'prepare')),
+          task('covenant-preparation',4,async () => {
+            // Driver/context creation belongs to startup preparation, never the
+            // first interactive click. Geometry and programs are retained.
+            if (!await requireAPI(window.InfiniteCovenant,'preload')) throw new Error('Covenant preparation is incomplete.');
+          }),
+        ];
         total = [...pictures,...scenes,...renderers].reduce((sum,item) => sum + item.weight,0);
         notify();
         await Promise.all([runTasks(pictures,4),runTasks(scenes,3)]);

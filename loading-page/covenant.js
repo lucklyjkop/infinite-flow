@@ -38,8 +38,9 @@
   const fields={icon:root.querySelector('.covenant-ability-icon'),type:root.querySelector('.covenant-ability-type'),name:root.querySelector('#covenant-ability-name'),copy:root.querySelector('.covenant-ability-copy'),condition:root.querySelector('.covenant-ability-condition'),unlock:root.querySelector('.covenant-unlock'),feedback:root.querySelector('.covenant-feedback')};
   const nodeButtons=new Map([...root.querySelectorAll('[data-covenant-node]')].map(button=>[button.dataset.covenantNode,button]));
   const branchButtons=[...root.querySelectorAll('[data-covenant-branch]')];
+  const nodePoses=new Map();
   function readState(){try{return progress.getState();}catch(failure){return {saveId:null,earned:0,spent:0,balance:0,unlocked:['root'],tasks:[],error:failure.userMessage||'未能读取契约存档，请重试。'};}}
-  let phase='hidden',selected='root',branch=null,state=readState(),opener=null,serial=0,preloadJob=null,closeJob=null,animation=null,panelAnimation=null,lastCue=0,lastHover=null,focusAfterOpen=false;
+  let phase='hidden',selected='root',branch=null,state=readState(),opener=null,serial=0,preloadJob=null,closeJob=null,animation=null,panelAnimation=null,lastCue=0,lastHover=null,lastSceneHover=null,focusAfterOpen=false;
   const motion=()=>!media.matches&&window.InfiniteSettings?.getState?.().motion!==false;
   function cue(name){if(!document.hidden)window.dispatchEvent(new CustomEvent('infinite:soundcue',{detail:{name,group:'covenant-ui'}}));}
   function status(id){const node=byId.get(id);return state.unlocked.includes(id)?'unlocked':state.unlocked.includes(node.parent)?'available':'locked';}
@@ -49,11 +50,15 @@
       const button=nodeButtons.get(node.id);if(!button)continue;
       button.hidden=!node.visible;
       if(!node.visible)continue;
-      const diameter=Math.max(44,node.r*2.08);
-      button.style.left=`${node.x.toFixed(2)}px`;button.style.top=`${node.y.toFixed(2)}px`;button.style.width=`${diameter.toFixed(2)}px`;button.style.height=`${diameter.toFixed(2)}px`;button.style.opacity=node.opacity.toFixed(3);
+      const pose={x:node.x.toFixed(2),y:node.y.toFixed(2),size:Math.max(44,node.r*2.08).toFixed(2),opacity:node.opacity.toFixed(3)},previous=nodePoses.get(node.id);
+      if(!previous||pose.x!==previous.x||pose.y!==previous.y)button.style.transform=`translate3d(${pose.x}px,${pose.y}px,0) translate(-50%,-50%)`;
+      if(!previous||pose.size!==previous.size){button.style.width=`${pose.size}px`;button.style.height=`${pose.size}px`;}
+      if(!previous||pose.opacity!==previous.opacity)button.style.opacity=pose.opacity;
+      nodePoses.set(node.id,pose);
     }
   }
   const scene=window.InfiniteCovenantScene.create(canvas,{onNodeClick:choose,onNodeHover:hover,onLayout:layout});
+  function sceneHover(id){if(lastSceneHover===id)return;lastSceneHover=id;scene.setState({hovered:id});}
   function refresh(){
     state=readState();if(state.error)fields.feedback.textContent=state.error;root.querySelector('.covenant-points strong').textContent=state.balance;
     root.querySelector('.covenant-points').setAttribute('aria-label',`可用契约点 ${state.balance}`);
@@ -78,8 +83,10 @@
     if(motion())panelAnimation=fields.name.parentElement.animate([{opacity:.25,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'cubic-bezier(.2,.7,.25,1)'});
   }
   function preload(){
-    if(!preloadJob){const urls=['assets/covenant/ability-mist.png','assets/covenant/branch-icons.png','assets/covenant/thread.png','assets/covenant/unlock-petal.png','assets/covenant/liquid-core.png'];
-      preloadJob=Promise.all(urls.map(src=>{const image=new Image();image.src=src;return image.decode().then(()=>true,()=>false);})).then(values=>{if(values.some(value=>!value)){preloadJob=null;return false;}return true;});
+    if(!preloadJob){const urls=['assets/covenant/ability-mist.png','assets/covenant/branch-icons.png','assets/covenant/unlock-petal.png'];
+      const resources=urls.map(src=>{const image=new Image();image.src=src;return image.decode().then(()=>true,()=>false);});
+      resources.push(Promise.resolve(scene.prepare?.()??true).then(value=>value!==false,()=>false));
+      preloadJob=Promise.all(resources).then(values=>{if(values.some(value=>!value)){preloadJob=null;return false;}return true;});
     }return preloadJob;
   }
   async function open(trigger){
@@ -93,9 +100,9 @@
     if(system?.phase!=='ready'||system.transitioning||document.querySelector('dialog[open]')){phase='hidden';return false;}
     state=readState();
     if(state.error){phase='hidden';window.dispatchEvent(new CustomEvent('infinite:covenanterror',{detail:{message:state.error}}));return false;}
-    selected='root';branch=null;fields.feedback.textContent='';lastHover=null;lastCue=0;root.dataset.phase='opening';root.classList.toggle('motion-off',!motion());
+    selected='root';branch=null;fields.feedback.textContent='';lastHover=null;lastCue=0;lastSceneHover=null;scene.setState({hovered:null});root.dataset.phase='opening';root.classList.toggle('motion-off',!motion());
     window.InfiniteSystemSpace.setTransitioning(true);opener?.setAttribute('aria-expanded','true');
-    root.showModal();phase='opening';refresh();scene.resize();scene.start();cue('ui-select-open');
+    root.showModal();document.getElementById('world')?.classList.add('covenant-covered');phase='opening';refresh();scene.resize();scene.start();cue('ui-select-open');
     const duration=motion()&&!document.hidden?680:0;
     if(duration){animation=body.animate([{opacity:0},{opacity:1}],{duration,easing:'cubic-bezier(.16,.7,.2,1)'});await animation.finished.catch(()=>{});}
     if(token!==serial)return false;
@@ -108,7 +115,7 @@
     ++serial;animation?.cancel();panelAnimation?.cancel();animation=panelAnimation=null;
     if(phase==='preparing'){phase='hidden';opener?.removeAttribute('aria-busy');return Promise.resolve(true);}
     phase='closing';root.dataset.phase='closing';cue('ui-back');
-    const finish=()=>{scene.stop();root.close();phase='hidden';root.dataset.phase='hidden';animation?.cancel();animation=null;opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');window.InfiniteSystemSpace?.setTransitioning(false);if(focus&&window.InfiniteSystemSpace?.getState().phase==='ready')opener?.focus({preventScroll:true});window.dispatchEvent(new CustomEvent('infinite:soundstop',{detail:{group:'covenant-ui',fade:.1}}));};
+    const finish=()=>{scene.stop();root.close();document.getElementById('world')?.classList.remove('covenant-covered');phase='hidden';root.dataset.phase='hidden';animation?.cancel();animation=null;opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');window.InfiniteSystemSpace?.setTransitioning(false);if(focus&&window.InfiniteSystemSpace?.getState().phase==='ready')opener?.focus({preventScroll:true});window.dispatchEvent(new CustomEvent('infinite:soundstop',{detail:{group:'covenant-ui',fade:.1}}));};
     if(immediate||!motion()||document.hidden){finish();return Promise.resolve(true);}
     const token=serial;
     animation=body.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.965)'}],{duration:300,easing:'ease-in',fill:'forwards'});
@@ -118,6 +125,10 @@
   root.addEventListener('cancel',event=>{event.preventDefault();close();});
   root.addEventListener('click',event=>{const node=event.target.closest('[data-covenant-node]'),branchButton=event.target.closest('[data-covenant-branch]');if(node)choose(node.dataset.covenantNode);else if(branchButton)choose(branchButton.dataset.covenantBranch==='all'?'root':branchButton.dataset.covenantBranch);});
   root.addEventListener('pointerover',event=>{const button=event.target.closest('button');if(button&&!button.disabled)hover(button.dataset.covenantNode||button.dataset.covenantBranch||button.className);});
+  root.addEventListener('pointerover',event=>{const node=event.target.closest('[data-covenant-node]');sceneHover(node?.dataset.covenantNode||null);});
+  root.addEventListener('pointerleave',()=>sceneHover(null));
+  root.addEventListener('focusin',event=>{const node=event.target.closest('[data-covenant-node]');if(node)sceneHover(node.dataset.covenantNode);});
+  root.addEventListener('focusout',event=>{if(event.target.closest('[data-covenant-node]'))sceneHover(null);});
   root.addEventListener('focusin',event=>{if(!focusAfterOpen&&event.target.matches('button:focus-visible'))hover(event.target.dataset.covenantNode||event.target.className);});
   root.addEventListener('keydown',event=>{
     if(phase!=='ready'||event.altKey||event.metaKey||event.ctrlKey)return;

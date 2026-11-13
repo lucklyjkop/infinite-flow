@@ -38,9 +38,13 @@ contract.awardTask('mist-ferry:main'); // 只在真实任务完成结算处调�
 
 - 生成源稿、提示词和入口记录：`art-source/imagegen/covenant/`。
 - 页面运行贴图：`loading-page/assets/covenant/`。
-- 当前内置生图产物：`liquid-core.png`（黑色湿润液膜球）、`branch-icons.png`（三系图标）、`ability-mist.png`（烟墨能力铭签）、`unlock-petal.png`（丝绢解锁控件）、`thread.png`（红丝契线）。源图保留透明通道；契线沿曲线采样贴合，面板保持原始比例。早期 `ability-petal.png` 源稿保留但不再用于页面。
+- 控件仍使用内置生图资源：`branch-icons.png`（三系图标）、`ability-mist.png`（烟墨能力铭签）、`unlock-petal.png`（丝绢解锁控件），保持透明通道和原始比例。按用户后续要求，球体及契线改为程序化三维几何，不再请求 `liquid-core.png` 或 `thread.png`；旧源稿留档。
 - 视觉以第一个参考视频为构图基础；球壳按用户补充的黑色流体方向制作，呈现持续变形的湿润液膜、孔洞和拉丝，暖金从内腔透出，红色用于契线及少量能量。总览显示完整星图；点击分支后核心退至左侧，支路展开，右下角显示小型铭签。
 - 页面实现为 `covenant.js` / `covenant.css`，动态星核为 `covenant-scene.js`；隐藏后停止绘制，减少动态模式只按需更新。
-- 液膜以生成材质配合 GLSL 多频 UV 形变呈现流动视觉，并非物理流体模拟。全部节点共用一张离屏 GPU 图集；主球 768 像素、卫星 256 像素，保留轮廓位移余量。WebGL 不可用或上下文丢失时保留同一材质并降级为轻量流动，避免黑屏或闪回旧造型。
+- 液膜采用有体积与法线的程序化曲面、实时形变与湿润反光，不依赖球体贴图，也并非完整物理流体模拟。各节点使用独立种子生成轮廓；三条分支分别强调开孔、包裹和扭结。未解锁呈暗沉封闭状态，可解锁保留银色湿润边缘及微弱红光，解锁后逐渐打开内层并亮起暖金内核。
+- 可见画布直接用 WebGL 绘制，取消离屏 WebGL 图集到二维画布的逐帧复制。节点几何分批生成并缓存，后续仅更新着色器参数；高负载下限制渲染像素。控件位置只在发生变化时更新合成变换。契约页面覆盖期间暂停背后标题的 CSS 动画，退出时恢复。
+- 首次初始化将 GPU 上下文、两套着色器与缓冲分成独立任务；可用时按 [Khronos 的 KHR_parallel_shader_compile 规范](https://registry.khronos.org/webgl/extensions/KHR_parallel_shader_compile/) 非阻塞检查编译完成，再读取链接结果。等待有超时与生命周期保护；上下文恢复也等待初始化完成后重绘。
+- `game-preload.js` 在开场资源准备的串行渲染器队列中调用契约预热，保留上下文、着色器与首屏网格；首次点击直接复用。浏览器创建 GPU 上下文本身是同步调用，因此将它放在资源准备阶段，而不是交互点击路径。
+- 2026-11-13 本机 Chrome、1440×900、DPR 2 的稳态对比：总览／分支各采样 7 秒，旧版约 27.5 次绘制／秒，新版约 60 次；新版没有跨 WebGL → Canvas2D 复制、超过 50ms 的绘制间隔或长任务。该结果为测试环境观测，不是所有设备的帧率保证；`cpuMs` 仅表示 JavaScript 提交时间，不能视为 GPU 耗时。
 - 新增美术遵循项目的 OpenAI Image 系列高精度制作约定，使用用户指定入口；内置工具未返回的模型版本、画质档位应记为「未披露」，不推测参数。
 - 数据回归：`node --test tests/covenant-progress.test.cjs tests/save-store.test.cjs tests/world-progress.test.cjs`，覆盖旧档兼容、领奖去重、余额与前置、存档隔离及持久化失败。
