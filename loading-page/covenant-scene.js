@@ -186,7 +186,7 @@
     const nodes=IDS.map((id,index)=>({id,index,x:0,y:0,r:0,opacity:0,target:null,from:null,mesh:null,building:null,energy:id==='root'?1:index===1||index===5||index===9?.30:0,seal:id==='root'?0:index===1||index===5||index===9?.62:1,hover:0,reveal:0}));
     const byId=new Map(nodes.map(node=>[node.id,node]));
     let width=0,height=0,dpr=1,wanted=false,disposed=false,frame=0,lastTick=0,lastPaint=0,clock=0,transitionAt=0,transitioning=false,preparing=null;
-    let pointer={x:0,y:0},aim={x:0,y:0},hovered=null,lastLayout='',lastLayoutAt=0,layout=[],gl=null,program=null,lineProgram=null,lineBuffer=null,sphere=null,locations=null,lineLocations=null;
+    let pointer={x:0,y:0},aim={x:0,y:0},hovered=null,lastLayout='',layout=[],gl=null,program=null,lineProgram=null,lineBuffer=null,sphere=null,locations=null,lineLocations=null;
     let initialized=false,initializing=null,initEpoch=0,initStage='idle',parallelCompile=false,lost=false,error=null,quality=1,slowFrames=0,qualityAt=0,lastRaf=0,avgFrame=16.7,cpuMs=0,drawCalls=0,triangles=0,renderCount=0,meshBuildMs=0;
     let fallback=null,fallbackCtx=null;
     const buffers=new Map();
@@ -259,7 +259,22 @@
     }
     function prepare(){
       if(disposed)return Promise.resolve(false);if(preparing)return preparing;
-      const job=(async()=>{resize();if(!await init())return false;for(const id of ['root','insight','ward','crossing']){if(disposed)return false;if(!await ensureMesh(byId.get(id)))return false;}return !disposed&&Boolean(program||fallbackCtx);})().then(ready=>{if(!ready&&preparing===job)preparing=null;return ready;},failure=>{if(preparing===job){error=String(failure.message||failure);preparing=null;}return false;});
+      const job=(async()=>{
+        resize();if(!await init())return false;
+        const epoch=initEpoch;
+        // Prepare every branch serially during resource loading. Starting three
+        // mesh builders from a click stacked their first CPU slices; uploading
+        // only when drawn then added GPU work to the same transition.
+        for(const node of nodes){
+          if(disposed||epoch!==initEpoch)return false;
+          const mesh=await ensureMesh(node);if(!mesh)return false;
+          await nextSlice();
+          if(disposed||epoch!==initEpoch)return false;
+          if(program&&!lost)bufferFor(mesh);
+        }
+        if(program&&!lost){bufferFor(sphere);gl.flush();}
+        return !disposed&&Boolean(program||fallbackCtx);
+      })().then(ready=>{if(!ready&&preparing===job)preparing=null;return ready;},failure=>{if(preparing===job){error=String(failure.message||failure);preparing=null;}return false;});
       preparing=job;return job;
     }
     function targets(animate=moves()&&wanted){
@@ -313,8 +328,10 @@
       }
     }
     function publish(now,force=false){
-      if(!force&&now-lastLayoutAt<55)return;const value=nodes.map(node=>({...screenNode(node),id:node.id,visible:node.opacity>.3,status:statusOf(node.id)}));
-      const stamp=value.map(n=>n.id+':'+Math.round(n.x*2)+','+Math.round(n.y*2)+','+Math.round(n.r)+','+Math.round(n.opacity*20)+','+n.status).join('|');if(stamp===lastLayout&&!force)return;lastLayout=stamp;lastLayoutAt=now;layout=value;onLayout?.(value);
+      // Labels and hit targets share the exact rendered pose. Throttling this
+      // callback independently made a smooth 60 Hz scene carry 15 Hz labels.
+      const value=nodes.map(node=>({...screenNode(node),id:node.id,visible:node.opacity>.3,status:statusOf(node.id)}));
+      const stamp=value.map(n=>n.id+':'+Math.round(n.x*10)+','+Math.round(n.y*10)+','+Math.round(n.r*10)+','+Math.round(n.opacity*100)+','+n.status).join('|');if(stamp===lastLayout&&!force)return;lastLayout=stamp;layout=value;onLayout?.(value);
     }
     function draw(now){
       const begin=performance.now();drawCalls=triangles=0;
@@ -337,7 +354,7 @@
       if(animated||transitioning)request();
     }
     function request(){if(!disposed&&wanted&&(initialized||fallbackCtx)&&!document.hidden&&!frame)frame=requestAnimationFrame(tick);}
-    function start(){if(disposed)return;wanted=true;lastTick=lastPaint=lastRaf=0;qualityAt=performance.now();resize();prepare().then(()=>request());if(state.branch)for(const id of BRANCHES[state.branch])ensureMesh(byId.get(id));request();}
+    function start(){if(disposed)return;wanted=true;lastTick=lastPaint=lastRaf=0;qualityAt=performance.now();resize();prepare().then(()=>request());request();}
     function stop(){wanted=false;cancelAnimationFrame(frame);frame=0;lastTick=lastRaf=0;}
     function setState(value={}){
       if(disposed)return;const oldBranch=state.branch;
@@ -345,7 +362,7 @@
       if(Array.isArray(value.unlocked)||value.unlocked instanceof Set)state.unlocked=new Set(['root',...value.unlocked].filter(id=>IDS.includes(id)));
       if(typeof value.motion==='boolean')state.motion=value.motion;
       if('hovered'in value)hovered=IDS.includes(value.hovered)?value.hovered:null;
-      if(oldBranch!==state.branch){targets(moves()&&wanted);if(initialized&&state.branch)for(const id of BRANCHES[state.branch])ensureMesh(byId.get(id));}
+      if(oldBranch!==state.branch)targets(moves()&&wanted);
       if(!moves()){pointer=aim={x:0,y:0};if(transitioning){nodes.forEach(node=>Object.assign(node,node.target));transitioning=false;}for(const node of nodes)Object.assign(node,materialFor(node.id));}
       lastLayout='';request();
     }
@@ -356,7 +373,7 @@
     function visibility(){cancelAnimationFrame(frame);frame=0;lastTick=lastPaint=lastRaf=0;if(!document.hidden)request();}
     function reduce(){if(!moves()){for(const node of nodes){if(node.target)Object.assign(node,node.target);Object.assign(node,materialFor(node.id));}transitioning=false;pointer=aim={x:0,y:0};}request();}
     function contextLost(event){event.preventDefault();lost=true;initialized=false;++initEpoch;initializing=preparing=null;initStage='lost';program=lineProgram=lineBuffer=null;buffers.clear();makeFallback();request();}
-    function contextRestored(){lost=false;initialized=false;++initEpoch;initializing=preparing=null;program=lineProgram=lineBuffer=null;buffers.clear();init().then(()=>request());}
+    function contextRestored(){lost=false;initialized=false;++initEpoch;initializing=preparing=null;program=lineProgram=lineBuffer=null;buffers.clear();prepare().then(()=>request());}
     canvas.addEventListener('pointermove',pointerMove,{passive:true});canvas.addEventListener('pointerleave',pointerLeave);canvas.addEventListener('click',click);canvas.addEventListener('webglcontextlost',contextLost);canvas.addEventListener('webglcontextrestored',contextRestored);
     document.addEventListener('visibilitychange',visibility);media.addEventListener('change',reduce);
     const observer=typeof ResizeObserver==='function'?new ResizeObserver(resize):null;observer?.observe(canvas);window.addEventListener('resize',resize);resize();
@@ -365,7 +382,7 @@
       if(gl&&!lost){for(const buffer of buffers.values())gl.deleteBuffer(buffer);if(lineBuffer)gl.deleteBuffer(lineBuffer);if(program)gl.deleteProgram(program);if(lineProgram)gl.deleteProgram(lineProgram);gl.getExtension('WEBGL_lose_context')?.loseContext();}buffers.clear();
     },getState:()=>({running:wanted&&!document.hidden,framePending:Boolean(frame),transitioning,width,height,dpr,selected:state.selected,branch:state.branch,unlocked:[...state.unlocked],hovered,motion:moves(),textureReady:true,
       liquid:{ready:Boolean(program||fallbackCtx),mode:program&&!lost?'procedural-webgl':'procedural-cpu',error,lost},
-      renderer:{mode:program&&!lost?'webgl-mesh':'cpu-mesh',ready:Boolean(program||fallbackCtx),initStage,parallelCompile,lost,error,pixelBudget:width<600?850000:1800000,pixels:canvas.width*canvas.height,drawCalls,triangles,cpuMs,avgFrameMs:avgFrame,quality,renderCount,meshBuildMs},
+      renderer:{mode:program&&!lost?'webgl-mesh':'cpu-mesh',ready:Boolean(program||fallbackCtx),initStage,parallelCompile,lost,error,pixelBudget:width<600?850000:1800000,pixels:canvas.width*canvas.height,drawCalls,triangles,cpuMs,avgFrameMs:avgFrame,quality,renderCount,meshBuildMs,preparedMeshes:nodes.filter(node=>node.mesh).length,uploadedMeshes:buffers.size},
       materials:nodes.map(node=>({id:node.id,status:statusOf(node.id),seed:17+node.index*29,geometryKey:node.mesh?.key||`pending-${node.index}`,vertices:node.mesh?.count||0,energy:node.energy,seal:node.seal,hover:node.hover,reveal:node.reveal})),visibleNodes:layout.filter(node=>node.visible).length,layout:layout.map(node=>({...node}))})});
   }
   window.InfiniteCovenantScene=Object.freeze({create});
