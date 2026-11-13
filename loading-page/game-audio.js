@@ -344,7 +344,7 @@
   }
   function controlSound(name, element, options = {}) {
     // Scene controllers explicitly own their hover, selection and action cues.
-    if (element?.closest?.('#deity-space, #system-space, #world-map')) return;
+    if (element?.closest?.('#deity-space, #system-space, #world-map, #covenant-space')) return;
     play(name, {group: 'ui', pan: positionPan(element), ...options});
   }
   document.addEventListener('click', event => {

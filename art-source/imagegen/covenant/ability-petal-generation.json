@@ -1,0 +1,36 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "ability-petal",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "quality_requested_in_prompt": "Highest available fidelity / render fidelity",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: ui-mockup. Create ONE isolated organic petal-shaped ability information panel texture for a premium dark Chinese fantasy game. Portrait canvas approximately 2:3. The panel silhouette is a large softly unfurled plum-blossom petal / flowing silk petal: broad gently rounded upper head, curved asymmetric shoulders, nearly full-width broad calm middle, softly tapering lower sides ending in a graceful rounded narrow tip near bottom. Absolutely NOT a rectangle, not a rectangular card inside a petal, no straight top or side edges. Perfect front orthographic camera. Material: extremely dark oxblood/ink-red matte lacquered silk, understated tactile grain, a slender worn antique-gold lip following the organic contour. A subtle silk fold along one edge; one tiny red-thread knot and a tiny plum blossom at the lower attachment tip ONLY. Lighting is soft diffused upper-left with restrained sculptural relief, natural dark recesses, no neon or hard shine. The central region spanning x=20..80 percent and y=18..72 percent of the whole canvas must be calm, wide, visually empty, uniform deep ink-red and low contrast, suitable for runtime ability heading and 3 lines of text. No decorative feature within this text-safe area. Keep small real transparent RGBA margin all around the silhouette. One single object only. No text, letters, glyphs, numbers, symbols, buttons, icons, divider rules, grids, large flowers, jewel, radial spokes, scenery, character, screenshot, cast shadow outside the object, glow, watermark, fake checkerboard background. Highest available render fidelity. Render ONLY this blank organic petal information surface with true transparent background."
+  },
+  "width": 1024,
+  "height": 1536,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "source_file": "art-source/imagegen/covenant/ability-petal-source.png",
+  "runtime_file": "loading-page/assets/covenant/ability-petal.png",
+  "source_sha256": "f870a0a92b9560906c13adc66dce19d2b005e8891ff179bfaa31b1bf37155d44",
+  "runtime_sha256": "f870a0a92b9560906c13adc66dce19d2b005e8891ff179bfaa31b1bf37155d44",
+  "processing": "原始内置生图 PNG 原样复制，保留 RGBA；未裁剪、缩放、改色。",
+  "text": "无文字、标签或编号。",
+  "text_safe_region": {
+    "normalized_x": [
+      0.2,
+      0.8
+    ],
+    "normalized_y": [
+      0.18,
+      0.72
+    ],
+    "note": "上宽下收、圆润不规则花瓣轮廓，中心用于运行时标题和能力内容。"
+  }
+}

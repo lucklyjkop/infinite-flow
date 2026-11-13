@@ -1,0 +1,22 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "thread",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "tool_parameters": {
+    "prompt": "Production transparent game UI texture: one SINGLE continuous fine horizontal crimson silk cord, fully straight along the horizontal center, running from the exact LEFT canvas edge to the exact RIGHT edge. Wide landscape 3:1 canvas. The cord is tactile woven dark red silk with one very slender muted old-gold filament winding through it, soft warm rim highlights, elegant restrained Chinese fantasy art. The cord occupies a narrow horizontal band, around 12 percent of canvas height, with fine natural fibers and slightly varied thickness. The thread is seamless in direction and consistent in width from end to end, no ends visible. Genuine transparent RGBA above and below. Designed as a texture to bend along spline connections between 3D talent nodes in a dark game menu. NO rectangles, NO labels, NO text, NO nodes or icons, NO jewels, NO background, NO shadow outside the cord, NO big glow, NO branches, NO loops, NO knots, NO decorations, NO other objects. The only asset is one refined red-and-old-gold silk connection cord. Highest available detail and fidelity.\n",
+    "transparent_background": true
+  },
+  "width": 2172,
+  "height": 724,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "source_file": "art-source/imagegen/covenant/thread-source.png",
+  "runtime_file": "loading-page/assets/covenant/thread.png",
+  "source_sha256": "9e6e8f7401a291ca4f48f392b622e5f7d9d5552b62efb95291150883742e5a31",
+  "processing": "原始PNG原样复制，保留透明度；运行时采样源矩形 (0,332,2172,60) 沿曲线分段贴合。"
+}

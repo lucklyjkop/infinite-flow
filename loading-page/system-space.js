@@ -18,6 +18,7 @@
     <div class="system-composer-dock"><form class="system-composer" aria-label="与主神对话"><label class="system-sr-only" for="system-message">向主神说些什么</label><textarea id="system-message" name="message" rows="1" maxlength="1000" placeholder="向红妆说些什么…" autocomplete="off" spellcheck="false" aria-describedby="system-message-status"></textarea><button class="system-send" type="submit" aria-label="发送消息" title="发送">${symbol('send')}</button></form><p id="system-message-status" class="system-message-status" role="status" aria-live="polite"></p></div>
     <dialog id="system-details" class="system-details" aria-labelledby="system-detail-title"><button type="button" class="system-detail-close" aria-label="收起详情" title="收起">×</button><div class="system-panel-contents"></div></dialog>`;
   world.append(root);
+  root.querySelector('#system-control-covenant').setAttribute('aria-controls','covenant-space');
   const buttons=[...root.querySelectorAll('[data-system-control]')],details=root.querySelector('#system-details'),content=details.querySelector('.system-panel-contents'),closeDetailsButton=details.querySelector('.system-detail-close');
   const mount=root.querySelector('.system-character-mount'),whisper=root.querySelector('.system-whisper'),characterTouch=root.querySelector('.system-character-touch');
   const form=root.querySelector('.system-composer'),input=root.querySelector('#system-message'),send=root.querySelector('.system-send'),messageStatus=root.querySelector('#system-message-status');
@@ -39,11 +40,10 @@
   function panelMarkup(key){
     if(key==='records')return '<p class="system-panel-kicker">往事成卷</p><h2 id="system-detail-title">轮回记录</h2><span class="system-panel-rule" aria-hidden="true"></span><div class="system-empty-mark" aria-hidden="true">卷</div><h3>此间尚无旧事</h3><p class="system-panel-copy">第一场轮回结束后，你的抉择与归途将在这里留存。</p><p class="system-panel-footnote">暂无轮回记录</p>';
     if(key==='inventory')return '<p class="system-panel-kicker">随身之物</p><h2 id="system-detail-title">行囊</h2><span class="system-panel-rule" aria-hidden="true"></span><div class="system-inventory-slots" aria-hidden="true"><i></i><i></i><i></i></div><h3>轻装启程</h3><p class="system-panel-copy">从诸界带回的物品与纪念，将安放在这里。</p><p class="system-panel-footnote">行囊中尚无物品</p>';
-    if(key==='covenant')return '<p class="system-panel-kicker">一线相牵</p><h2 id="system-detail-title">主神契约</h2><span class="system-panel-rule" aria-hidden="true"></span><p class="system-covenant-name" data-system-deity-name></p><p class="system-covenant-state"><span aria-hidden="true">◇</span> 契约已缔结</p><p class="system-panel-copy">无论行至哪一重世界，这一缕红线都会指向你的归处。</p><button type="button" class="system-action" data-system-talk>与主神交谈</button>';
     return '';
   }
   function openDetails(key,trigger){
-    if(phase!=='ready'||!['records','inventory','covenant'].includes(key))return;
+    if(phase!=='ready'||!['records','inventory'].includes(key))return;
     detailsAnimation?.cancel();detailsAnimation=null;selectControl(key);opener=trigger;details.dataset.side=key==='covenant'?'right':'left';content.innerHTML=panelMarkup(key);
     for(const label of content.querySelectorAll('[data-system-deity-name]'))label.textContent=deity.name;
     trigger.setAttribute('aria-expanded','true');if(!details.open)details.showModal();syncMotion();closeDetailsButton.focus({preventScroll:true});cue('system-ui-select');
@@ -105,7 +105,9 @@
     finally{if(token===worldOpenSerial)worldOpening=false;}
   }
   window.addEventListener('infinite:worldmapclosed',()=>{worldOpening=false;});
-  root.querySelector('.system-floating-navigation').addEventListener('click',event=>{const button=event.target.closest('[data-system-control]');if(!button||phase!=='ready'||transitionPaused||blocked())return;pulseControl(button);const key=button.dataset.systemControl;if(key==='back'){cue('system-ui-back');close();}else if(key==='settings'){cue('system-ui-select');if(window.InfiniteSettings?.open)window.InfiniteSettings.open(button);else say('设置页面尚未准备好。');}else if(key==='world')openWorld(button);else openDetails(key,button);});
+  root.querySelector('.system-floating-navigation').addEventListener('click',event=>{const button=event.target.closest('[data-system-control]');if(!button||phase!=='ready'||transitionPaused||blocked())return;pulseControl(button);const key=button.dataset.systemControl;if(key==='back'){cue('system-ui-back');close();}else if(key==='settings'){cue('system-ui-select');if(window.InfiniteSettings?.open)window.InfiniteSettings.open(button);else say('设置页面尚未准备好。');}else if(key==='world')openWorld(button);else if(key==='covenant'){selectControl(key);window.InfiniteCovenant?.open(button);}else openDetails(key,button);});
+  root.querySelector('#system-control-covenant').addEventListener('pointerenter',()=>window.InfiniteCovenant?.preload(),{passive:true});
+  window.addEventListener('infinite:covenanterror',event=>{if(phase==='ready')messageStatus.textContent=event.detail.message;});
   root.querySelector('.system-floating-navigation').addEventListener('keydown',event=>{if(phase!=='ready'||event.altKey||event.metaKey||event.ctrlKey)return;const index=buttons.indexOf(event.target);if(index<0||!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();let next;if(event.key==='Home')next=index<4?0:5;else if(event.key==='End')next=index<4?3:4;else if(event.key==='ArrowUp')next=index<2?5:4;else if(event.key==='ArrowDown')next=index===5?0:index===4?3:index;else if(index<4)next=(index+(event.key==='ArrowLeft'?-1:1)+4)%4;else next=index===4?5:4;buttons[next].focus({preventScroll:true});});
   for(const button of buttons){button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'||event.pointerType==='pen')focusCue(button);});button.addEventListener('focus',()=>{if(button.matches(':focus-visible'))focusCue(button);});}
   closeDetailsButton.addEventListener('click',()=>{cue('system-ui-back');closeDetails();});details.addEventListener('cancel',event=>{event.preventDefault();cue('system-ui-back');closeDetails();});

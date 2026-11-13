@@ -1,0 +1,31 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "unlock-petal",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "quality_requested_in_prompt": "Highest available fidelity",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: ui-mockup. Create one isolated transparent game UI unlock control, a very slender horizontal softly curled silk petal / ribbon with an ORGANIC curved silhouette. Canvas aspect ratio 3:1. The silhouette is low and wide, like one elongated plum blossom petal swept sideways, gently arched top and bottom, smoothly tapered ROUND tips at both ends, not angular. Material is matte deep oxblood/crimson silk with delicate fabric grain and a very thin worn antique-gold thread stitched along its organic perimeter. Slight natural fold on each far end, soft shallow 3D relief from diffuse top-left lighting. A single very small red-thread knot at the far left root, with one tiny petal accent only. The middle 65 percent of the control is calm broad continuous dark-crimson empty space for runtime text. Front orthographic camera, refined restrained dark Chinese fantasy style. The entire silhouette is visible with generous true transparent RGBA margin on all sides. Center it in the canvas; object approximately 88 percent of canvas width and 48 percent of canvas height. Absolutely no text, no numbers, no labels, no letters, no glyphs, no icons in the middle. No rectangular shape, no straight frame, no square corners, no ticket shape, no polygonal ends, no giant blossom, no heavy ornament, no scenery, no background, no external shadow or glow, no fake checkerboard, no watermark. Highest available fidelity. One single empty organic silk-petal button only, transparent everywhere outside the object."
+  },
+  "width": 2172,
+  "height": 724,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "alpha_bbox": [
+    57,
+    3,
+    2126,
+    724
+  ],
+  "source_file": "art-source/imagegen/covenant/unlock-petal-source.png",
+  "runtime_file": "loading-page/assets/covenant/unlock-petal.png",
+  "source_sha256": "0ae772a5c33b8fbbabb4f0ff9e30c64757920fbb2ef5155d137eb2cbd3291e23",
+  "runtime_sha256": "0ae772a5c33b8fbbabb4f0ff9e30c64757920fbb2ef5155d137eb2cbd3291e23",
+  "processing": "内置生成 PNG 原样复制，保留 RGBA；未裁剪、缩放、改色。",
+  "text": "无字；中央区域供运行时解锁文字。"
+}

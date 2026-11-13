@@ -1,0 +1,67 @@
+/* Generated silk/petal art keeps the controls organic; the orbit itself stays live. */
+.covenant-space{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;overflow:hidden;color:#e6cbaa;background:#080d11;font-family:'STKaiti','KaiTi','Noto Serif SC','SimSun',serif;isolation:isolate;user-select:none;-webkit-touch-callout:none;outline:0}
+.covenant-space::backdrop{background:#080d11}
+.covenant-space button{font:inherit;color:inherit;border:0;background-color:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.covenant-space button:disabled{cursor:default}
+.covenant-space button:focus-visible{outline:0;filter:drop-shadow(0 0 7px #f7cd99b0);color:#fff2d9}
+.covenant-space img{pointer-events:none;-webkit-user-drag:none}
+.covenant-haze{position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 33% 45%,#4a1b202b,transparent 57%),radial-gradient(ellipse at 70% 18%,#58483216,transparent 58%),linear-gradient(135deg,#0e181d,#0a1016 45%,#110b10)}
+.covenant-haze::after{content:"";position:absolute;inset:0;background:url('assets/system-space/moon-courtyard.png') center/cover;opacity:.075;mix-blend-mode:luminosity}
+.covenant-header{position:absolute;inset:0 0 auto;height:120px;display:flex;align-items:flex-start;justify-content:space-between;padding:30px 3.5vw;z-index:3;pointer-events:none}
+.covenant-header>*{pointer-events:auto}
+.covenant-back{padding:8px 0;letter-spacing:.16em;font-size:16px!important;transition:color 250ms,transform 300ms}
+.covenant-back span{font-family:serif;display:inline-block;padding-right:12px;font-size:24px;vertical-align:-1px}
+.covenant-back:hover{color:#ffe4bb;transform:translateX(-3px)}
+.covenant-heading{position:absolute;left:47%;top:20px;transform:translateX(-50%);text-align:center;pointer-events:none}
+.covenant-heading p{margin:0 0 6px;font-size:11px;letter-spacing:.6em;color:#af825f}
+.covenant-heading h1{font-weight:400;font-size:clamp(30px,3.5vw,50px);letter-spacing:.18em;margin:0;color:#ecd5b5;text-shadow:0 2px 8px #000}
+.covenant-points{display:flex;align-items:center;gap:8px;font-size:14px;letter-spacing:.1em;color:#ba9f80}
+.covenant-points img{width:36px;height:36px;object-fit:contain;filter:saturate(.7)}
+.covenant-points strong{font-size:30px;font-weight:400;margin-left:9px;color:#f2d3a7;font-variant-numeric:tabular-nums}
+.covenant-body{position:absolute;inset:110px 3vw 25px 2vw;display:grid;grid-template-columns:minmax(0,1fr) clamp(280px,28vw,410px);align-items:center;gap:1vw;transform-origin:42% 50%}
+.covenant-constellation{position:relative;align-self:stretch;min-width:0;min-height:0}
+.covenant-canvas,.covenant-nodes{position:absolute;inset:0 0 100px;width:100%;height:calc(100% - 100px)}
+.covenant-nodes{pointer-events:none}
+.covenant-node{position:absolute;transform:translate(-50%,-50%);padding:0;border-radius:50%;pointer-events:auto;outline:0;transition:filter 240ms}
+.covenant-node:not([hidden]){display:flex;align-items:center;justify-content:center}
+.covenant-icon{display:block;flex:none;width:55px;aspect-ratio:1;background:url('assets/covenant/branch-icons.png') 0 50%/300% 100% no-repeat;pointer-events:none}
+.covenant-icon[data-icon="ward"]{background-position:50% 50%}
+.covenant-icon[data-icon="crossing"]{background-position:100% 50%}
+.covenant-icon[data-icon="root"]{background:url('assets/world-detail/view-flower.png') center/contain no-repeat}
+.covenant-node-icon{width:53%;opacity:.8;filter:brightness(.86) saturate(.65);transition:filter 360ms,transform 360ms,opacity 360ms}
+.covenant-node[data-covenant-node="root"] .covenant-node-icon{width:40%;opacity:.6}
+.covenant-node[data-status="locked"] .covenant-node-icon{filter:grayscale(1) brightness(.6);opacity:.55}
+.covenant-node[aria-pressed="true"] .covenant-node-icon,.covenant-node:hover .covenant-node-icon{filter:brightness(1.15) saturate(.9);transform:scale(1.08);opacity:1}
+.covenant-node[data-status="unlocked"] .covenant-node-icon{filter:brightness(1.1) saturate(.9)}
+.covenant-node-label{position:absolute;top:calc(100% + 11px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:7px;white-space:nowrap;text-align:center;font-size:clamp(16px,1.65vw,24px);letter-spacing:.14em;text-shadow:0 2px 6px #000;color:#cfb898;transition:color 250ms}
+.covenant-node-label small{font-size:10px;letter-spacing:.14em;color:#947c66}
+.covenant-node[data-status="locked"] .covenant-node-label{color:#8a8580}
+.covenant-node[aria-pressed="true"] .covenant-node-label,.covenant-node:hover .covenant-node-label{color:#ffe6be}
+.covenant-branches{position:absolute;inset:auto 0 0;display:flex;align-items:center;justify-content:center;gap:clamp(16px,3vw,50px);height:74px}
+.covenant-branches button{display:flex;align-items:center;gap:7px;padding:6px 0;min-height:48px;font-size:18px;letter-spacing:.12em;color:#9b8470;transition:color 300ms,transform 350ms,filter 350ms}
+.covenant-branches .covenant-icon{width:46px;filter:grayscale(.6) brightness(.6);transition:filter 350ms}
+.covenant-branches button[aria-pressed="true"],.covenant-branches button:hover{color:#f2d1a6;transform:translateY(-3px)}
+.covenant-branches button[aria-pressed="true"] .covenant-icon,.covenant-branches button:hover .covenant-icon{filter:none}
+.covenant-branches .covenant-overview{font-size:14px;border-bottom:1px solid transparent}
+.covenant-overview[aria-pressed="true"]{border-bottom-color:#af855e}
+.covenant-ability{position:relative;width:100%;aspect-ratio:2/3;max-height:100%;justify-self:center;filter:drop-shadow(0 12px 24px #0005)}
+.covenant-ability-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.94}
+.covenant-ability-content{position:absolute;inset:17% 18% 21%;text-align:center;display:flex;flex-direction:column;align-items:center}
+.covenant-ability-icon{width:clamp(50px,6vw,86px);margin-bottom:4px}
+.covenant-ability-type{font-size:11px;letter-spacing:.18em;margin:4px 0 10px;color:#b49374}
+.covenant-ability h2{font-size:clamp(24px,2.5vw,36px);font-weight:400;letter-spacing:.15em;margin:0 0 15px;line-height:1.3;color:#f6d9b2;white-space:nowrap}
+.covenant-ability-copy{font-size:clamp(13px,1.15vw,17px);line-height:1.9;margin:0;min-height:3.8em;color:#dbc2a5}
+.covenant-ability-condition{font-size:11px;color:#ba9376;letter-spacing:.06em;margin:15px 0 7px;line-height:1.5}
+.covenant-unlock{width:108%;aspect-ratio:3/1;min-height:45px;flex-shrink:0;background:url('assets/covenant/unlock-petal.png') center/contain no-repeat;font-size:clamp(14px,1.4vw,19px)!important;letter-spacing:.13em;transition:filter 300ms,transform 300ms}
+.covenant-unlock:hover:enabled{transform:translateY(-2px);filter:brightness(1.25) drop-shadow(0 0 6px #df784340)}
+.covenant-unlock:disabled{filter:grayscale(.7) brightness(.75);color:#b3a095}
+.covenant-feedback{margin:6px -15px 0;min-height:1.6em;font-size:11px;line-height:1.6;color:#f3c697}
+.covenant-space[data-phase="opening"] .covenant-ability{animation:covenant-petal-open 680ms cubic-bezier(.16,.7,.2,1) both;transform-origin:50% 96%}
+.covenant-space[data-phase="closing"]{pointer-events:none}
+.covenant-space[data-phase="closing"] .covenant-header{opacity:0;transition:opacity 230ms}
+.covenant-space.motion-off *, .covenant-space.motion-off *::before,.covenant-space.motion-off *::after{animation:none!important;transition:none!important}
+@keyframes covenant-petal-open{from{opacity:0;transform:perspective(900px) rotateY(-25deg) rotateZ(4deg) scale(.8)}to{opacity:1;transform:perspective(900px) rotateY(0) rotateZ(0) scale(1)}}
+@media (max-height:680px) and (min-width:701px){.covenant-header{padding-top:18px;height:90px}.covenant-heading{top:12px}.covenant-heading h1{font-size:34px}.covenant-body{inset:90px 2.5vw 10px 2vw;grid-template-columns:minmax(0,1fr) min(32vw,310px)}.covenant-ability{width:auto;height:100%;max-width:100%;max-height:460px}.covenant-ability-content{inset:15% 18% 20%}.covenant-ability-icon{width:52px}.covenant-ability h2{font-size:25px;margin-bottom:8px}.covenant-ability-copy{font-size:13px}.covenant-ability-condition{margin-top:9px}.covenant-unlock{min-height:36px}.covenant-ability-type{margin-bottom:5px}.covenant-canvas,.covenant-nodes{height:calc(100% - 60px);bottom:60px}.covenant-branches{height:45px}.covenant-branches button{font-size:15px}.covenant-branches .covenant-icon{width:35px}.covenant-node-label{font-size:17px;gap:4px;top:calc(100% + 7px)}}
+@media (max-width:700px){.covenant-space{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#705443 transparent}.covenant-header{position:relative;height:112px;padding:17px 18px}.covenant-back{font-size:12px!important;letter-spacing:.04em}.covenant-back span{padding-right:4px;font-size:18px}.covenant-points{gap:4px;font-size:11px}.covenant-points img{width:24px;height:24px}.covenant-points strong{font-size:23px;margin-left:3px}.covenant-heading{left:50%;top:67px}.covenant-heading p{display:none}.covenant-heading h1{font-size:29px}.covenant-body{position:relative;inset:auto;display:flex;flex-direction:column;gap:22px;padding:10px 16px 25px}.covenant-constellation{align-self:auto;width:100%;height:410px;flex:none}.covenant-canvas,.covenant-nodes{inset:0 0 67px;height:343px}.covenant-branches{height:56px;gap:19px}.covenant-branches button{font-size:15px;gap:4px}.covenant-branches .covenant-icon{width:36px}.covenant-branches .covenant-overview{font-size:12px}.covenant-node-label{font-size:17px;gap:4px;top:calc(100% + 8px)}.covenant-node-label small{font-size:9px}.covenant-ability{width:min(330px,90vw);max-height:none;flex:none}.covenant-ability-content{inset:17% 18% 21%}.covenant-ability h2{font-size:28px}.covenant-ability-icon{width:62px}.covenant-ability-copy{font-size:15px}.covenant-unlock{font-size:17px!important}.covenant-haze{position:fixed}}
+@media(prefers-reduced-motion:reduce){.covenant-space *{animation:none!important;transition:none!important}}
+@media (max-height:460px) and (min-width:701px){.covenant-ability-content{inset:14% 18% 19%}.covenant-ability-icon{width:30px;margin:0}.covenant-ability-type{font-size:9px;margin:2px 0 5px}.covenant-ability h2{font-size:21px;margin:0 0 7px}.covenant-ability-copy{font-size:12px;line-height:1.6;min-height:3.2em}.covenant-ability-condition{font-size:9px;margin:6px 0 0}.covenant-unlock{font-size:12px!important;min-height:32px}.covenant-feedback{font-size:9px;margin:0 -10px}.covenant-node-label{font-size:14px;gap:3px}.covenant-node-label small{font-size:8px}}

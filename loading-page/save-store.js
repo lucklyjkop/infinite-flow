@@ -5,6 +5,8 @@
   const choices=new Set(['world','records','inventory','covenant']);
   const worldStageIds=Object.freeze(['mist-ferry','red-inn','paper-city','snow-pass','mirror-lake','return-peak']);
   const WORLD_CHAPTER_SIZE=6, WORLD_PROGRESS_LIMIT=Number.MAX_SAFE_INTEGER-18;
+  const covenantIds=new Set(['insight','listen','discern','night','ward','resolve','renew','steadfast','crossing','path','bond','home']);
+  const taskIdPattern=/^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,159}$/;
   let activeId=null;
   const clone=value=>value==null?value:JSON.parse(JSON.stringify(value));
   const error=message=>Object.assign(new Error(message),{userMessage:message});
@@ -55,12 +57,25 @@
     const selected=selectedIndex>=0&&Math.floor(selectedIndex/WORLD_CHAPTER_SIZE)<=maxPreviewIndex?value.selected:worldStageIdAt(completedCount);
     return {completedCount,selected};
   }
+  function covenantOf(value){
+    return {
+      unlocked:[...new Set(Array.isArray(value?.unlocked)?value.unlocked.filter(id=>covenantIds.has(id)):[])],
+      tasks:[...new Set(Array.isArray(value?.tasks)?value.tasks.filter(id=>typeof id==='string'&&taskIdPattern.test(id)):[])]
+    };
+  }
+  function mergeCovenant(before,patch){
+    const next=covenantOf(patch);
+    return covenantOf({unlocked:[...before.unlocked,...next.unlocked],tasks:[...before.tasks,...next.tasks]});
+  }
   function normalize(value){
     if(!value||typeof value.id!=='string'||!/^[-_a-zA-Z0-9]{1,80}$/.test(value.id))throw error('存档数据不完整，请保留浏览器数据后重试。');
     const createdAt=Number(value.createdAt),updatedAt=Number(value.updatedAt);
     if(!Number.isFinite(createdAt)||!Number.isFinite(updatedAt)||createdAt<=0||updatedAt<createdAt)throw error('存档时间数据无效。');
-    return {id:value.id,name:nameOf(value.name),deity:deityOf(value.deity),createdAt,updatedAt,location:'system',
-      chat:chatOf(value.chat),progress:{selected:choices.has(value.progress?.selected)?value.progress.selected:'world',world:worldOf(value.progress?.world)}};
+    const progress={selected:choices.has(value.progress?.selected)?value.progress.selected:'world',world:worldOf(value.progress?.world)};
+    // Optional migration: reading an old journey does not add fields or write
+    // storage. Rewards and purchases are a per-journey, append-only ledger.
+    if(value.progress?.covenant&&typeof value.progress.covenant==='object'&&!Array.isArray(value.progress.covenant))progress.covenant=covenantOf(value.progress.covenant);
+    return {id:value.id,name:nameOf(value.name),deity:deityOf(value.deity),createdAt,updatedAt,location:'system',chat:chatOf(value.chat),progress};
   }
   function read(){
     let raw;
@@ -106,7 +121,8 @@
   function change(id,mutate){
     const document=read(),index=document.saves.findIndex(save=>save.id===id);
     if(index<0)throw error('这份存档已不存在，请重新选择。');
-    const save=document.saves[index];mutate(save);save.updatedAt=Math.max(Date.now(),save.createdAt,save.updatedAt+1);
+    const save=document.saves[index];if(mutate(save)===false)return clone(save);
+    save.updatedAt=Math.max(Date.now(),save.createdAt,save.updatedAt+1);
     document.saves[index]=normalize(save);write(document);return clone(document.saves[index]);
   }
   function update(id,patch={}){return change(id,save=>{
@@ -119,8 +135,20 @@
       next.completedCount=Math.max(before.completedCount,next.completedCount);
       save.progress.world=worldOf({...next,selected:patch.progress.world.selected??before.selected});
     }
+    if(patch.progress?.covenant&&typeof patch.progress.covenant==='object'&&!Array.isArray(patch.progress.covenant))save.progress.covenant=mergeCovenant(covenantOf(save.progress.covenant),patch.progress.covenant);
     // Other fields, including credentials, endpoints and conversation IDs, are ignored.
   });}
+  function updateCovenant(id,mutate){
+    if(typeof mutate!=='function')throw error('契约未能保存，请重试。');
+    return change(id,save=>{
+      const before=covenantOf(save.progress.covenant);
+      // Validation runs against the same fresh document that will be written;
+      // no cached balance can overwrite a purchase from a previous operation.
+      const patch=mutate(clone(before),clone(save));
+      if(patch==null||patch===false)return false;
+      save.progress.covenant=mergeCovenant(before,patch);
+    });
+  }
   function appendMessagePair(id,user,assistant){
     if(typeof user!=='string'||typeof assistant!=='string'||!user.trim()||!assistant.trim())throw error('对话未能完整保存。');
     return change(id,save=>{save.chat=chatOf([...save.chat,{role:'user',content:user},{role:'assistant',content:assistant}]);});
@@ -130,5 +158,5 @@
     if(activeId){try{if(!get(activeId))clearActive();}catch{clearActive();}}
     emit('infinite:saveschange',{external:true,id:activeId});
   });
-  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,appendMessagePair,remove,clearActive,worldStageIds,worldStageIdAt,worldStageIndexOf});
+  window.InfiniteSaves=Object.freeze({list,get,create,activate,active,update,updateCovenant,appendMessagePair,remove,clearActive,worldStageIds,worldStageIdAt,worldStageIndexOf});
 })();

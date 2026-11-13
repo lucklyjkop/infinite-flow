@@ -1,0 +1,42 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "branch-icons",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "quality_requested_in_prompt": "Highest available fidelity / render fidelity",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: ui-mockup. Create a production transparent game UI ICON ATLAS containing EXACTLY THREE isolated symbols in ONE HORIZONTAL ROW of THREE EQUAL SQUARE CELLS. Canvas aspect ratio 3:1. No drawn cell boundaries. Each icon must be centered within its own cell, at x=1/6, 1/2, 5/6 of canvas width and y=1/2. Equal visual size; each fits within the middle 66 percent of its square cell with ample transparent gutters. LEFT: an elegant abstract open eye with a diamond-shaped crimson pupil and gently tapered gold eyelids, symbolizing perception. CENTER: a compact protective shield whose organic silhouette is formed from five plum-blossom petals, deep oxblood enamel with a small old-gold heart, symbolizing steadfast protection. RIGHT: one graceful red-thread loop tied into a simple open gateway/infinity knot, restrained old-gold connectors, symbolizing fate and passage. Style: refined dark Chinese fantasy, tactile shallow 3D bas-relief, thin worn bronze-gold engraved edges, matte dark crimson lacquer/enamel surfaces, soft upper-left light. The three silhouettes must be distinct and readable at 48 pixels, not overly detailed, not thick chunky badges. Transparent actual RGBA everywhere outside the symbols. No background, no fog, no platform, no bounding circles, no rectangular frames, no labels, no letters, no numbers, no caption, no watermark, no extra icons, no large glow, no jewel clusters, no scenery, no character. Highest available fidelity. Keep all three symbols separate and equally aligned."
+  },
+  "width": 2172,
+  "height": 724,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "source_file": "art-source/imagegen/covenant/branch-icons-source.png",
+  "runtime_file": "loading-page/assets/covenant/branch-icons.png",
+  "source_sha256": "82182f8638c5765f70be4b79a0096f4b16f6a316d594d92c244df1cdffc92c23",
+  "runtime_sha256": "82182f8638c5765f70be4b79a0096f4b16f6a316d594d92c244df1cdffc92c23",
+  "processing": "原始内置生图 PNG 原样复制，保留 RGBA；未裁剪、缩放、改色。",
+  "text": "无文字、标签或编号。",
+  "atlas": {
+    "columns": 3,
+    "rows": 1,
+    "cell_width": 724,
+    "cell_height": 724,
+    "order": [
+      "灵识：眼与菱形瞳",
+      "守心：花瓣护盾",
+      "因缘：红线环结"
+    ],
+    "css_background_size": "300% 100%",
+    "css_positions": [
+      "0% 50%",
+      "50% 50%",
+      "100% 50%"
+    ]
+  }
+}
