@@ -182,7 +182,7 @@
   function create(canvas,{onNodeClick,onNodeHover,onLayout}={}){
     if(!canvas?.getContext)throw new TypeError('A covenant canvas is required.');
     const media=matchMedia('(prefers-reduced-motion: reduce)');
-    const state={selected:'root',branch:null,unlocked:new Set(['root']),motion:true};
+    const state={selected:'root',branch:null,detail:null,unlocked:new Set(['root']),motion:true};
     const nodes=IDS.map((id,index)=>({id,index,x:0,y:0,r:0,opacity:0,target:null,from:null,mesh:null,building:null,energy:id==='root'?1:index===1||index===5||index===9?.30:0,seal:id==='root'?0:index===1||index===5||index===9?.62:1,hover:0,reveal:0}));
     const byId=new Map(nodes.map(node=>[node.id,node]));
     let width=0,height=0,dpr=1,wanted=false,disposed=false,frame=0,lastTick=0,lastPaint=0,clock=0,transitionAt=0,transitioning=false,preparing=null;
@@ -289,6 +289,11 @@
         BRANCHES[state.branch].forEach((id,i)=>{positions[id]=[...line[i],i===0?.35:.29,1];});
         Object.keys(BRANCHES).filter(key=>key!==state.branch).forEach((key,i)=>{positions[key]=[.09,i?.86:.15,.2,.13];});
       }
+      if(state.detail){
+        for(const id of IDS)positions[id][3]=0;
+        const detailRadius=clamp(Math.min(width*(compact?.32:.23),height*(compact?.34:.38)),65,285);
+        positions[state.detail]=[compact?.5:.29,compact?.47:.49,detailRadius/radius,1];
+      }
       for(const node of nodes){const [x,y,r,opacity]=positions[node.id];node.from={x:node.x,y:node.y,r:node.r,opacity:node.opacity};node.target={x:x*width,y:y*height,r:radius*r,opacity};if(!animate||!node.r)Object.assign(node,node.target);}
       transitionAt=performance.now();transitioning=Boolean(animate);lastLayout='';request();
     }
@@ -307,8 +312,8 @@
       if(locations.normal!==lineLocations.parameter)gl.disableVertexAttribArray(locations.normal);
       if(locations.position!==lineLocations.parameter)gl.disableVertexAttribArray(locations.position);
       gl.uniform2f(lineLocations.Viewport,width,height);gl.uniform1f(lineLocations.Time,clock);gl.depthMask(false);
-      for(const node of nodes){if(node.opacity<.02||!PARENTS.has(node.id))continue;const a=screenNode(byId.get(PARENTS.get(node.id))),b=screenNode(node),distance=Math.hypot(b.x-a.x,b.y-a.y);if(distance<12)continue;
-        gl.uniform2f(lineLocations.A,a.x,a.y);gl.uniform2f(lineLocations.B,b.x,b.y);gl.uniform1f(lineLocations.Bend,clamp(distance*.2,18,95)*(node.index%2?-1:1));gl.uniform1f(lineLocations.Width,node.energy>.65?2.2:1.6);gl.uniform1f(lineLocations.Energy,node.energy);gl.uniform1f(lineLocations.Opacity,node.opacity*(node.energy>.1?.8:.36));gl.uniform1f(lineLocations.Seed,node.index*.23);gl.drawArrays(gl.TRIANGLES,0,28*6);drawCalls++;}
+      for(const node of nodes){if(node.opacity<.02||!PARENTS.has(node.id))continue;const a=screenNode(byId.get(PARENTS.get(node.id))),b=screenNode(node),opacity=Math.min(a.opacity,b.opacity),distance=Math.hypot(b.x-a.x,b.y-a.y);if(distance<12||opacity<.02)continue;
+        gl.uniform2f(lineLocations.A,a.x,a.y);gl.uniform2f(lineLocations.B,b.x,b.y);gl.uniform1f(lineLocations.Bend,clamp(distance*.2,18,95)*(node.index%2?-1:1));gl.uniform1f(lineLocations.Width,node.energy>.65?2.2:1.6);gl.uniform1f(lineLocations.Energy,node.energy);gl.uniform1f(lineLocations.Opacity,opacity*(node.energy>.1?.8:.36));gl.uniform1f(lineLocations.Seed,node.index*.23);gl.drawArrays(gl.TRIANGLES,0,28*6);drawCalls++;}
       gl.depthMask(true);gl.enable(gl.CULL_FACE);
     }
     function drawOrb(node){
@@ -357,16 +362,17 @@
     function start(){if(disposed)return;wanted=true;lastTick=lastPaint=lastRaf=0;qualityAt=performance.now();resize();prepare().then(()=>request());request();}
     function stop(){wanted=false;cancelAnimationFrame(frame);frame=0;lastTick=lastRaf=0;}
     function setState(value={}){
-      if(disposed)return;const oldBranch=state.branch;
+      if(disposed)return;const oldBranch=state.branch,oldDetail=state.detail;
       if(IDS.includes(value.selected))state.selected=value.selected;if('branch'in value)state.branch=BRANCHES[value.branch]?value.branch:null;
+      if('detail'in value)state.detail=IDS.includes(value.detail)?value.detail:null;
       if(Array.isArray(value.unlocked)||value.unlocked instanceof Set)state.unlocked=new Set(['root',...value.unlocked].filter(id=>IDS.includes(id)));
       if(typeof value.motion==='boolean')state.motion=value.motion;
       if('hovered'in value)hovered=IDS.includes(value.hovered)?value.hovered:null;
-      if(oldBranch!==state.branch)targets(moves()&&wanted);
+      if(oldBranch!==state.branch||oldDetail!==state.detail)targets(moves()&&wanted);
       if(!moves()){pointer=aim={x:0,y:0};if(transitioning){nodes.forEach(node=>Object.assign(node,node.target));transitioning=false;}for(const node of nodes)Object.assign(node,materialFor(node.id));}
-      lastLayout='';request();
+      lastLayout='';if(!moves())publish(performance.now(),true);request();
     }
-    function hit(x,y){return nodes.filter(node=>node.opacity>.3).map(node=>({node,at:screenNode(node)})).filter(({at})=>Math.hypot(x-at.x,y-at.y)<=at.r*1.15).sort((a,b)=>Math.hypot(x-a.at.x,y-a.at.y)-Math.hypot(x-b.at.x,y-b.at.y))[0]?.node.id||null;}
+    function hit(x,y){if(state.detail)return null;return nodes.filter(node=>node.opacity>.3).map(node=>({node,at:screenNode(node)})).filter(({at})=>Math.hypot(x-at.x,y-at.y)<=at.r*1.15).sort((a,b)=>Math.hypot(x-a.at.x,y-a.at.y)-Math.hypot(x-b.at.x,y-b.at.y))[0]?.node.id||null;}
     function pointerMove(event){if(!wanted||document.hidden)return;const box=canvas.getBoundingClientRect(),x=event.clientX-box.left,y=event.clientY-box.top;if(event.pointerType!=='touch')aim={x:(x/width-.5)*10,y:(y/height-.5)*7};const id=hit(x,y);if(id!==hovered){hovered=id;canvas.style.cursor=id?'pointer':'';onNodeHover?.(id);request();}}
     function pointerLeave(){aim={x:0,y:0};if(hovered){hovered=null;canvas.style.cursor='';onNodeHover?.(null);}request();}
     function click(event){if(!wanted)return;const b=canvas.getBoundingClientRect(),id=hit(event.clientX-b.left,event.clientY-b.top);if(id)onNodeClick?.(id);}
@@ -380,7 +386,7 @@
     return Object.freeze({prepare,setState,resize,start,stop,dispose(){
       if(disposed)return;stop();disposed=true;++initEpoch;initializing=preparing=null;observer?.disconnect();window.removeEventListener('resize',resize);canvas.removeEventListener('pointermove',pointerMove);canvas.removeEventListener('pointerleave',pointerLeave);canvas.removeEventListener('click',click);canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);document.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',reduce);fallback?.remove();
       if(gl&&!lost){for(const buffer of buffers.values())gl.deleteBuffer(buffer);if(lineBuffer)gl.deleteBuffer(lineBuffer);if(program)gl.deleteProgram(program);if(lineProgram)gl.deleteProgram(lineProgram);gl.getExtension('WEBGL_lose_context')?.loseContext();}buffers.clear();
-    },getState:()=>({running:wanted&&!document.hidden,framePending:Boolean(frame),transitioning,width,height,dpr,selected:state.selected,branch:state.branch,unlocked:[...state.unlocked],hovered,motion:moves(),textureReady:true,
+    },getState:()=>({running:wanted&&!document.hidden,framePending:Boolean(frame),transitioning,width,height,dpr,selected:state.selected,branch:state.branch,detail:state.detail,unlocked:[...state.unlocked],hovered,motion:moves(),textureReady:true,
       liquid:{ready:Boolean(program||fallbackCtx),mode:program&&!lost?'procedural-webgl':'procedural-cpu',error,lost},
       renderer:{mode:program&&!lost?'webgl-mesh':'cpu-mesh',ready:Boolean(program||fallbackCtx),initStage,parallelCompile,lost,error,pixelBudget:width<600?850000:1800000,pixels:canvas.width*canvas.height,drawCalls,triangles,cpuMs,avgFrameMs:avgFrame,quality,renderCount,meshBuildMs,preparedMeshes:nodes.filter(node=>node.mesh).length,uploadedMeshes:buffers.size},
       materials:nodes.map(node=>({id:node.id,status:statusOf(node.id),seed:17+node.index*29,geometryKey:node.mesh?.key||`pending-${node.index}`,vertices:node.mesh?.count||0,energy:node.energy,seal:node.seal,hover:node.hover,reveal:node.reveal})),visibleNodes:layout.filter(node=>node.visible).length,layout:layout.map(node=>({...node}))})});

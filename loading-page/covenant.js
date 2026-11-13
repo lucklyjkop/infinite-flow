@@ -11,36 +11,43 @@
   root.innerHTML=`
     <div class="covenant-haze" aria-hidden="true"></div>
     <header class="covenant-header">
-      <button type="button" class="covenant-back"><span aria-hidden="true">←</span> 返回空间</button>
+      <button type="button" class="covenant-back"><span aria-hidden="true">←</span> <span class="covenant-back-label">返回空间</span></button>
       <div class="covenant-heading"><p>红妆</p><h1 id="covenant-heading">主神契约</h1></div>
       <div class="covenant-points" aria-label="可用契约点" title="通关 +3 · 完成任务 +1"><img src="assets/world-detail/view-flower.png" alt="" draggable="false"><span>契约点 <strong>0</strong></span></div>
     </header>
     <div class="covenant-body">
       <section class="covenant-constellation" aria-label="契约天赋">
         <canvas class="covenant-canvas" aria-hidden="true"></canvas>
-        <div class="covenant-nodes">${catalog.map(node=>`<button type="button" class="covenant-node" data-covenant-node="${node.id}" hidden><span class="covenant-node-label"><span>${node.name}</span><small></small></span></button>`).join('')}</div>
+        <div class="covenant-nodes">${catalog.map(node=>`<button type="button" class="covenant-node" data-covenant-node="${node.id}" aria-controls="covenant-detail" aria-expanded="false" hidden><span class="covenant-node-label"><span>${node.name}</span><small></small></span></button>`).join('')}</div>
         <nav class="covenant-branches" aria-label="契约分支"><button type="button" data-covenant-branch="all" class="covenant-overview" aria-pressed="true">总览</button>${branches.map(([id,name])=>`<button type="button" data-covenant-branch="${id}" aria-pressed="false"><span class="covenant-icon" data-icon="${id}" aria-hidden="true"></span><span>${name}</span></button>`).join('')}</nav>
       </section>
-      <aside class="covenant-ability" aria-labelledby="covenant-ability-name" hidden>
-        <img class="covenant-ability-art" src="assets/covenant/ability-mist.png" alt="" draggable="false">
+      <section id="covenant-detail" class="covenant-ability covenant-detail" aria-labelledby="covenant-ability-name" hidden>
+        <button type="button" class="covenant-detail-close" aria-label="关闭契印详情"><img src="assets/world-detail/view-flower.png" alt="" draggable="false"><span aria-hidden="true">×</span></button>
+        <div class="covenant-detail-orbit" aria-hidden="true"><i></i><i></i><span><img src="assets/world-detail/view-flower.png" alt="" draggable="false"></span></div>
         <div class="covenant-ability-content">
-          <span class="covenant-ability-icon covenant-icon" data-icon="root" aria-hidden="true"></span>
-          <p class="covenant-ability-type"></p><h2 id="covenant-ability-name"></h2>
+          <div class="covenant-detail-eyebrow"><span class="covenant-ability-icon covenant-icon" data-icon="root" aria-hidden="true"></span><p class="covenant-ability-type"></p><span class="covenant-detail-status" tabindex="-1" role="status"></span></div>
+          <h2 id="covenant-ability-name"></h2>
+          <div class="covenant-detail-rule" aria-hidden="true"><span>✧</span></div>
           <p class="covenant-ability-copy"></p>
-          <p class="covenant-ability-condition"></p>
-          <button class="covenant-unlock" type="button"></button>
+          <dl class="covenant-detail-metrics"><div><dt class="covenant-detail-metric-label"></dt><dd class="covenant-detail-metric-value"></dd></div><div><dt>持有契约点</dt><dd class="covenant-detail-balance"></dd></div></dl>
+          <div class="covenant-detail-growth" aria-label="三脉契约">${branches.map(([id,name])=>`<button type="button" data-detail-branch="${id}"><span class="covenant-icon" data-icon="${id}" aria-hidden="true"></span><span>${name}</span><span class="covenant-detail-progress"><i></i></span><small>0 / 4</small><span aria-hidden="true">↗</span></button>`).join('')}</div>
+          <div class="covenant-detail-chain"><span class="covenant-detail-chain-label">前置契约</span><button type="button" class="covenant-detail-parent"></button><span class="covenant-detail-parent-status"></span></div>
+          <div class="covenant-detail-footer"><p class="covenant-ability-condition"></p><button class="covenant-unlock" type="button"></button></div>
           <p class="covenant-feedback" role="status" aria-live="polite"></p>
         </div>
-      </aside>
+      </section>
     </div>`;
   document.body.append(root);
   const canvas=root.querySelector('canvas'),ability=root.querySelector('.covenant-ability'),body=root.querySelector('.covenant-body');
   const fields={icon:root.querySelector('.covenant-ability-icon'),type:root.querySelector('.covenant-ability-type'),name:root.querySelector('#covenant-ability-name'),copy:root.querySelector('.covenant-ability-copy'),condition:root.querySelector('.covenant-ability-condition'),unlock:root.querySelector('.covenant-unlock'),feedback:root.querySelector('.covenant-feedback')};
+  const detailFields={status:root.querySelector('.covenant-detail-status'),metricLabel:root.querySelector('.covenant-detail-metric-label'),metricValue:root.querySelector('.covenant-detail-metric-value'),balance:root.querySelector('.covenant-detail-balance'),growth:root.querySelector('.covenant-detail-growth'),chain:root.querySelector('.covenant-detail-chain'),parent:root.querySelector('.covenant-detail-parent'),parentStatus:root.querySelector('.covenant-detail-parent-status')};
+  const detailClose=root.querySelector('.covenant-detail-close'),nodeLayer=root.querySelector('.covenant-nodes'),branchNav=root.querySelector('.covenant-branches'),backLabel=root.querySelector('.covenant-back-label');
   const nodeButtons=new Map([...root.querySelectorAll('[data-covenant-node]')].map(button=>[button.dataset.covenantNode,button]));
   const branchButtons=[...root.querySelectorAll('[data-covenant-branch]')];
   const nodePoses=new Map();
   function readState(){try{return progress.getState();}catch(failure){return {saveId:null,earned:0,spent:0,balance:0,unlocked:['root'],tasks:[],error:failure.userMessage||'未能读取契约存档，请重试。'};}}
   let phase='hidden',selected='root',branch=null,state=readState(),opener=null,serial=0,preloadJob=null,closeJob=null,animation=null,panelAnimation=null,lastCue=0,lastHover=null,lastSceneHover=null,focusAfterOpen=false;
+  let detailId=null,detailPhase='hidden',detailOrigin=null,detailSerial=0,detailJob=null;
   const motion=()=>!media.matches&&window.InfiniteSettings?.getState?.().motion!==false;
   function cue(name){if(!document.hidden)window.dispatchEvent(new CustomEvent('infinite:soundcue',{detail:{name,group:'covenant-ui'}}));}
   function status(id){const node=byId.get(id);return state.unlocked.includes(id)?'unlocked':state.unlocked.includes(node.parent)?'available':'locked';}
@@ -57,7 +64,7 @@
       nodePoses.set(node.id,pose);
     }
   }
-  const scene=window.InfiniteCovenantScene.create(canvas,{onNodeClick:choose,onNodeHover:hover,onLayout:layout});
+  const scene=window.InfiniteCovenantScene.create(canvas,{onNodeClick:openDetail,onNodeHover:hover,onLayout:layout});
   function sceneHover(id){if(lastSceneHover===id)return;lastSceneHover=id;scene.setState({hovered:id});}
   function refresh(){
     state=readState();if(state.error)fields.feedback.textContent=state.error;root.querySelector('.covenant-points strong').textContent=state.balance;
@@ -65,25 +72,63 @@
     for(const [id,button] of nodeButtons){
       const node=byId.get(id),kind=status(id),label=id==='root'?'契约之始':kind==='unlocked'?'已解锁':kind==='available'?`${node.cost} 契约点`:'未解锁';
       button.dataset.status=kind;button.setAttribute('aria-pressed',String(id===selected));button.setAttribute('aria-label',`${node.name}，${label}`);button.querySelector('small').textContent=label;
+      button.setAttribute('aria-expanded',String(id===detailId));
     }
     for(const button of branchButtons)button.setAttribute('aria-pressed',String(button.dataset.covenantBranch===(branch||'all')));
-    const node=byId.get(selected),kind=status(selected),owned=kind==='unlocked',prerequisite=byId.get(node.parent);
-    fields.icon.dataset.icon=node.branch||'root';fields.type.textContent=selected==='root'?'本命契印':`${branches.find(([id])=>id===node.branch)?.[1]||''} · ${node.type}`;
+    root.dataset.view=branch?'branch':'overview';scene.setState({selected,branch,detail:detailId,unlocked:state.unlocked,motion:motion()});
+    if(!detailId)return;
+    const node=byId.get(detailId),kind=status(detailId),owned=kind==='unlocked',prerequisite=byId.get(node.parent),origin=detailId==='root';
+    fields.icon.dataset.icon=node.branch||'root';fields.type.textContent=origin?'本命契印':`${branches.find(([id])=>id===node.branch)?.[1]||''} · ${node.type}`;
     fields.name.textContent=node.name;fields.copy.textContent=node.description;
-    fields.condition.textContent=selected==='root'?`${Math.max(0,state.unlocked.length-1)} / ${catalog.length-1} 已解锁`:kind==='locked'?`前置 · ${prerequisite.name}`:owned?'契印已亮起':`消耗 ${node.cost} 契约点`;
-    fields.unlock.hidden=selected==='root'||owned;fields.unlock.disabled=owned||kind==='locked'||state.balance<node.cost||!state.saveId;
-    fields.unlock.textContent=owned?'已解锁':kind==='locked'?'前置未解锁':state.balance<node.cost?'点数不足':'解 锁';
-    ability.hidden=selected==='root';ability.dataset.status=kind;root.dataset.view=branch?'branch':'overview';scene.setState({selected,branch,unlocked:state.unlocked,motion:motion()});
+    detailFields.status.textContent=origin?'已缔结':owned?'已觉醒':kind==='locked'?'未解锁':'可解锁';
+    detailFields.metricLabel.textContent=origin?'已觉醒契印':'所需契约点';
+    detailFields.metricValue.textContent=origin?`${Math.max(0,state.unlocked.length-1)} / 12`:String(node.cost);
+    detailFields.balance.textContent=state.balance;
+    detailFields.growth.hidden=!origin;detailFields.chain.hidden=origin;
+    for(const button of detailFields.growth.querySelectorAll('button')){const count=catalog.filter(item=>item.branch===button.dataset.detailBranch&&state.unlocked.includes(item.id)).length;button.querySelector('small').textContent=`${count} / 4`;button.querySelector('i').style.transform=`scaleX(${count/4})`;button.setAttribute('aria-label',`${button.dataset.detailBranch==='insight'?'灵识':button.dataset.detailBranch==='ward'?'守心':'因缘'}，已觉醒 ${count} 项，查看分支`);}
+    if(prerequisite){detailFields.parent.textContent=prerequisite.name+' ↗';detailFields.parent.dataset.parentId=prerequisite.id;detailFields.parentStatus.textContent=state.unlocked.includes(node.parent)?'已缔结':'未解锁';}
+    fields.condition.textContent=origin?'':owned?'契印已觉醒':kind==='locked'?'前置契约尚未缔结':state.balance<node.cost?`尚缺 ${node.cost-state.balance} 契约点`:'';
+    fields.unlock.hidden=origin||owned;fields.unlock.disabled=owned||kind==='locked'||state.balance<node.cost||!state.saveId;
+    fields.unlock.textContent=kind==='locked'?'尚未解锁':state.balance<node.cost?'点数不足':'缔结契约';
+    ability.dataset.status=kind;ability.dataset.origin=String(origin);
   }
-  function choose(id){
+  function chooseBranch(id){
     if(phase!=='ready'||!byId.has(id))return;
-    if(selected===id&&branch===byId.get(id).branch)return;
+    if(!detailId&&detailPhase==='hidden'&&selected===id&&branch===byId.get(id).branch)return;
+    closeDetail({immediate:true,focus:false});
     selected=id;branch=byId.get(id).branch;fields.feedback.textContent='';cue('ui-select');refresh();
-    panelAnimation?.cancel();
-    if(motion())panelAnimation=fields.name.parentElement.animate([{opacity:.25,transform:'translateY(7px)'},{opacity:1,transform:'translateY(0)'}],{duration:360,easing:'cubic-bezier(.2,.7,.25,1)'});
+  }
+  function detailMode(active){
+    nodeLayer.inert=active;branchNav.inert=active;
+    backLabel.textContent=active?'返回契图':'返回空间';
+    root.dataset.detail=active?'open':'closed';
+  }
+  function openDetail(id){
+    if(phase!=='ready'||!byId.has(id))return false;
+    const token=++detailSerial;panelAnimation?.cancel();
+    if(!detailId)detailOrigin={selected,branch,focus:nodeButtons.get(id)};
+    detailId=selected=id;detailPhase='opening';fields.feedback.textContent='';ability.hidden=false;
+    refresh();focusAfterOpen=true;detailClose.focus({preventScroll:true});focusAfterOpen=false;detailMode(true);cue('ui-select-open');
+    if(motion()&&!document.hidden){
+      panelAnimation=ability.animate([{opacity:0,transform:'translateX(22px)'},{opacity:1,transform:'translateX(0)'}],{duration:460,delay:60,easing:'cubic-bezier(.16,.8,.2,1)',fill:'backwards'});
+      detailJob=panelAnimation.finished.catch(()=>{}).then(()=>{if(token===detailSerial){detailPhase='ready';panelAnimation=null;}return true;});
+    }else{detailPhase='ready';panelAnimation=null;detailJob=Promise.resolve(true);}
+    return true;
+  }
+  function closeDetail({immediate=false,focus=true}={}){
+    if(detailPhase==='hidden')return Promise.resolve(false);
+    if(detailPhase==='closing'&&!immediate)return detailJob;
+    const token=++detailSerial;panelAnimation?.cancel();panelAnimation=null;
+    detailId=null;detailPhase='closing';
+    if(detailOrigin){selected=detailOrigin.selected;branch=detailOrigin.branch;}
+    root.dataset.detail='closing';refresh();
+    const finish=()=>{if(token!==detailSerial)return false;ability.hidden=true;detailMode(false);detailPhase='hidden';panelAnimation=null;const target=detailOrigin?.focus;detailOrigin=null;if(focus&&root.open){focusAfterOpen=true;(target&&!target.hidden?target:root.querySelector('.covenant-back')).focus({preventScroll:true});focusAfterOpen=false;}return true;};
+    if(immediate||!motion()||document.hidden){finish();return Promise.resolve(true);}
+    cue('ui-back');panelAnimation=ability.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(14px)'}],{duration:260,easing:'ease-in',fill:'forwards'});
+    const current=panelAnimation;detailJob=current.finished.then(()=>{const value=finish();current.cancel();return value;},()=>false);return detailJob;
   }
   function preload(){
-    if(!preloadJob){const urls=['assets/covenant/ability-mist.png','assets/covenant/branch-icons.png','assets/covenant/unlock-petal.png'];
+    if(!preloadJob){const urls=['assets/covenant/branch-icons.png','assets/covenant/unlock-petal.png','assets/world-detail/view-flower.png'];
       const resources=urls.map(src=>{const image=new Image();image.src=src;return image.decode().then(()=>true,()=>false);});
       resources.push(Promise.resolve(scene.prepare?.()??true).then(value=>value!==false,()=>false));
       preloadJob=Promise.all(resources).then(values=>{if(values.some(value=>!value)){preloadJob=null;return false;}return true;});
@@ -112,7 +157,7 @@
   function close({immediate=false,focus=true}={}){
     if(phase==='hidden')return Promise.resolve(false);
     if(phase==='closing'&&!immediate)return closeJob||Promise.resolve(false);
-    ++serial;animation?.cancel();panelAnimation?.cancel();animation=panelAnimation=null;
+    closeDetail({immediate:true,focus:false});++serial;animation?.cancel();panelAnimation?.cancel();animation=panelAnimation=null;
     if(phase==='preparing'){phase='hidden';opener?.removeAttribute('aria-busy');return Promise.resolve(true);}
     phase='closing';root.dataset.phase='closing';cue('ui-back');
     const finish=()=>{scene.stop();root.close();document.getElementById('world')?.classList.remove('covenant-covered');phase='hidden';root.dataset.phase='hidden';animation?.cancel();animation=null;opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');window.InfiniteSystemSpace?.setTransitioning(false);if(focus&&window.InfiniteSystemSpace?.getState().phase==='ready')opener?.focus({preventScroll:true});window.dispatchEvent(new CustomEvent('infinite:soundstop',{detail:{group:'covenant-ui',fade:.1}}));};
@@ -121,9 +166,11 @@
     animation=body.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.965)'}],{duration:300,easing:'ease-in',fill:'forwards'});
     closeJob=animation.finished.then(()=>{if(token===serial)finish();return true;},()=>false);return closeJob;
   }
-  root.querySelector('.covenant-back').addEventListener('click',()=>close());
-  root.addEventListener('cancel',event=>{event.preventDefault();close();});
-  root.addEventListener('click',event=>{const node=event.target.closest('[data-covenant-node]'),branchButton=event.target.closest('[data-covenant-branch]');if(node)choose(node.dataset.covenantNode);else if(branchButton)choose(branchButton.dataset.covenantBranch==='all'?'root':branchButton.dataset.covenantBranch);});
+  root.querySelector('.covenant-back').addEventListener('click',()=>detailPhase!=='hidden'?closeDetail():close());
+  detailClose.addEventListener('click',()=>closeDetail());
+  detailFields.parent.addEventListener('click',()=>openDetail(detailFields.parent.dataset.parentId));
+  root.addEventListener('cancel',event=>{event.preventDefault();if(detailPhase!=='hidden')closeDetail();else close();});
+  root.addEventListener('click',event=>{const node=event.target.closest('[data-covenant-node]'),branchButton=event.target.closest('[data-covenant-branch]'),detailBranch=event.target.closest('[data-detail-branch]');if(node)openDetail(node.dataset.covenantNode);else if(branchButton)chooseBranch(branchButton.dataset.covenantBranch==='all'?'root':branchButton.dataset.covenantBranch);else if(detailBranch)chooseBranch(detailBranch.dataset.detailBranch);});
   root.addEventListener('pointerover',event=>{const button=event.target.closest('button');if(button&&!button.disabled)hover(button.dataset.covenantNode||button.dataset.covenantBranch||button.className);});
   root.addEventListener('pointerover',event=>{const node=event.target.closest('[data-covenant-node]');sceneHover(node?.dataset.covenantNode||null);});
   root.addEventListener('pointerleave',()=>sceneHover(null));
@@ -137,8 +184,8 @@
     const next=event.key==='Home'?0:event.key==='End'?visible.length-1:(index+(['ArrowLeft','ArrowUp'].includes(event.key)?-1:1)+visible.length)%visible.length;visible[next]?.focus({preventScroll:true});
   });
   fields.unlock.addEventListener('click',()=>{
-    if(phase!=='ready'||fields.unlock.disabled)return;
-    try{progress.unlock(selected);fields.feedback.textContent='';cue('ui-select');const target=nodeButtons.get(selected);focusAfterOpen=true;target.focus({preventScroll:true});focusAfterOpen=false;target.getAnimations().forEach(value=>value.cancel());if(motion())target.animate([{filter:'brightness(1)'},{filter:'brightness(1.9)',offset:.24},{filter:'brightness(1)'}],{duration:850,easing:'ease-out'});}
+    if(phase!=='ready'||!detailId||fields.unlock.disabled||fields.unlock.hidden)return;
+    try{progress.unlock(detailId);fields.feedback.textContent='';cue('ui-select');focusAfterOpen=true;detailFields.status.focus({preventScroll:true});focusAfterOpen=false;if(motion())detailFields.status.animate([{opacity:.3},{opacity:1}],{duration:850,easing:'ease-out'});}
     catch(failure){fields.feedback.textContent=failure.userMessage||'未能保存契约，请重试。';refresh();}
   });
   root.addEventListener('contextmenu',event=>event.preventDefault());root.addEventListener('dragstart',event=>event.preventDefault());
@@ -148,5 +195,5 @@
   media.addEventListener('change',changedMotion);
   window.addEventListener('infinite:systemclosed',()=>close({immediate:true,focus:false}));
   window.addEventListener('pagehide',()=>{scene.stop();});
-  window.InfiniteCovenant=Object.freeze({open,close,preload,getState:()=>({phase,selected,branch,save:readState(),scene:scene.getState()})});
+  window.InfiniteCovenant=Object.freeze({open,close,preload,getState:()=>({phase,selected,branch,detail:detailId,detailPhase,save:readState(),scene:scene.getState()})});
 })();
