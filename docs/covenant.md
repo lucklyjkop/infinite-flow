@@ -38,7 +38,9 @@ contract.awardTask('mist-ferry:main'); // 只在真实任务完成结算处调�
 
 - 生成源稿、提示词和入口记录：`art-source/imagegen/covenant/`。
 - 页面运行贴图：`loading-page/assets/covenant/`。
-- 本轮内置生图产物：`branch-icons.png`（三系图标）、`ability-petal.png`（有机花瓣能力面板）、`unlock-petal.png`（丝绢解锁控件）、`thread.png`（红丝契线）。源图保留透明通道；契线沿曲线采样贴合，面板保持原始比例。
+- 当前内置生图产物：`liquid-core.png`（黑色湿润液膜球）、`branch-icons.png`（三系图标）、`ability-mist.png`（烟墨能力铭签）、`unlock-petal.png`（丝绢解锁控件）、`thread.png`（红丝契线）。源图保留透明通道；契线沿曲线采样贴合，面板保持原始比例。早期 `ability-petal.png` 源稿保留但不再用于页面。
+- 视觉以第一个参考视频为构图基础；球壳按用户补充的黑色流体方向制作，呈现持续变形的湿润液膜、孔洞和拉丝，暖金从内腔透出，红色用于契线及少量能量。总览显示完整星图；点击分支后核心退至左侧，支路展开，右下角显示小型铭签。
 - 页面实现为 `covenant.js` / `covenant.css`，动态星核为 `covenant-scene.js`；隐藏后停止绘制，减少动态模式只按需更新。
+- 液膜以生成材质配合 GLSL 多频 UV 形变呈现流动视觉，并非物理流体模拟。全部节点共用一张离屏 GPU 图集；主球 768 像素、卫星 256 像素，保留轮廓位移余量。WebGL 不可用或上下文丢失时保留同一材质并降级为轻量流动，避免黑屏或闪回旧造型。
 - 新增美术遵循项目的 OpenAI Image 系列高精度制作约定，使用用户指定入口；内置工具未返回的模型版本、画质档位应记为「未披露」，不推测参数。
 - 数据回归：`node --test tests/covenant-progress.test.cjs tests/save-store.test.cjs tests/world-progress.test.cjs`，覆盖旧档兼容、领奖去重、余额与前置、存档隔离及持久化失败。

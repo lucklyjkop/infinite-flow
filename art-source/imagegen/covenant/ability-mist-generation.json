@@ -1,0 +1,36 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "ability-mist",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "quality_requested_in_prompt": "Highest available fidelity",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: ui-mockup. Create one isolated subtle translucent fantasy game ability-label backing, horizontal aspect ratio 3:2. It must look like an extremely thin floating smoky black jade / ink-gauze sheet, understated and light, NOT a thick leather plaque or large petal. Front orthographic view. A broad calm dark charcoal-gray smoky surface with subtle true alpha translucency, softly rounded naturally uneven corners, a gently irregular silhouette that is almost rectangular but has NO straight hard rectangular frame. Edge treatment: extremely fine intermittent old-gold wisps hugging parts of the perimeter and ONE hair-thin muted crimson silk thread running gently along the bottom edge only. No knots, no flowers, no dangling elements. Central 80 percent must be smooth uninterrupted blank dark ink for runtime heading and text, with very low contrast fine smoky grain. Absolutely no broad folds, no embossed ornament, no internal border, no glow, no thick gold trim, no bright red body, no jewel, no blossom, no large curl, no scenery, no character. The backing occupies approximately 88 percent of the canvas width and 76 percent of the canvas height, with transparent margin on all sides. True transparent RGBA outside the silhouette and subtle material translucency within it. One object only. No words, letters, glyphs, numbers, labels, captions, watermarks, UI mockup screenshot, controls, icons, drop-shadow backdrop, or checkerboard. Highest available fidelity. Keep it quiet, weightless, refined, suitable as a small supporting ability description surface next to a glowing 3D energy sphere."
+  },
+  "width": 1536,
+  "height": 1024,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "source_file": "art-source/imagegen/covenant/ability-mist-source.png",
+  "runtime_file": "loading-page/assets/covenant/ability-mist.png",
+  "source_sha256": "86e87f0f6d49dd822502464266ac10fb70ffc8430b5f449ceb9876a6ee178c5b",
+  "runtime_sha256": "86e87f0f6d49dd822502464266ac10fb70ffc8430b5f449ceb9876a6ee178c5b",
+  "processing": "内置生成 PNG 原样复制，保留 RGBA；未裁剪、缩放、改色。",
+  "text": "无字；中央区域供运行时能力内容。",
+  "transparency_validation": "外部角点与留白采样 alpha 为0；主体中心约253，欲透出场景可在贴图层单独调低 opacity，不影响文字。",
+  "text_safe_region": {
+    "normalized_x": [
+      0.15,
+      0.85
+    ],
+    "normalized_y": [
+      0.25,
+      0.78
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "created_date": "2026-11-13",
+  "asset": "liquid-core",
+  "generation_entry": "内置 image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露",
+  "quality_requested_in_prompt": "highest available detail / material photography",
+  "tool_parameters": {
+    "transparent_background": true,
+    "prompt": "Use case: stylized-concept. Create ONE photorealistic premium 3D material specimen: a front-facing floating roughly spherical living BLACK VISCOUS FLUID mass, non-anthropomorphic abstract matter, isolated on true transparent RGBA. Square canvas, whole object occupies 82 percent of canvas. Its sphere-like volume is irregular and made from a dense complex web of wet black viscous liquid MEMBRANES stretched between many rounded soft liquid ribs, with dozens of thin ligament-like strands, deep irregular holes and open cavities through its layered depth. This is a dense porous liquid web, NOT a closed shell punched with holes. Thick black liquid pools merge continuously into stretched thin grey-black translucent films, flowing narrow bridges and hair-thin sticky strings. Delicate rolled soft tendrils curl back at a few silhouette locations and visibly merge back into the mass; no spikes. Rich sculptural real volume, some front membranes occlude the rear layers, some cavities reveal other membranes much farther behind. The overall sphere has asymmetric bulges and recesses instead of a rigid rim or perfect circle. Material photography at highest available detail: dense obsidian-black wet slime with exquisite restrained narrow SILVER-GREY specular reflections following curved liquid ridges; highly realistic surface tension, tiny irregular ripples, smooth wet menisci and rounded strand intersections. Palette approximately 80 percent deep BLACK, 18 percent subtle silver-grey highlights, 2 percent tiny warm amber-gold glimmers and sparse warm specks inside a few deepest cavities. Soft studio key light from upper-left plus a dim rim, dark microcontrast; no broad plastic white patches. The black liquid should seem capable of crawling, stretching and recoiling, organic ferrofluid symbiote matter without any animal form. Do NOT depict: smooth black jade orb, complete circular shell, punched hard plastic disc, rubber toy, red gemstone, glass marble, crystal, geometric triangular mesh, wireframe, regular polygons, regular honeycomb, five-pointed star, flower, organism face, eyes, skull, insect, spider, bones, weapon spikes, planet, fireball, explosion, scene, ground, surrounding fog, UI, text, letters, logos, fake checkerboard, background or cast shadow. Maintain actual transparent alpha outside every outer edge and inside genuinely open holes that see through the object. No colored backdrop. One centered volumetric liquid object only."
+  },
+  "width": 1254,
+  "height": 1254,
+  "mode": "RGBA",
+  "alpha_extrema": [
+    0,
+    255
+  ],
+  "source_file": "art-source/imagegen/covenant/liquid-core-source.png",
+  "runtime_file": "loading-page/assets/covenant/liquid-core.png",
+  "source_sha256": "498ee15f6981178df9cba64695602cfe0d9ad3c63d494203394e9f6bb4e17b57",
+  "runtime_sha256": "498ee15f6981178df9cba64695602cfe0d9ad3c63d494203394e9f6bb4e17b57",
+  "processing": "内置生成 PNG 原样复制，保留 RGBA；未裁剪、缩放、改色。",
+  "text": "无字、无场景；黑色多孔黏液球体材质。"
+}

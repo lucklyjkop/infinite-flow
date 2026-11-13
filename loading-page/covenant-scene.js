@@ -1,5 +1,5 @@
-/* Faceted covenant constellation. UI plaques are DOM; every tether is sampled
-   from the image-generated silk texture rather than drawn as a vector stroke. */
+/* Liquid covenant constellation. Generated materials flow in an offscreen GPU
+   atlas; DOM plaques and image-generated silk tethers stay independently legible. */
 (() => {
   'use strict';
   const BRANCHES = Object.freeze({
@@ -19,25 +19,64 @@
     return {x:s*s*s*points[0].x+3*s*s*t*points[1].x+3*s*t*t*points[2].x+t*t*t*points[3].x,
       y:s*s*s*points[0].y+3*s*s*t*points[1].y+3*s*t*t*points[2].y+t*t*t*points[3].y};
   }
-  function makeGeometry(seed) {
-    const vertices=[{x:0,y:-1,z:0}],faces=[];
-    for(let ring=1;ring<=3;ring++) {
-      const latitude=ring*Math.PI/4;
-      for(let slice=0;slice<8;slice++) {
-        const longitude=slice*Math.PI/4+(ring%2)*.19;
-        const radius=.94+noise(seed+ring*13+slice)*.10;
-        vertices.push({x:Math.cos(longitude)*Math.sin(latitude)*radius,y:-Math.cos(latitude)*radius,z:Math.sin(longitude)*Math.sin(latitude)*radius});
-      }
+  function createLiquidAtlas(ready) {
+    const atlas=document.createElement('canvas');atlas.width=1536;atlas.height=1024;
+    const textureImage=new Image();let gl=null,program=null,texture=null,buffer=null,uniforms=null,loaded=false,lost=false,error=null,disposed=false,flowTime=0;
+    const vertexSource='attribute vec2 aPosition;varying vec2 vUv;void main(){vUv=aPosition*.5+.5;gl_Position=vec4(aPosition,0.,1.);}';
+    const fragmentSource=`precision highp float;
+      varying vec2 vUv;uniform sampler2D uTexture;uniform float uTime;uniform float uPhase;uniform float uEnergy;
+      void main(){
+        float t=uTime*.64+uPhase;vec2 p=(vUv-.5)*1.19;
+        // Independent low/high-frequency flow advects the photograph and its alpha contour together.
+        float radius=length(p),twist=.020*sin(radius*12.-t*.57)+.013*sin(p.y*8.+t*.41);
+        mat2 turn=mat2(cos(twist),-sin(twist),sin(twist),cos(twist));p=turn*p;
+        vec2 curl=vec2(sin(p.y*9.7+t*.76+sin(p.x*5.1-t*.37)),cos(p.x*10.8-t*.61+sin(p.y*6.4+t*.49)));
+        vec2 folds=vec2(sin((p.x+p.y)*18.-t*1.07),cos((p.x-p.y)*15.+t*.83));
+        vec2 uv=p+.5+curl*.018+folds*.005;
+        uv+=vec2(sin(p.x*7.+t*.93)*cos(p.y*8.-t*.42),cos(p.x*9.-t*.72)*sin(p.y*6.+t*.65))*.006;
+        vec4 material=texture2D(uTexture,uv);
+        float inside=step(0.,uv.x)*step(uv.x,1.)*step(0.,uv.y)*step(uv.y,1.);material.a*=inside;
+        float luminance=dot(material.rgb,vec3(.2126,.7152,.0722));
+        float reflection=(sin(p.x*12.+p.y*8.-t*.79)+sin(p.y*13.-p.x*5.+t*.47))*.045;
+        vec3 color=material.rgb*(1.+reflection*smoothstep(.04,.55,luminance));
+        color=mix(vec3(luminance),color,.34+.66*uEnergy)*(.67+.33*uEnergy);
+        gl_FragColor=vec4(color*material.a,material.a);
+      }`;
+    function shader(type,source){const value=gl.createShader(type);gl.shaderSource(value,source);gl.compileShader(value);if(!gl.getShaderParameter(value,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(value)||'Liquid shader');return value;}
+    function setup(){
+      if(disposed||(loaded&&!lost&&program))return;
+      try{
+        gl=gl||atlas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,depth:false,stencil:false,preserveDrawingBuffer:true,powerPreference:'low-power'});
+        if(!gl){loaded=true;error='webgl-unavailable';ready();return;}
+        const vertex=shader(gl.VERTEX_SHADER,vertexSource),fragment=shader(gl.FRAGMENT_SHADER,fragmentSource);program=gl.createProgram();gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.linkProgram(program);gl.deleteShader(vertex);gl.deleteShader(fragment);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program)||'Liquid program');
+        gl.useProgram(program);buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);const position=gl.getAttribLocation(program,'aPosition');gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
+        texture=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,textureImage);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+        uniforms={time:gl.getUniformLocation(program,'uTime'),phase:gl.getUniformLocation(program,'uPhase'),energy:gl.getUniformLocation(program,'uEnergy')};gl.uniform1i(gl.getUniformLocation(program,'uTexture'),0);gl.disable(gl.BLEND);gl.disable(gl.DEPTH_TEST);gl.clearColor(0,0,0,0);loaded=true;lost=false;error=null;ready();
+      }catch(failure){error=String(failure.message||failure);loaded=true;program=null;ready();}
     }
-    vertices.push({x:0,y:1,z:0});
-    const add=(a,b,c)=>faces.push({a,b,c,depth:0,light:0});
-    for(let slice=0;slice<8;slice++) add(0,1+slice,1+(slice+1)%8);
-    for(let ring=0;ring<2;ring++) for(let slice=0;slice<8;slice++) {
-      const a=1+ring*8+slice,b=1+ring*8+(slice+1)%8,c=a+8,d=b+8;
-      add(a,c,b);add(b,c,d);
-    }
-    for(let slice=0;slice<8;slice++) add(25,17+(slice+1)%8,17+slice);
-    return {vertices,faces,projected:vertices.map(()=>({x:0,y:0,z:0,sx:0,sy:0}))};
+    function tile(index){return index===0?{x:0,y:0,size:768}:{x:768+(index-1)%3*256,y:Math.floor((index-1)/3)*256,size:256};}
+    textureImage.onload=setup;textureImage.onerror=()=>{loaded=false;error='liquid-texture-unavailable';ready();};textureImage.src='assets/covenant/liquid-core.png';
+    if(textureImage.complete&&textureImage.naturalWidth)setup();
+    function contextLost(event){event.preventDefault();lost=true;ready();}
+    function contextRestored(){program=null;setup();}
+    atlas.addEventListener('webglcontextlost',contextLost);atlas.addEventListener('webglcontextrestored',contextRestored);
+    return {
+      render(nodes,time,status){
+        flowTime=time;if(!loaded||!gl||!program||lost||disposed)return;
+        gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(program);gl.uniform1f(uniforms.time,time);
+        for(const node of nodes){if(node.opacity<.02||node.r<2)continue;const at=tile(node.index),kind=status(node.id);gl.viewport(at.x,atlas.height-at.y-at.size,at.size,at.size);gl.uniform1f(uniforms.phase,node.index*.61);gl.uniform1f(uniforms.energy,kind==='unlocked'?1:kind==='available'?.7:.22);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+      },
+      draw(ctx,node,x,y,size){
+        if(!loaded||!textureImage.naturalWidth||disposed)return;
+        if(gl&&program&&!lost){const at=tile(node.index);ctx.drawImage(atlas,at.x,at.y,at.size,at.size,x-size/2,y-size/2,size,size);}else{
+          // Unsupported/lost WebGL keeps the generated material, with inexpensive narrow-band advection.
+          const inner=size/1.19,rows=48,height=inner/rows,sourceHeight=textureImage.naturalHeight/rows;
+          for(let row=0;row<rows;row++){const shift=Math.sin(row*.14+flowTime*.48+node.index*.61)*inner*.007;ctx.drawImage(textureImage,0,row*sourceHeight,textureImage.naturalWidth,sourceHeight,x-inner/2+shift,y-inner/2+row*height,inner,height+.18);}
+        }
+      },
+      getState:()=>({ready:loaded,mode:gl&&program&&!lost?'webgl-flow':'image-fallback',error,lost}),
+      dispose(){disposed=true;textureImage.onload=textureImage.onerror=null;atlas.removeEventListener('webglcontextlost',contextLost);atlas.removeEventListener('webglcontextrestored',contextRestored);if(gl&&!lost){if(texture)gl.deleteTexture(texture);if(buffer)gl.deleteBuffer(buffer);if(program)gl.deleteProgram(program);gl.getExtension('WEBGL_lose_context')?.loseContext();}}
+    };
   }
   function create(canvas,{onNodeClick,onNodeHover,onLayout}={}) {
     if(!canvas?.getContext) throw new TypeError('A covenant canvas is required.');
@@ -45,24 +84,33 @@
     if(!ctx) throw new Error('The covenant scene could not initialize.');
     const media=matchMedia('(prefers-reduced-motion: reduce)');
     const state={selected:'root',branch:null,unlocked:new Set(['root']),motion:true};
-    const nodes=IDS.map((id,index)=>({id,index,geometry:makeGeometry(index+4),x:0,y:0,r:0,opacity:0,target:null,from:null}));
+    const nodes=IDS.map((id,index)=>({id,index,x:0,y:0,r:0,opacity:0,target:null,from:null}));
     const byId=new Map(nodes.map(node=>[node.id,node]));
     const dust=Array.from({length:22},(_,i)=>({x:noise(i+80),y:noise(i+170),size:.5+noise(i+220)*.9,phase:noise(i+270)*Math.PI*2}));
     let width=0,height=0,dpr=1,wanted=false,disposed=false,frame=0,lastTick=0,lastPaint=0,clock=0,transitionAt=0,transitioning=false;
     let pointer={x:0,y:0},aim={x:0,y:0},hovered=null,lastLayout='',lastLayoutAt=0,layout=[];
-    let threadReady=false;
+    let threadReady=false,threadStrip=null,quietThread=null;
+    const glowSprites=new Map();
     const thread=new Image();
     thread.src='assets/covenant/thread.png';
-    thread.onload=()=>{threadReady=true;request();};
+    function prepareThread(){
+      threadReady=Boolean(thread.naturalWidth);if(!threadReady)return;
+      threadStrip=document.createElement('canvas');threadStrip.width=thread.naturalWidth;threadStrip.height=60;
+      threadStrip.getContext('2d').drawImage(thread,0,Math.round(thread.naturalHeight*332/724),thread.naturalWidth,Math.round(thread.naturalHeight*60/724),0,0,threadStrip.width,60);
+      quietThread=document.createElement('canvas');quietThread.width=threadStrip.width;quietThread.height=60;
+      const quiet=quietThread.getContext('2d');quiet.filter='grayscale(1) sepia(.35) brightness(1.8)';quiet.drawImage(threadStrip,0,0);request();
+    }
+    thread.onload=prepareThread;
     thread.onerror=()=>{threadReady=false;request();};
-    if(thread.complete&&thread.naturalWidth) threadReady=true;
+    if(thread.complete&&thread.naturalWidth) prepareThread();
+    const liquid=createLiquidAtlas(()=>request());
     const moves=()=>state.motion&&!media.matches;
     function statusOf(id) { return state.unlocked.has(id) ? 'unlocked' : state.unlocked.has(PARENTS.get(id)) ? 'available' : 'locked'; }
     function targets(animate=moves()&&wanted) {
       if(!width||!height) return;
       const compact=width<540;
-      const radius=clamp(Math.min(width*.13,height*.19),compact?35:48,105);
-      const overview={root:[.47,.48,1,1],insight:[.18,.23,.45,1],ward:[.81,.31,.48,1],crossing:[.52,.81,.46,1]};
+      const radius=clamp(Math.min(width*(compact?.17:.15),height*.27),compact?35:48,compact?82:185);
+      const overview={root:[.44,.47,1,1],insight:[.16,.23,.34,1],ward:[.81,.29,.38,1],crossing:[.67,.79,.35,1]};
       if(compact) Object.assign(overview,{root:[.49,.48,1,1],insight:[.19,.22,.47,1],ward:[.80,.26,.47,1],crossing:[.51,.81,.46,1]});
       const positions={};
       for(const id of IDS) {
@@ -70,9 +118,9 @@
         positions[id]=overview[id] || [...overview[branch].slice(0,2),.1,0];
       }
       if(state.branch) {
-        positions.root=[.10,.55,.66,1];
-        const line=compact?[[.29,.31],[.49,.58],[.70,.30],[.89,.54]]:[[.30,.48],[.48,.23],[.68,.57],[.88,.30]];
-        BRANCHES[state.branch].forEach((id,i)=>{positions[id]=[...line[i],i===0?.52:.38,1];});
+        positions.root=[.10,.55,.50,1];
+        const line=compact?[[.29,.31],[.49,.58],[.70,.30],[.89,.54]]:[[.29,.43],[.49,.22],[.69,.53],[.88,.26]];
+        BRANCHES[state.branch].forEach((id,i)=>{positions[id]=[...line[i],i===0?.32:.25,1];});
         Object.keys(BRANCHES).filter(key=>key!==state.branch).forEach((key,i)=>{positions[key]=[.09,i?.86:.15,.2,.13];});
       }
       nodes.forEach(node=>{
@@ -95,11 +143,10 @@
       ctx.setTransform(dpr,0,0,dpr,0,0);targets(false);
     }
     function glow(x,y,r,color,opacity=1) {
-      const grad=ctx.createRadialGradient(x,y,0,x,y,r);
-      grad.addColorStop(0,color.replace('ALPHA',String(.34*opacity)));
-      grad.addColorStop(.35,color.replace('ALPHA',String(.13*opacity)));
-      grad.addColorStop(1,color.replace('ALPHA','0'));
-      ctx.fillStyle=grad;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+      if(r<.5||opacity<=0)return;
+      let sprite=glowSprites.get(color);
+      if(!sprite){sprite=document.createElement('canvas');sprite.width=sprite.height=128;const paint=sprite.getContext('2d'),gradient=paint.createRadialGradient(64,64,0,64,64,64);gradient.addColorStop(0,color.replace('ALPHA','1'));gradient.addColorStop(.1,color.replace('ALPHA','.68'));gradient.addColorStop(.34,color.replace('ALPHA','.16'));gradient.addColorStop(1,color.replace('ALPHA','0'));paint.fillStyle=gradient;paint.fillRect(0,0,128,128);glowSprites.set(color,sprite);}
+      const alpha=ctx.globalAlpha;ctx.globalAlpha=alpha*clamp(opacity);ctx.drawImage(sprite,x-r,y-r,r*2,r*2);ctx.globalAlpha=alpha;
     }
     function screenNode(node) {
       const depth=node.id==='root'?1:.52;
@@ -111,84 +158,42 @@
       if(distance<12) return;
       const bend=clamp(distance*.2,18,95)*(node.index%2?-1:1);
       const points=[a,{x:mix(a.x,b.x,.36),y:mix(a.y,b.y,.25)+bend},{x:mix(a.x,b.x,.67),y:mix(a.y,b.y,.7)-bend*.35},b];
-      const available=statusOf(node.id)!=='locked';
-      ctx.save();ctx.globalAlpha=node.opacity*(available?.82:.26);
-      if(!available) ctx.filter='grayscale(1)';
-      const count=Math.max(8,Math.min(22,Math.ceil(distance/20))),stripHeight=available?4.5:3.1;
-      const sourceY=Math.round(thread.naturalHeight*(332/724)),sourceHeight=Math.round(thread.naturalHeight*(60/724));
+      const available=statusOf(node.id)!=='locked',active=state.selected===node.id||statusOf(node.id)==='unlocked';
+      ctx.save();ctx.globalAlpha=node.opacity*(active?.72:available?.46:.25);
+      const source=active?threadStrip:quietThread;
+      const count=Math.max(8,Math.min(28,Math.ceil(distance/20))),stripHeight=active?1.6:1.2;
       let previous=curvePoint(points,0);
       for(let i=1;i<=count;i++) {
         const point=curvePoint(points,i/count),dx=point.x-previous.x,dy=point.y-previous.y,length=Math.hypot(dx,dy);
         ctx.save();ctx.translate(previous.x,previous.y);ctx.rotate(Math.atan2(dy,dx));
-        ctx.drawImage(thread,(i-1)*thread.naturalWidth/count,sourceY,thread.naturalWidth/count,sourceHeight,-.4,-stripHeight/2,length+.8,stripHeight);
+        ctx.drawImage(source,(i-1)*source.width/count,0,source.width/count,60,-.4,-stripHeight/2,length+.8,stripHeight);
         ctx.restore();previous=point;
       }
       ctx.restore();
       if(available&&moves()) {
         const t=(clock*.17+node.index*.23)%1,p=curvePoint(points,t);
-        glow(p.x,p.y,8,'rgba(245,180,106,ALPHA)',.65*node.opacity);
-        ctx.fillStyle='rgba(255,221,169,'+(.85*node.opacity)+')';ctx.beginPath();ctx.arc(p.x,p.y,1.3,0,Math.PI*2);ctx.fill();
+        glow(p.x,p.y,6,'rgba(245,180,106,ALPHA)',.5*node.opacity);
+        ctx.fillStyle='rgba(255,221,169,'+(.65*node.opacity)+')';ctx.beginPath();ctx.arc(p.x,p.y,.8,0,Math.PI*2);ctx.fill();
       }
     }
     function drawOrb(node) {
-      if(node.opacity<.02||node.r<2) return;
-      const at=screenNode(node),unlocked=statusOf(node.id)==='unlocked',available=statusOf(node.id)==='available';
-      const selected=state.selected===node.id,hover=hovered===node.id,root=node.id==='root';
-      const strength=unlocked?1:available?.57:.16;
-      const r=at.r*(selected?1.05:hover?1.035:1);
-      const spin=clock*(root?.075:.11)+node.index*.93;
-      const tilt=.27+Math.sin(clock*.19+node.index)*.12;
-      const sy=Math.sin(spin),cy=Math.cos(spin),sx=Math.sin(tilt),cx=Math.cos(tilt);
+      if(node.opacity<.02||node.r<2)return;
+      const at=screenNode(node),root=node.id==='root',kind=statusOf(node.id),strength=kind==='unlocked'?1:kind==='available'?.7:.22;
       ctx.save();ctx.globalAlpha=node.opacity;
-      glow(at.x,at.y,r*1.9,'rgba(193,45,35,ALPHA)',strength*(selected?1.1:.72));
-      const base=ctx.createRadialGradient(at.x-r*.28,at.y-r*.32,r*.02,at.x,at.y,r*1.06);
-      base.addColorStop(0,unlocked?'#7b3031':available?'#332a2c':'#1c2025');
-      base.addColorStop(.65,unlocked?'#260e18':'#0e131b');base.addColorStop(1,'rgba(6,10,17,0)');
-      ctx.fillStyle=base;ctx.beginPath();ctx.arc(at.x,at.y,r*1.08,0,Math.PI*2);ctx.fill();
-      const {vertices,projected,faces}=node.geometry;
-      for(let i=0;i<vertices.length;i++) {
-        const v=vertices[i],p=projected[i],px=v.x*cy+v.z*sy,pz=v.z*cy-v.x*sy;
-        p.x=px;p.y=v.y*cx-pz*sx;p.z=v.y*sx+pz*cx;
-        const perspective=1/(1-p.z*.17);p.sx=at.x+p.x*r*perspective;p.sy=at.y+p.y*r*perspective;
+      if(root)glow(at.x,at.y,at.r*1.5,'rgba(150,153,141,ALPHA)',.06);
+      if(state.selected===node.id||hovered===node.id)glow(at.x,at.y+at.r*.12,at.r*1.2,'rgba(174,109,44,ALPHA)',strength*.08);
+      // Small lights sit behind the material: only real alpha holes expose them.
+      for(let core=0;core<2;core++){
+        const phase=clock*.82+node.index*.7+core*2.3,pulse=.8+.2*Math.sin(phase),x=at.x+at.r*(core?-.12:.13),y=at.y+at.r*(core?-.11:.12);
+        const lightStrength=strength*(root?1:.58);
+        glow(x,y,at.r*(core?.22:.29),'rgba(241,173,72,ALPHA)',lightStrength*pulse*(core?.24:.34));
+        const count=root?7:3;
+        for(let i=0;i<count;i++){const angle=i*2.399+clock*.17,radius=at.r*(.025+.075*noise(i+core*13)),px=x+Math.cos(angle)*radius,py=y+Math.sin(angle)*radius;ctx.fillStyle=`rgba(253,215,139,${lightStrength*pulse*(.3+noise(i+6)*.35)})`;ctx.fillRect(px,py,root?.85:.6,root?.85:.6);}
       }
-      for(const face of faces) {
-        const a=projected[face.a],b=projected[face.b],c=projected[face.c];
-        face.depth=(a.z+b.z+c.z)/3;
-        const nx=(a.x+b.x+c.x)/3,ny=(a.y+b.y+c.y)/3;
-        face.light=clamp(.35-nx*.3-ny*.44+face.depth*.37);
-      }
-      faces.sort((a,b)=>a.depth-b.depth);
-      ctx.lineWidth=root?.65:.55;
-      for(const face of faces) {
-        const a=projected[face.a],b=projected[face.b],c=projected[face.c],light=face.light;
-        ctx.beginPath();ctx.moveTo(a.sx,a.sy);ctx.lineTo(b.sx,b.sy);ctx.lineTo(c.sx,c.sy);ctx.closePath();
-        const red=Math.round((unlocked?72:available?39:22)+light*(unlocked?107:35));
-        const green=Math.round((unlocked?13:23)+light*(unlocked?34:31));
-        const blue=Math.round((unlocked?25:31)+light*27);
-        ctx.fillStyle='rgba('+red+','+green+','+blue+','+(.44+light*.18)+')';ctx.fill();
-        ctx.strokeStyle='rgba('+(unlocked?'222,161,118':available?'163,150,135':'102,116,130')+','+(.08+light*(selected?.39:.23))+')';ctx.stroke();
-      }
-      const beat=moves()?1+Math.sin(clock*1.65+node.index)*.07:1;
-      const coreR=r*(root?.22:.17)*beat;
-      const coreX=at.x-r*.08,coreY=at.y+r*.08;
-      glow(coreX,coreY,coreR*3.2,'rgba(242,92,35,ALPHA)',strength);
-      const angles=[-.8,.8,2.2,3.7,5.1];
-      for(let i=0;i<angles.length;i++) {
-        const angle=angles[i]+spin*.6,next=angles[(i+1)%angles.length]+spin*.6;
-        ctx.beginPath();ctx.moveTo(coreX,coreY);ctx.lineTo(coreX+Math.cos(angle)*coreR,coreY+Math.sin(angle)*coreR);ctx.lineTo(coreX+Math.cos(next)*coreR*.63,coreY+Math.sin(next)*coreR*.63);ctx.closePath();
-        ctx.fillStyle=unlocked?(i%2?'rgba(255,211,139,.9)':'rgba(240,114,58,.8)'):available?'rgba(192,145,99,.48)':'rgba(93,105,116,.3)';ctx.fill();
-      }
-      const pointCount=root?8:3;
-      for(let i=0;i<pointCount;i++) {
-        const p=projected[(i*3+node.index)%projected.length];if(p.z<0)continue;
-        const twinkle=.32+.45*(.5+.5*Math.sin(clock*1.1+i*3));
-        ctx.fillStyle='rgba('+(unlocked?'253,212,164':'176,181,184')+','+twinkle*strength+')';ctx.beginPath();ctx.arc(p.sx,p.sy,root?1.4:1,0,Math.PI*2);ctx.fill();
-      }
-      if(selected||hover) {
-        const gradient=ctx.createRadialGradient(at.x-r*.46,at.y-r*.55,0,at.x-r*.46,at.y-r*.55,r*.55);
-        gradient.addColorStop(0,'rgba(255,219,175,.18)');gradient.addColorStop(1,'rgba(255,219,175,0)');
-        ctx.fillStyle=gradient;ctx.beginPath();ctx.arc(at.x-r*.46,at.y-r*.55,r*.55,0,Math.PI*2);ctx.fill();
-      }
+      // One photographic liquid material is advected per node in a shared GPU atlas.
+      // The alpha is warped as well, so pores, wet rims and the silhouette flow non-rigidly.
+      liquid.draw(ctx,node,at.x,at.y,at.r*2.45);
+      if(root){for(let i=0;i<20;i++){const angle=i*2.399+clock*.025,rad=1.2+noise(i+427)*.3,x=at.x+Math.cos(angle)*at.r*rad,y=at.y+Math.sin(angle)*at.r*rad*.86,alpha=.12+.25*(.5+.5*Math.sin(clock*.7+i));glow(x,y,3,'rgba(216,217,187,ALPHA)',alpha*.55);ctx.fillStyle=`rgba(218,218,188,${alpha})`;ctx.fillRect(x,y,.8,.8);}}
       ctx.restore();
     }
     function publish(now,force=false) {
@@ -200,6 +205,7 @@
       if(typeof onLayout==='function') onLayout(value);
     }
     function draw(now) {
+      liquid.render(nodes,clock,statusOf);
       ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
       for(let i=0;i<dust.length;i++) {
         const particle=dust[i],x=particle.x*width+Math.sin(clock*.13+particle.phase)*6,y=particle.y*height+Math.cos(clock*.1+particle.phase)*4;
@@ -210,7 +216,7 @@
     }
     function tick(now) {
       frame=0;if(disposed||!wanted||document.hidden)return;
-      const animated=moves(),interval=transitioning?14:30;
+      const animated=moves(),interval=transitioning?14:1000/30;
       if(animated&&now-lastPaint<interval) {request();return;}
       const dt=lastTick?Math.min((now-lastTick)/1000,.06):0;lastTick=now;lastPaint=now;
       if(animated)clock+=dt;
@@ -255,7 +261,7 @@
     const observer=typeof ResizeObserver==='function'?new ResizeObserver(resize):null;observer?.observe(canvas);
     if(!observer)window.addEventListener('resize',resize);
     resize();
-    return Object.freeze({setState,resize,start,stop,dispose(){if(disposed)return;stop();disposed=true;observer?.disconnect();window.removeEventListener('resize',resize);canvas.removeEventListener('pointermove',pointerMove);canvas.removeEventListener('pointerleave',pointerLeave);canvas.removeEventListener('click',click);document.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',reduce);thread.onload=thread.onerror=null;ctx.clearRect(0,0,canvas.width,canvas.height);},getState:()=>({running:wanted&&!document.hidden,framePending:Boolean(frame),transitioning,width,height,dpr,selected:state.selected,branch:state.branch,unlocked:[...state.unlocked],hovered,motion:moves(),textureReady:threadReady,visibleNodes:layout.filter(node=>node.visible).length,layout:layout.map(node=>({...node}))})});
+    return Object.freeze({setState,resize,start,stop,dispose(){if(disposed)return;stop();disposed=true;liquid.dispose();observer?.disconnect();window.removeEventListener('resize',resize);canvas.removeEventListener('pointermove',pointerMove);canvas.removeEventListener('pointerleave',pointerLeave);canvas.removeEventListener('click',click);document.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',reduce);thread.onload=thread.onerror=null;ctx.clearRect(0,0,canvas.width,canvas.height);},getState:()=>({running:wanted&&!document.hidden,framePending:Boolean(frame),transitioning,width,height,dpr,selected:state.selected,branch:state.branch,unlocked:[...state.unlocked],hovered,motion:moves(),textureReady:threadReady,liquid:liquid.getState(),visibleNodes:layout.filter(node=>node.visible).length,layout:layout.map(node=>({...node}))})});
   }
   window.InfiniteCovenantScene=Object.freeze({create});
 })();
