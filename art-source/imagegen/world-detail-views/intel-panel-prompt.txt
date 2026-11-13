@@ -1,0 +1,10 @@
+Create one production-ready background texture for a Chinese dark fantasy game's WORLD INTELLIGENCE interface.
+Reference image role: use the supplied green dossier only to match the restrained aged-gold craft, tactile silk texture, red-thread accents and subtle depth. Do NOT copy its division into columns, its circle, or its green palette.
+
+Composition: a single landscape 3:2 rectangular UI panel, perfectly frontal and orthographic, no perspective. Small rounded corners. A thin worn old-gold outer rim set approximately 2 percent inside all canvas edges. The entire exterior outside this outer rim must be genuine transparent RGBA. Panel occupies almost the full canvas. Inside the rim: one broad uninterrupted calm content area occupying more than 95 percent of the panel, rich deep midnight indigo / ink-blue aged woven silk with very subtle fine-grain texture. This must clearly be blue, NOT green. The interior is empty for later code-rendered content.
+
+Edge ornament only: extremely faint thin antique-gold celestial meridian traces, sparse topographic contour traces, entirely confined to a narrow band near outer corners. No large rings, no circles inside the content area. Along a small section of the bottom rim, a delicate dark-red cord with one or two tiny muted red plum blossoms; restrained, asymmetrical, hugging the edge. Small ornaments only and no hanging elements. Border decoration stays within the edge region to support responsive nine-slice use.
+
+Materials: premium matte old silk and lightly worn slender bronze-gold edging, elegant restrained Chinese fantasy game art, softly lit from upper left, finely detailed but quiet. Muted highlights. No external cast shadow or backdrop.
+
+Strict constraints: ONLY this blank panel texture. No text or letters anywhere. No symbols, icons, buttons, cards, subdivisions, columns, inner rectangular frames, inner circles, title, scenery, mountains, characters, flowers in the content area, glow, sparkles, gemstones, watermark, or extra objects. Do not include a screenshot or UI mockup. Preserve true alpha outside the frame. Highest available art fidelity.

@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-13",
+  "purpose": "World intelligence midnight-indigo silk panel; independent appearance from the green world dossier",
+  "generation_entry": "built-in image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露；提示词要求最高可用美术保真度",
+  "tool_parameters": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "E:/无限流/loading-page/assets/world-detail/dossier-panel.png"
+    ],
+    "prompt": "Create one production-ready background texture for a Chinese dark fantasy game's WORLD INTELLIGENCE interface.\nReference image role: use the supplied green dossier only to match the restrained aged-gold craft, tactile silk texture, red-thread accents and subtle depth. Do NOT copy its division into columns, its circle, or its green palette.\n\nComposition: a single landscape 3:2 rectangular UI panel, perfectly frontal and orthographic, no perspective. Small rounded corners. A thin worn old-gold outer rim set approximately 2 percent inside all canvas edges. The entire exterior outside this outer rim must be genuine transparent RGBA. Panel occupies almost the full canvas. Inside the rim: one broad uninterrupted calm content area occupying more than 95 percent of the panel, rich deep midnight indigo / ink-blue aged woven silk with very subtle fine-grain texture. This must clearly be blue, NOT green. The interior is empty for later code-rendered content.\n\nEdge ornament only: extremely faint thin antique-gold celestial meridian traces, sparse topographic contour traces, entirely confined to a narrow band near outer corners. No large rings, no circles inside the content area. Along a small section of the bottom rim, a delicate dark-red cord with one or two tiny muted red plum blossoms; restrained, asymmetrical, hugging the edge. Small ornaments only and no hanging elements. Border decoration stays within the edge region to support responsive nine-slice use.\n\nMaterials: premium matte old silk and lightly worn slender bronze-gold edging, elegant restrained Chinese fantasy game art, softly lit from upper left, finely detailed but quiet. Muted highlights. No external cast shadow or backdrop.\n\nStrict constraints: ONLY this blank panel texture. No text or letters anywhere. No symbols, icons, buttons, cards, subdivisions, columns, inner rectangular frames, inner circles, title, scenery, mountains, characters, flowers in the content area, glow, sparkles, gemstones, watermark, or extra objects. Do not include a screenshot or UI mockup. Preserve true alpha outside the frame. Highest available art fidelity."
+  },
+  "source": "intel-panel-source.png",
+  "runtime_asset": "../../../loading-page/assets/world-detail/intel-panel.png",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    254
+  ],
+  "source_sha256": "534ed8f64e5f9efb97ee0069714f03f4197afbd1d94bc47d589f2d70512b2001",
+  "source_bytes": 2325814,
+  "processing": "原始生成的透明 PNG 原样复制；未缩放、裁剪、去背或改色。",
+  "reference_use": "旧金边和绢面质感参考，去除原绿色底板的分栏与圆形。"
+}

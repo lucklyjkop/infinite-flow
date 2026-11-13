@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-13",
+  "purpose": "Distinct parchment quest dossier surface",
+  "generation_entry": "built-in image_gen.imagegen",
+  "model_version": "未披露",
+  "quality_tier": "未披露；提示词要求最高可用保真度",
+  "tool_parameters": {
+    "transparent_background": true,
+    "referenced_image_paths": [
+      "E:/无限流/loading-page/assets/world-detail/dossier-panel.png"
+    ],
+    "prompt": "Create a new production game UI TEXTURE PANEL for the QUEST view of a restrained Chinese fantasy game. Reference image is only the craftsmanship/style reference. The new panel MUST look distinctly different: warm antique ivory Xuan paper covering the entire face, thin dark oxblood-red cloth binding along the left edge, narrow aged gold rim, slightly rounded corners, subtle pressed paper fibers, quiet elegant parchment. Landscape canvas 3:2. Straight orthographic frontal view. A single rectangular panel occupying 96 percent of canvas, with truly transparent safety margin outside its silhouette, no drop shadow outside. Entire middle is spacious EMPTY softly mottled ivory paper for runtime text. No center divider, no panels inside, no giant circle. One small embossed blank cinnabar seal at the lower-left edge, a delicate red cord along bottom edge, a few tiny plum blossom petals only in extreme corners; sparse and refined. Corners/decorations stay within outermost 7 percent so edges can be sliced for responsive layouts. Match high-quality game UI with tactile material depth and restrained shadowing. Highest available render fidelity. No typography, no letters, no words, no numbers, no icon buttons, no illustrations of people or buildings, no scene backdrop, no faux checkerboard. The interior must remain blank. Output real RGBA transparency outside panel."
+  },
+  "source": "quest-panel-source.png",
+  "runtime_asset": "../../../loading-page/assets/world-detail/quest-panel.png",
+  "processing": "原始生成 PNG 原样复制，保留透明通道；不裁剪、缩放或改色。桌面保持3:2，紧凑布局由CSS九宫格维护边缘。",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    254
+  ],
+  "source_sha256": "3f6265a689044dcb8d1c80b08a2d863411bf448938c6029d51f552b1bb340fd0"
+}
