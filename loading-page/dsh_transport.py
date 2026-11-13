@@ -16,6 +16,7 @@ import time
 from urllib.parse import urlsplit, urlunsplit
 
 from models_api import CatalogueError, endpoint_for, target_addresses
+from chat_progress import ProgressTap
 
 MAX_BODY = 2 * 1024 * 1024
 MAX_REQUEST = 256 * 1024
@@ -48,7 +49,7 @@ def target_for(base_url, protocol):
 
 
 class ProviderBridge:
-    def __init__(self, request):
+    def __init__(self, request, on_progress=None):
         self.request = request
         self.token = secrets.token_urlsafe(32)
         self.error = None
@@ -56,6 +57,7 @@ class ProviderBridge:
         self.path = {"openai-completions": "/v1/chat/completions", "openai-responses": "/v1/responses",
                      "anthropic-messages": "/v1/messages"}[request["wireApi"]]
         self.connection = None
+        self.on_progress = on_progress
         bridge = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -85,6 +87,7 @@ class ProviderBridge:
                     self.end_headers()
                     sent_headers = True
                     length = 0
+                    progress = ProgressTap(bridge.on_progress) if bridge.on_progress else None
                     while True:
                         remaining = min(30, bridge.deadline - time.monotonic())
                         if remaining <= 0:
@@ -93,10 +96,14 @@ class ProviderBridge:
                             connection.sock.settimeout(remaining)
                         chunk = response.read1(min(65536, MAX_BODY + 1 - length))
                         if not chunk:
+                            if progress:
+                                progress.finish()
                             break
                         length += len(chunk)
                         if length > MAX_BODY:
                             raise CatalogueError("too_large", "Response is too large")
+                        if progress:
+                            progress.feed(chunk)
                         self.wfile.write(chunk)
                         self.wfile.flush()
                 except Exception as error:

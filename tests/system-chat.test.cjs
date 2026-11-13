@@ -22,7 +22,7 @@ function fixture() {
     },
   };
   window.InfiniteSystemLive2D = {greet() {}};
-  const context = vm.createContext({window, AbortController, setTimeout, clearTimeout,
+  const context = vm.createContext({window, CustomEvent, TextDecoder, AbortController, setTimeout, clearTimeout,
     fetch:(_url, options) => new Promise((resolve,reject) => requests.push({options,payload:JSON.parse(options.body),resolve,reject})),
   });
   vm.runInContext(source, context);
@@ -35,10 +35,10 @@ function fixture() {
     setConfig(next) {config={...config,...next};emit('infinite:settingssaved');},
     failStorage() {storageError=true;},
     send(text) {
-      let promise; const replies=[];
-      const handled=!emit('infinite:systemmessage',{text,respond:reply=>replies.push(reply),waitUntil:job=>{promise=job;}});
+      let promise; const replies=[],progress=[];
+      const handled=!emit('infinite:systemmessage',{text,progress:(kind,delta)=>progress.push({kind,delta}),respond:reply=>replies.push(reply),waitUntil:job=>{promise=job;}});
       assert.ok(handled);assert.ok(promise);
-      return {promise,replies};
+      return {promise,replies,progress};
     },
     respond(index,reply='回复',sessionId='a'.repeat(32)) {
       requests[index].resolve({ok:true,json:async()=>({reply,sessionId,provider:'dsh'})});
@@ -107,6 +107,21 @@ test('storage failure preserves the visible reply and reports it was not saved',
   const f=fixture();f.add('A');f.activate('A');f.failStorage();const run=f.send('新问');f.respond(0,'已收到的回复');
   await assert.rejects(run.promise,error=>error.userMessage.includes('未能写入存档'));
   assert.deepEqual(run.replies,['已收到的回复']);assert.equal(f.written.length,0);
+});
+test('NDJSON thinking and text stream separately across UTF-8 boundaries; only final reply is saved',async()=>{
+  const f=fixture();f.add('A');f.activate('A');const run=f.send('你好');
+  const events=[{type:'thinking',delta:'先看看🌸。'},{type:'ping'},{type:'text',delta:'<b>我在。</b>'},{type:'done',reply:'<b>我在。</b>',sessionId:'a'.repeat(32)}];
+  const bytes=new TextEncoder().encode(events.map(e=>JSON.stringify(e)+'\n').join(''));
+  f.requests[0].resolve(new Response(new ReadableStream({start(c){for(const byte of bytes)c.enqueue(new Uint8Array([byte]));c.close();}}),{headers:{'Content-Type':'application/x-ndjson'}}));
+  assert.equal(await run.promise,true);assert.deepEqual(run.progress,[{kind:'thinking',delta:'先看看🌸。'},{kind:'text',delta:'<b>我在。</b>'}]);
+  assert.equal(f.written[0].assistant,'<b>我在。</b>');assert.ok(!JSON.stringify(f.saves.get('A')).includes('先看看'));
+});
+test('a truncated stream or explicit stream error cannot persist a partial answer',async()=>{
+  for(const ending of ['',JSON.stringify({type:'error',error:'回应超时'})+'\n']){
+    const f=fixture();f.add('A');f.activate('A');const run=f.send('你好');
+    f.requests[0].resolve(new Response(JSON.stringify({type:'text',delta:'半句'})+'\n'+ending,{headers:{'Content-Type':'application/x-ndjson'}}));
+    await assert.rejects(run.promise);assert.equal(f.written.length,0);assert.equal(run.replies.length,0);
+  }
 });
 function persistentFixture(backing=new Map()) {
   const window=new EventTarget(), requests=[];

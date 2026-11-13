@@ -19,6 +19,7 @@
   let debugPose = null;
   let layoutWidth = 0, layoutHeight = 0;
   let stillCanvas = null, stillReady = false;
+  let thinking = false, thinkingMix = 0;
   const smooth = new Map(), lookup = new Map(), outputIds = new Set();
   const drawn = {};
   const reduced = () => media.matches || window.InfiniteSettings?.getState?.().motion === false;
@@ -60,17 +61,20 @@
     const eyes = still ? 1 : b < 0 ? 1 : b < .075 ? 1 - b / .075 : b < .12 ? 0 : b < .25 ? (b - .12) / .13 : 1;
     const age = t - greetAt;
     const greeting = !still && age >= 0 && age < 1.25 ? Math.sin(age / 1.25 * Math.PI) : 0;
-    const x = still ? 0 : lookX, y = still ? 0 : lookY;
+    const desired=thinking&&!still?1:0;
+    thinkingMix+= (desired-thinkingMix)*(1-Math.exp(-dt*(thinking?2.8:4.8)));
+    const thought=thinkingMix;
+    const x = still ? 0 : lookX*(1-thought*.88), y = still ? 0 : lookY*(1-thought*.88);
     return {
-      ParamAngleX: still ? 0 : x * 12 + Math.sin(t * .55) * 1.8,
-      ParamAngleY: still ? 0 : -y * 9 - greeting * 6 + Math.sin(t * .7) * .8,
-      ParamAngleZ: still ? 0 : -x * 2 + Math.sin(t * .65) * 1,
+      ParamAngleX: still ? 0 : x * 12 + Math.sin(t * .55) * 1.8 - thought*4,
+      ParamAngleY: still ? 0 : -y * 9 - greeting * 6 + Math.sin(t * .7) * .8 + thought*4.5,
+      ParamAngleZ: still ? 0 : -x * 2 + Math.sin(t * .65) * 1 + thought*5,
       ParamBodyAngleX: still ? 0 : x * 2.2 + Math.sin(t * .6) * 1,
       ParamBodyAngleY: 0,
       ParamBodyAngleZ: still ? 0 : Math.sin(t * .6 + .2) * .7,
-      ParamEyeBallX: x * .65, ParamEyeBallY: -y * .5,
-      ParamEyeLOpen: eyes, ParamEyeROpen: eyes,
-      ParamMouthOpenY: still ? 0 : speechLevel, ParamMouthForm: greeting * .45,
+      ParamEyeBallX: x * .65-thought*.24, ParamEyeBallY: -y * .5+thought*.27,
+      ParamEyeLOpen: eyes*(1-thought*.13), ParamEyeROpen: eyes*(1-thought*.13),
+      ParamMouthOpenY: still || thinking ? 0 : speechLevel, ParamMouthForm: greeting * .45-thought*.12,
       ParamBreath: still ? .5 : (Math.sin(t * 1.75) + 1) * .5,
     };
   }
@@ -155,6 +159,7 @@
     if (prepared && attached && !paused && !reduced()) greetAt = elapsed;
   }
   function setSpeechLevel(value = 0) { speechLevel = paused ? 0 : clamp(Number(value) || 0, 0, 1); }
+  function setThinking(value=false){thinking=Boolean(value);if(thinking)speechLevel=0;}
   function setDebugPose(value = null) {
     debugPose = value && typeof value === 'object'
       ? Object.fromEntries(Object.entries(value).filter(([id, number]) => lookup.has(id) && !outputIds.has(id) && Number.isFinite(number)))
@@ -270,13 +275,13 @@
   }
   window.addEventListener('infinite:startgame', () => { void prepare(); });
   window.addEventListener('infinite:systemvisible', () => { if (prepared) void attach(); else void prepare(); });
-  window.addEventListener('infinite:systemclosed', () => { attachSerial++; setPaused(true); });
+  window.addEventListener('infinite:systemclosed', () => { attachSerial++;setThinking(false);thinkingMix=0;setPaused(true); });
   document.addEventListener('visibilitychange', syncPlayback);
   media.addEventListener('change', syncPlayback);
   window.addEventListener('pagehide', () => { setPaused(true); });
   function getState() {
     return {phase,ready:prepared,attached,paused,ticking:Boolean(app?.ticker.started),debugPose:debugPose ? {...debugPose} : null,
-      frames,elapsed,stillReady,modelUrl:MODEL_URL,parameterIds:[...parameterIds],physicsOutputs:[...physicsOutputs],
+      frames,elapsed,stillReady,thinking,thinkingMix,modelUrl:MODEL_URL,parameterIds:[...parameterIds],physicsOutputs:[...physicsOutputs],
       physicsLoaded:Boolean(model?.internalModel.physics),drawableCount:core?._model?.drawables?.count ?? 0,
       drawn:{...drawn},error,retryable};
   }
@@ -291,5 +296,5 @@
     }
     app.render(); return app.canvas;
   }
-  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setDebugPose,inspectModel,captureSource,setSpeechLevel});
+  window.InfiniteSystemLive2D = Object.freeze({prepare,preload:prepare,greet,getState,setThinking,setDebugPose,inspectModel,captureSource,setSpeechLevel});
 })();

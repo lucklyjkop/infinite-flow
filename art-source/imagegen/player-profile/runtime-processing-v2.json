@@ -1,0 +1,86 @@
+[
+  {
+    "runtimeWidth": 256,
+    "quality": 91,
+    "name": "personal-emblem",
+    "crop": {
+      "y": 103,
+      "width": 925,
+      "height": 1024,
+      "x": 89
+    },
+    "codec": "WebP"
+  },
+  {
+    "runtimeWidth": 600,
+    "quality": 91,
+    "name": "portrait-frame",
+    "crop": {
+      "y": 12,
+      "width": 1079,
+      "height": 1384,
+      "x": 18
+    },
+    "codec": "WebP"
+  },
+  {
+    "runtimeWidth": 1672,
+    "quality": 91,
+    "name": "profile-backdrop-warm",
+    "crop": {
+      "y": 0,
+      "width": 1672,
+      "height": 941,
+      "x": 0
+    },
+    "codec": "WebP"
+  },
+  {
+    "runtimeWidth": 1200,
+    "quality": 91,
+    "name": "silk-tab",
+    "crop": {
+      "y": 120,
+      "width": 2099,
+      "height": 469,
+      "x": 32
+    },
+    "codec": "WebP"
+  },
+  {
+    "runtimeWidth": 1400,
+    "quality": 91,
+    "name": "silk-input",
+    "crop": {
+      "y": 217,
+      "width": 2160,
+      "height": 266,
+      "x": 6
+    },
+    "codec": "WebP"
+  },
+  {
+    "runtimeWidth": 1500,
+    "quality": 91,
+    "name": "silk-panel",
+    "crop": {
+      "y": 23,
+      "width": 1874,
+      "height": 774,
+      "x": 14
+    },
+    "codec": "WebP"
+  },
+  {
+    "name": "profile-backdrop-final",
+    "crop": {
+      "y": 0,
+      "height": 941,
+      "x": 0,
+      "width": 1672
+    },
+    "runtimeWidth": 1672,
+    "codec": "WebP",
+    "quality": 91
+  }
+]

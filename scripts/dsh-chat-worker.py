@@ -9,7 +9,7 @@ sys.path.insert(0, str(ROOT / "loading-page"))
 from dsh_transport import ProviderBridge
 
 
-def execute(request):
+def execute(request, on_progress=None):
     try:
         from deepseek_harness import DeepSeekHarness
     except ImportError:
@@ -20,7 +20,7 @@ def execute(request):
     workspace = session_root / "workspace"
     workspace.mkdir(parents=True, exist_ok=True)
     home.mkdir(parents=True, exist_ok=True)
-    bridge = ProviderBridge(request)
+    bridge = ProviderBridge(request, on_progress=on_progress)
     harness = DeepSeekHarness(
         profile="sdk-minimal", provider="game-chat", model=request["model"], max_tokens=1200,
         cwd=str(workspace), runtime_cwd=str(workspace), dsh_home=str(home),
@@ -64,7 +64,10 @@ def execute(request):
 if __name__ == "__main__":
     try:
         request = json.loads(sys.stdin.read(65536))
-        response = execute(request)
+        def progress(event):
+            sys.stdout.write(json.dumps(event, ensure_ascii=False) + '\n')
+            sys.stdout.flush()
+        response = execute(request, on_progress=progress if request.get('stream') else None)
     except Exception:
         response = {"error": True, "code": "runtime"}
-    sys.stdout.write(json.dumps(response, ensure_ascii=False))
+    sys.stdout.write(json.dumps(response, ensure_ascii=False) + '\n')

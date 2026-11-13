@@ -16,6 +16,7 @@
     active = null;
     phase = 'idle';
     previous?.controller.abort();
+    if(previous)window.dispatchEvent(new CustomEvent('infinite:chatcancelled'));
   }
   function settings() {
     const value = window.InfiniteSettings?.getModelConnection?.();
@@ -54,11 +55,11 @@
     const timer = setTimeout(() => controller.abort(), 130000);
     try {
       const response = await fetch('api/chat', {
-        method:'POST', headers:{'Content-Type':'application/json'}, cache:'no-store', signal:controller.signal,
+        method:'POST', headers:{'Content-Type':'application/json','Accept':'application/x-ndjson'}, cache:'no-store', signal:controller.signal,
         body:JSON.stringify({message:detail.text, history:historyFor(save), sessionId:sessions.get(key) || null,
           protocol:config.protocol, baseUrl:config.baseUrl, apiKey:config.apiKey, model:config.name}),
       });
-      const result = await response.json().catch(() => null);
+      const result = await readResponse(response, (kind,delta) => {if(current())detail.progress?.(kind,delta);},controller.signal);
       if (!current()) return false;
       if (!response.ok) throw failure(typeof result?.error === 'string' ? result.error.slice(0,240) : '对话服务暂时不可用，请稍后重试。');
       if (!result || typeof result.reply !== 'string' || !result.reply.trim() || typeof result.sessionId !== 'string') {
@@ -88,6 +89,13 @@
       clearTimeout(timer);
       if (active === run) active = null;
     }
+  }
+  async function readResponse(response,progress,signal){
+    if(!(response.headers?.get('Content-Type')||'').includes('application/x-ndjson')||!response.body)return response.json().catch(()=>null);
+    const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='',total=0,result=null;
+    const parse=line=>{if(!line.trim())return;const item=JSON.parse(line);if(item.type==='error')throw failure(typeof item.error==='string'?item.error.slice(0,240):'对话暂时中断，请重试。');if(item.type==='done')result=item;else if(['thinking','text'].includes(item.type)&&typeof item.delta==='string')progress(item.type,item.delta);};
+    try{while(true){if(signal.aborted)throw failure('等待已结束，消息已保留，可以重新发送。');const {value,done}=await reader.read();if(done){buffer+=decoder.decode();if(buffer.trim())parse(buffer);break;}total+=value.byteLength;if(total>1048576)throw failure('回复内容过长，请重试。');buffer+=decoder.decode(value,{stream:true});let index;while((index=buffer.indexOf('\n'))>=0){parse(buffer.slice(0,index));buffer=buffer.slice(index+1);}if(result)break;}return result;}
+    finally{await reader.cancel().catch(()=>{});reader.releaseLock();}
   }
   window.addEventListener('infinite:systemmessage', event => {
     if (event.defaultPrevented || !event.detail?.text) return;

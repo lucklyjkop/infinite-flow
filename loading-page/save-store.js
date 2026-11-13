@@ -67,6 +67,19 @@
     const next=covenantOf(patch);
     return covenantOf({unlocked:[...before.unlocked,...next.unlocked],tasks:[...before.tasks,...next.tasks]});
   }
+  function profileOf(value){
+    const text=(key,limit)=>typeof value?.[key]==='string'?Array.from(value[key].replace(/[\u0000-\u001f\u007f]/g,' ').trim()).slice(0,limit).join(''):'';
+    return {displayName:text('displayName',24),title:text('title',20),bio:text('bio',180)};
+  }
+  function inventoryOf(value){
+    if(!Array.isArray(value))return [];
+    const result=[],ids=new Set();
+    for(const item of value.slice(0,200)){
+      if(!item||typeof item.id!=='string'||!/^[-_a-zA-Z0-9]{1,80}$/.test(item.id)||ids.has(item.id)||typeof item.name!=='string'||!item.name.trim()||!Number.isSafeInteger(item.count)||item.count<1||item.count>999999)continue;
+      ids.add(item.id);result.push({id:item.id,name:item.name.trim().slice(0,40),description:typeof item.description==='string'?item.description.slice(0,300):'',category:['item','material','keepsake'].includes(item.category)?item.category:'item',count:item.count});
+    }
+    return result;
+  }
   function normalize(value){
     if(!value||typeof value.id!=='string'||!/^[-_a-zA-Z0-9]{1,80}$/.test(value.id))throw error('存档数据不完整，请保留浏览器数据后重试。');
     const createdAt=Number(value.createdAt),updatedAt=Number(value.updatedAt);
@@ -75,7 +88,10 @@
     // Optional migration: reading an old journey does not add fields or write
     // storage. Rewards and purchases are a per-journey, append-only ledger.
     if(value.progress?.covenant&&typeof value.progress.covenant==='object'&&!Array.isArray(value.progress.covenant))progress.covenant=covenantOf(value.progress.covenant);
-    return {id:value.id,name:nameOf(value.name),deity:deityOf(value.deity),createdAt,updatedAt,location:'system',chat:chatOf(value.chat),progress};
+    const save={id:value.id,name:nameOf(value.name),deity:deityOf(value.deity),createdAt,updatedAt,location:'system',chat:chatOf(value.chat),progress};
+    if(value.profile&&typeof value.profile==='object')save.profile=profileOf(value.profile);
+    if(Array.isArray(value.inventory))save.inventory=inventoryOf(value.inventory);
+    return save;
   }
   function read(){
     let raw;
@@ -116,6 +132,7 @@
     // and before observers receive the changed list.
     try{write(document,()=>{if(activeId===id)clearActive();});}
     catch(cause){throw Object.assign(error('未能删除存档，请重试。'),{cause});}
+    emit('infinite:savedeleted',{id});
     return true;
   }
   function change(id,mutate){
@@ -127,6 +144,7 @@
   }
   function update(id,patch={}){return change(id,save=>{
     if(Object.prototype.hasOwnProperty.call(patch,'name'))save.name=nameOf(patch.name);
+    if(patch.profile&&typeof patch.profile==='object')save.profile=profileOf({...profileOf(save.profile),...patch.profile});
     if(patch.progress&&choices.has(patch.progress.selected))save.progress.selected=patch.progress.selected;
     if(patch.progress?.world&&typeof patch.progress.world==='object'&&!Array.isArray(patch.progress.world)){
       const before=worldOf(save.progress.world),next=worldOf({...before,...patch.progress.world});

@@ -185,6 +185,8 @@ class AssetHandler(SimpleHTTPRequestHandler):
                     self.wfile.write(body)
                 except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
                     pass
+            elif self.path == '/api/chat' and 'application/x-ndjson' in self.headers.get('Accept', ''):
+                self.stream_chat(payload)
             else:
                 result = chat(payload) if self.path == "/api/chat" else fetch_catalogue(payload)
                 self.send_json(200, result)
@@ -194,6 +196,29 @@ class AssetHandler(SimpleHTTPRequestHandler):
             self.reject_json(400, {"error": "请求格式无效。", "code": "request"})
         except (OSError, TimeoutError):
             self.reject_json(408, {"error": "请求超时，请重试。", "code": "timeout"})
+
+    def stream_chat(self, payload):
+        self.close_connection = True
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/x-ndjson; charset=utf-8')
+        self.send_header('Cache-Control', 'no-store, no-transform')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('X-Accel-Buffering', 'no')
+        self.send_header('Connection', 'close')
+        self.end_headers()
+        def send(event):
+            self.wfile.write((json.dumps(event, ensure_ascii=False) + '\n').encode('utf-8'))
+            self.wfile.flush()
+        try:
+            result = chat(payload, on_progress=send)
+            send({'type': 'done', **result})
+        except ChatError as error:
+            try:
+                send({'type': 'error', 'error': error.message, 'code': error.code})
+            except OSError:
+                pass
+        except OSError:
+            pass
 
 
 if __name__ == "__main__":

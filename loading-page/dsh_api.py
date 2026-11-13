@@ -13,6 +13,7 @@ import subprocess
 import threading
 import time
 import uuid
+import queue
 from models_api import CatalogueError
 from dsh_transport import target_for
 
@@ -124,7 +125,72 @@ def _stop_owned_worker(process):
     process.kill()
 
 
-def chat(payload):
+def _stream_worker(process, request, on_progress):
+    """One bounded reader thread; on disconnect always terminate the owned worker."""
+    events = queue.Queue(maxsize=256)
+    stopped = threading.Event()
+    def enqueue(value):
+        while not stopped.is_set():
+            try:
+                events.put(value, timeout=.1)
+                return
+            except queue.Full:
+                pass
+    def read():
+        try:
+            while not stopped.is_set():
+                line = process.stdout.readline(131073)
+                if not line:
+                    break
+                if len(line) > 131072:
+                    enqueue(None)
+                    break
+                enqueue(line)
+        finally:
+            enqueue(None)
+    thread = threading.Thread(target=read, daemon=True)
+    thread.start()
+    try:
+        process.stdin.write(json.dumps({**request, 'stream': True}, ensure_ascii=False))
+        process.stdin.close()
+        deadline = time.monotonic() + TIMEOUT + 8
+        total = 0
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ChatError('timeout', '红妆回应超时，请稍后再试。', 504)
+            try:
+                line = events.get(timeout=min(1, remaining))
+            except queue.Empty:
+                on_progress({'type': 'ping'})
+                continue
+            if line is None:
+                raise ChatError('runtime', '对话意外中断，请重试。', 502)
+            total += len(line)
+            if total > 512000:
+                raise ChatError('reply', '接口回复过大，请稍后重试。', 502)
+            try:
+                value = json.loads(line)
+            except ValueError:
+                continue
+            if not isinstance(value, dict):
+                continue
+            if value.get('type') in {'thinking', 'text'}:
+                if isinstance(value.get('delta'), str):
+                    on_progress({'type': value['type'], 'delta': value['delta'][:12000]})
+            elif 'reply' in value or value.get('error'):
+                return json.dumps(value, ensure_ascii=False)
+    finally:
+        stopped.set()
+        _stop_owned_worker(process)
+        thread.join(timeout=2)
+        for pipe in (process.stdin, process.stdout):
+            if pipe and not pipe.closed:
+                pipe.close()
+        process.wait(timeout=5)
+
+
+def chat(payload, on_progress=None):
     request = validate(payload)
     # A reused session id must not send one provider's conversation to another
     # destination/account. Store only an in-memory digest, never credentials.
@@ -151,7 +217,10 @@ def chat(payload):
                                    text=True, encoding="utf-8", start_new_session=os.name != "nt",
                                    creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0)
         try:
-            output, _ = process.communicate(json.dumps(request, ensure_ascii=False), timeout=TIMEOUT + 8)
+            if on_progress:
+                output = _stream_worker(process, request, on_progress)
+            else:
+                output, _ = process.communicate(json.dumps(request, ensure_ascii=False), timeout=TIMEOUT + 8)
         except subprocess.TimeoutExpired:
             _stop_owned_worker(process)
             process.communicate(timeout=5)

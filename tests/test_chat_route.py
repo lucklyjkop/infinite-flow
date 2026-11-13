@@ -72,6 +72,40 @@ class ChatRouteTests(unittest.TestCase):
             status, _, body = self.post()
         self.assertEqual((status, body), (504, {"error": "回应超时，请重试。", "code": "timeout"}))
 
+    def test_stream_response_sends_progress_and_final_result(self):
+        def stream(payload, on_progress):
+            on_progress({"type": "thinking", "delta": "整理故事"})
+            on_progress({"type": "text", "delta": "我在。"})
+            return {"reply": "我在。", "sessionId": "0" * 32, "provider": "dsh"}
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=3)
+        try:
+            with patch.object(serve, "chat", side_effect=stream):
+                connection.request("POST", "/api/chat", body=b'{"message":"hi"}', headers={
+                    "Content-Type": "application/json", "Accept": "application/x-ndjson",
+                    "Origin": f"http://127.0.0.1:{self.server.server_port}"})
+                response = connection.getresponse()
+                self.assertEqual(response.status, 200)
+                self.assertIn("application/x-ndjson", response.getheader("Content-Type"))
+                self.assertEqual(response.getheader("X-Accel-Buffering"), "no")
+                events = [json.loads(line) for line in response.read().splitlines()]
+                self.assertEqual([event["type"] for event in events], ["thinking", "text", "done"])
+                self.assertEqual(events[-1]["reply"], "我在。")
+        finally:
+            connection.close()
+
+    def test_stream_error_is_a_single_terminal_event(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=3)
+        try:
+            with patch.object(serve, "chat", side_effect=ChatError("timeout", "回应超时，请重试。", 504)):
+                connection.request("POST", "/api/chat", body=b'{"message":"hi"}', headers={
+                    "Content-Type": "application/json", "Accept": "application/x-ndjson",
+                    "Origin": f"http://127.0.0.1:{self.server.server_port}"})
+                response = connection.getresponse()
+                self.assertEqual([json.loads(line) for line in response.read().splitlines()],
+                                 [{"type": "error", "error": "回应超时，请重试。", "code": "timeout"}])
+        finally:
+            connection.close()
+
 
 if __name__ == "__main__":
     unittest.main()

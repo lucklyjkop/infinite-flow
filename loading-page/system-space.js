@@ -7,8 +7,8 @@
   const root=document.createElement('section');
   root.id='system-space';root.className='system-space';root.hidden=true;root.tabIndex=-1;
   root.setAttribute('aria-labelledby','system-space-title');root.dataset.phase='hidden';root.dataset.characterRenderer='illustration';
-  const entries=[['world','世界入口'],['records','轮回记录'],['inventory','行囊'],['covenant','主神契约'],['settings','系统设置'],['back','返回标题']];
-  const symbol=id=>`<span class="system-symbol system-symbol-${id}" aria-hidden="true"></span>`;
+  const entries=[['world','世界入口'],['records','轮回记录'],['inventory','个人信息'],['covenant','主神契约'],['settings','系统设置'],['back','返回标题']];
+  const symbol=id=>`<span class="system-symbol system-symbol-${id==='inventory'?'profile':id}" aria-hidden="true"></span>`;
   const control=([id,label],index)=>`<div class="system-float-slot system-float-${id} ${index<4?'system-primary-slot':'system-utility-slot'}" style="--float-index:${index};--entry-delay:${index<4?190+index*65:90}ms"><button id="system-control-${id}" type="button" class="system-orb ${index<4?'system-primary-control':'system-utility-control'}" data-system-control="${id}" ${id==='world'?'aria-expanded="false" aria-controls="world-map"':index<4?'aria-haspopup="dialog" aria-expanded="false" aria-controls="system-details"':id==='settings'?'aria-haspopup="dialog"':''}><span class="system-nav-core">${symbol(id)}<span class="system-orb-label">${label}</span></span><span class="system-nav-flare" aria-hidden="true"></span><span class="system-nav-thread" aria-hidden="true"><svg viewBox="0 0 240 22" preserveAspectRatio="none"><path pathLength="1" d="M2 15C57-9 137 37 222 10"/><path class="system-thread-glint" pathLength="1" d="M2 15C57-9 137 37 222 10"/></svg>${symbol('blossom')}</span></button></div>`;
   root.innerHTML=`
     <div class="system-environment" aria-hidden="true"><img src="assets/system-space/moon-courtyard.png" alt="" draggable="false"><div class="system-atmosphere"></div></div>
@@ -19,9 +19,15 @@
     <dialog id="system-details" class="system-details" aria-labelledby="system-detail-title"><button type="button" class="system-detail-close" aria-label="收起详情" title="收起">×</button><div class="system-panel-contents"></div></dialog>`;
   world.append(root);
   root.querySelector('#system-control-covenant').setAttribute('aria-controls','covenant-space');
+  root.querySelector('#system-control-inventory').setAttribute('aria-controls','player-profile');
   const buttons=[...root.querySelectorAll('[data-system-control]')],details=root.querySelector('#system-details'),content=details.querySelector('.system-panel-contents'),closeDetailsButton=details.querySelector('.system-detail-close');
   const mount=root.querySelector('.system-character-mount'),whisper=root.querySelector('.system-whisper'),characterTouch=root.querySelector('.system-character-touch');
   const form=root.querySelector('.system-composer'),input=root.querySelector('#system-message'),send=root.querySelector('.system-send'),messageStatus=root.querySelector('#system-message-status');
+  const chatWindow=window.InfiniteChatWindow.create(root,{onClose(){cue('system-ui-back');window.InfiniteTTS?.stop?.();input.focus({preventScroll:true});}});
+  const thinkingIndicator=document.createElement('div');thinkingIndicator.className='system-thinking-indicator';thinkingIndicator.setAttribute('role','status');thinkingIndicator.setAttribute('aria-label','红妆正在思考');thinkingIndicator.setAttribute('aria-hidden','true');
+  thinkingIndicator.innerHTML=`${symbol('blossom')}${Array.from({length:5},(_,i)=>`<i style="--i:${i}" aria-hidden="true"></i>`).join('')}`;
+  root.querySelector('.system-character-area').append(thinkingIndicator);
+  function setThinking(value){root.classList.toggle('is-thinking',value);thinkingIndicator.setAttribute('aria-hidden',String(!value));window.InfiniteSystemLive2D?.setThinking?.(value);}
   let phase='hidden',selected='world',deity={id:'hongzhuang',name:'红妆'},serial=0,timer=0,whisperTimer=0,animation=null,preloadJob=null,finishPending=null,settleTransition=null;
   let x=0,y=0,goalX=0,goalY=0,frame=0,previous=0,spoken=0,renderer=null,failedAssets=[],detailsAnimation=null,opener=null,composing=false,sending=false,messageSerial=0;
   let lastFocusCue=0,lastFocusControl=null,transitionPaused=false,worldOpening=false,worldOpenSerial=0;
@@ -32,18 +38,17 @@
   function selectControl(key){selected=['world','records','inventory','covenant'].includes(key)?key:'world';for(const button of buttons){const active=button.dataset.systemControl===selected;button.classList.toggle('is-selected',active);if(active)button.setAttribute('aria-current','true');else button.removeAttribute('aria-current');}if(phase==='ready'&&!transitionPaused){const save=window.InfiniteSaves?.active?.();if(save&&save.progress?.selected!==selected){try{window.InfiniteSaves.update(save.id,{progress:{selected}});}catch{messageStatus.textContent='未能保存当前进度，请检查浏览器存储空间。';}}}}
   function focusCue(button){const now=performance.now();if(phase!=='ready'||blocked()||button.disabled||now-lastFocusCue<180||(lastFocusControl===button&&now-lastFocusCue<650))return;lastFocusControl=button;lastFocusCue=now;emit('infinite:soundcue',{name:'system-ui-focus',group:'system-ui',gain:1,pan:Math.max(-.25,Math.min(.25,(button.getBoundingClientRect().left/innerWidth-.5)*.5))});}
   function pulseControl(button){if(!animated())return;const flare=button.querySelector('.system-nav-flare');flare.getAnimations().forEach(value=>value.cancel());flare.animate([{opacity:0,transform:'scaleX(.35)'},{opacity:.65,offset:.28,transform:'scaleX(.88)'},{opacity:0,transform:'scaleX(1.12)'}],{duration:520,easing:'cubic-bezier(.2,.7,.25,1)'});}
-  function say(text,{persistent=false}={}){clearTimeout(whisperTimer);(persistent?root:root.querySelector('.system-character-area')).append(whisper);whisper.querySelector('.system-whisper-text').textContent=text;whisper.querySelector('.system-whisper-close').hidden=!persistent;whisper.classList.toggle('system-whisper-reply',persistent);whisper.hidden=false;if(!persistent)whisperTimer=setTimeout(()=>{whisper.hidden=true;},4800);}
+  function say(text,{persistent=false}={}){clearTimeout(whisperTimer);if(persistent){whisper.hidden=true;chatWindow.finish(text);return;}root.querySelector('.system-character-area').append(whisper);whisper.querySelector('.system-whisper-text').textContent=text;whisper.querySelector('.system-whisper-close').hidden=true;whisper.hidden=false;whisperTimer=setTimeout(()=>{whisper.hidden=true;},4800);}
   function syncComposer(){const busy=phase!=='ready'||sending||transitionPaused;input.disabled=busy;send.disabled=busy||!input.value.trim();form.setAttribute('aria-busy',String(sending));}
   function resizeInput(){input.style.height='auto';input.style.height=`${Math.min(68,Math.max(24,input.scrollHeight))}px`;}
-  function lock(value){root.setAttribute('aria-busy',String(value));for(const button of root.querySelectorAll('button'))button.disabled=value;syncComposer();}
+  function lock(value){root.setAttribute('aria-busy',String(value));for(const button of root.querySelectorAll('button'))button.disabled=value;chatWindow.setEnabled(!value);syncComposer();}
   function setPhase(value){phase=value;root.dataset.phase=value;if(value==='opening')world.dataset.state='system-arriving';else if(value==='ready')world.dataset.state='system';syncMotion();syncComposer();}
   function panelMarkup(key){
     if(key==='records')return '<p class="system-panel-kicker">往事成卷</p><h2 id="system-detail-title">轮回记录</h2><span class="system-panel-rule" aria-hidden="true"></span><div class="system-empty-mark" aria-hidden="true">卷</div><h3>此间尚无旧事</h3><p class="system-panel-copy">第一场轮回结束后，你的抉择与归途将在这里留存。</p><p class="system-panel-footnote">暂无轮回记录</p>';
-    if(key==='inventory')return '<p class="system-panel-kicker">随身之物</p><h2 id="system-detail-title">行囊</h2><span class="system-panel-rule" aria-hidden="true"></span><div class="system-inventory-slots" aria-hidden="true"><i></i><i></i><i></i></div><h3>轻装启程</h3><p class="system-panel-copy">从诸界带回的物品与纪念，将安放在这里。</p><p class="system-panel-footnote">行囊中尚无物品</p>';
     return '';
   }
   function openDetails(key,trigger){
-    if(phase!=='ready'||!['records','inventory'].includes(key))return;
+    if(phase!=='ready'||key!=='records')return;
     detailsAnimation?.cancel();detailsAnimation=null;selectControl(key);opener=trigger;details.dataset.side=key==='covenant'?'right':'left';content.innerHTML=panelMarkup(key);
     for(const label of content.querySelectorAll('[data-system-deity-name]'))label.textContent=deity.name;
     trigger.setAttribute('aria-expanded','true');if(!details.open)details.showModal();syncMotion();closeDetailsButton.focus({preventScroll:true});cue('system-ui-select');
@@ -63,6 +68,7 @@
   function clearTransition(){clearTimeout(timer);timer=0;animation?.cancel();animation=null;finishPending?.(false);finishPending=null;settleTransition=null;}
   function preload(){
     window.InfiniteSystemLive2D?.prepare();
+    void window.InfinitePlayerProfile?.preload();
     if(!preloadJob){const urls=['assets/system-space/moon-courtyard.png','assets/system-space/hongzhuang.webp','assets/system-space/panel.webp','assets/system-space/hub-symbols.png','assets/system-space/hub-title.png','assets/system-space/composer.webp','assets/system-space/composer-rounded.webp'];
       const job=Promise.all(urls.map(async url=>{const image=new Image();image.src=url;try{await image.decode();return true;}catch{return false;}})).then(results=>{failedAssets=urls.filter((_,i)=>!results[i]);const state={ready:results[0]&&results[1],complete:results.every(Boolean),failed:[...failedAssets]};if(!state.complete&&preloadJob===job)preloadJob=null;return state;});preloadJob=job;
     }return preloadJob;
@@ -71,8 +77,9 @@
     if(phase!=='hidden')return false;const token=++serial,assets=await preload();if(token!==serial||!assets.ready)return false;
     deity={id:typeof value.id==='string'?value.id:'hongzhuang',name:typeof value.name==='string'?value.name:'红妆'};spoken=0;const saved=window.InfiniteSaves?.active?.();selectControl(saved?.progress?.selected||'world');lastFocusControl=null;lastFocusCue=0;sending=false;composing=false;++messageSerial;input.placeholder=`向${deity.name}说些什么…`;characterTouch.setAttribute('aria-label',`与${deity.name}交谈`);input.value='';messageStatus.textContent='';whisper.hidden=true;clearTimeout(whisperTimer);resetAim();root.hidden=false;root.inert=transitionPaused;setPhase('opening');lock(true);resizeInput();
     // The decoded backdrop is opaque immediately; only the character and UI enter.
+    setThinking(false);chatWindow.restore([]);
     emit('infinite:systemvisible',{id:deity.id,name:deity.name,saveId:saved?.id||null});const duration=!value.immediate&&animated()&&!document.hidden?820:0;
-    return new Promise(resolve=>{finishPending=resolve;const complete=()=>{if(token!==serial)return;clearTimeout(timer);timer=0;finishPending=null;settleTransition=null;setPhase('ready');lock(transitionPaused);const last=[...(saved?.chat||[])].reverse().find(message=>message.role==='assistant');if(last)say(last.content,{persistent:true});if(!transitionPaused)root.focus({preventScroll:true});emit('infinite:systemready',{id:deity.id,name:deity.name,saveId:saved?.id||null});resolve(true);};settleTransition=complete;if(!duration)complete();else timer=setTimeout(complete,duration);});
+    return new Promise(resolve=>{finishPending=resolve;const complete=()=>{if(token!==serial)return;clearTimeout(timer);timer=0;finishPending=null;settleTransition=null;setPhase('ready');lock(transitionPaused);chatWindow.restore(saved?.chat||[]);if(!transitionPaused)root.focus({preventScroll:true});emit('infinite:systemready',{id:deity.id,name:deity.name,saveId:saved?.id||null});resolve(true);};settleTransition=complete;if(!duration)complete();else timer=setTimeout(complete,duration);});
   }
   function close({returnToDeity=true,returnToTitle=returnToDeity,immediate=false}={}){
     if(returnToTitle&&phase==='ready'&&!transitionPaused){const waiting=[],request=new CustomEvent('infinite:systemreturn',{cancelable:true,detail:{id:deity.id,name:deity.name,deity:{...deity},immediate,waitUntil(promise){waiting.push(Promise.resolve(promise));}}});const unhandled=window.dispatchEvent(request);if(!unhandled&&waiting.length)return Promise.all(waiting).then(values=>values.every(Boolean),()=>false);return close({returnToTitle:false,immediate:true}).then(result=>{window.InfiniteTitle?.returnToTitle();return result;});}
@@ -87,14 +94,15 @@
       leave();
     });
   }
-  function talk(){if(phase!=='ready')return;const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('system-ui-select');renderer?.greet?.();say(lines[spoken++%lines.length]);}
+  function talk(){if(phase!=='ready')return;if(sending){chatWindow.show();return;}const lines=['不急，先在这里歇一歇。','红线在，归途便在。','下一场故事，我会陪你一同见证。'];cue('system-ui-select');renderer?.greet?.();say(lines[spoken++%lines.length]);}
   async function sendMessage(event){
     event.preventDefault();const text=input.value.trim();if(!text||sending||composing||phase!=='ready')return;cue('system-ui-send');const token=++messageSerial,waiting=[];
-    const request=new CustomEvent('infinite:systemmessage',{cancelable:true,detail:{text,deity:{...deity},waitUntil(promise){waiting.push(Promise.resolve(promise));},respond(value){if(token===messageSerial&&phase==='ready'&&typeof value==='string'){say(value,{persistent:true});emit('infinite:systemreply',{text:value});}}}});
-    if(window.dispatchEvent(request)){messageStatus.textContent='对话尚未连接';return;}sending=true;syncComposer();messageStatus.textContent=waiting.length?'红妆正在回应…':'已发送';
+    chatWindow.begin(text);setThinking(true);sending=true;syncComposer();
+    const request=new CustomEvent('infinite:systemmessage',{cancelable:true,detail:{text,deity:{...deity},waitUntil(promise){waiting.push(Promise.resolve(promise));},progress(kind,delta){if(token!==messageSerial||phase!=='ready')return;chatWindow.progress(kind,delta);if(kind==='text')setThinking(false);},respond(value){if(token===messageSerial&&phase==='ready'&&typeof value==='string'){setThinking(false);say(value,{persistent:true});emit('infinite:systemreply',{text:window.InfiniteChatWindow.text(value)});}}}});
+    if(window.dispatchEvent(request)){sending=false;setThinking(false);chatWindow.stop('对话尚未连接');syncComposer();messageStatus.textContent='对话尚未连接';return;}messageStatus.textContent='';
     try{const results=await Promise.all(waiting);if(token!==messageSerial||phase!=='ready')return;if(results.some(result=>result===false))throw new Error('Message not accepted');input.value='';resizeInput();messageStatus.textContent='';}
-    catch(error){if(token===messageSerial&&phase==='ready')messageStatus.textContent=error?.userMessage||'消息未能发送，请稍后重试';}
-    finally{if(token===messageSerial){sending=false;syncComposer();input.focus({preventScroll:true});}}
+    catch(error){if(token===messageSerial&&phase==='ready'){const message=error?.userMessage||'消息未能发送，请稍后重试';chatWindow.stop(message);messageStatus.textContent=message;}}
+    finally{if(token===messageSerial){setThinking(false);sending=false;syncComposer();input.focus({preventScroll:true});}}
   }
   async function openWorld(trigger){
     if(worldOpening||transitionPaused||phase!=='ready')return;
@@ -107,6 +115,8 @@
   window.addEventListener('infinite:worldmapclosed',()=>{worldOpening=false;});
   root.querySelector('.system-floating-navigation').addEventListener('click',event=>{const button=event.target.closest('[data-system-control]');if(!button||phase!=='ready'||transitionPaused||blocked())return;pulseControl(button);const key=button.dataset.systemControl;if(key==='back'){cue('system-ui-back');close();}else if(key==='settings'){cue('system-ui-select');if(window.InfiniteSettings?.open)window.InfiniteSettings.open(button);else say('设置页面尚未准备好。');}else if(key==='world')openWorld(button);else if(key==='covenant'){selectControl(key);window.InfiniteCovenant?.open(button);}else openDetails(key,button);});
   root.querySelector('#system-control-covenant').addEventListener('pointerenter',()=>window.InfiniteCovenant?.preload(),{passive:true});
+  root.querySelector('#system-control-inventory').addEventListener('click',event=>{event.stopPropagation();if(phase!=='ready'||transitionPaused||blocked())return;const button=event.currentTarget;selectControl('inventory');pulseControl(button);window.InfinitePlayerProfile?.open(button);});
+  root.querySelector('#system-control-inventory').addEventListener('pointerenter',()=>window.InfinitePlayerProfile?.preload(),{passive:true});
   window.addEventListener('infinite:covenanterror',event=>{if(phase==='ready')messageStatus.textContent=event.detail.message;});
   root.querySelector('.system-floating-navigation').addEventListener('keydown',event=>{if(phase!=='ready'||event.altKey||event.metaKey||event.ctrlKey)return;const index=buttons.indexOf(event.target);if(index<0||!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();let next;if(event.key==='Home')next=index<4?0:5;else if(event.key==='End')next=index<4?3:4;else if(event.key==='ArrowUp')next=index<2?5:4;else if(event.key==='ArrowDown')next=index===5?0:index===4?3:index;else if(index<4)next=(index+(event.key==='ArrowLeft'?-1:1)+4)%4;else next=index===4?5:4;buttons[next].focus({preventScroll:true});});
   for(const button of buttons){button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse'||event.pointerType==='pen')focusCue(button);});button.addEventListener('focus',()=>{if(button.matches(':focus-visible'))focusCue(button);});}
@@ -116,8 +126,10 @@
   whisper.querySelector('.system-whisper-close').addEventListener('click',()=>{cue('system-ui-back');window.InfiniteTTS?.stop?.();whisper.hidden=true;input.focus({preventScroll:true});});
   characterTouch.addEventListener('click',talk);form.addEventListener('submit',sendMessage);input.addEventListener('input',()=>{syncComposer();resizeInput();messageStatus.textContent='';});input.addEventListener('compositionstart',()=>{composing=true;});input.addEventListener('compositionend',()=>{composing=false;syncComposer();});input.addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing&&!composing&&event.keyCode!==229){event.preventDefault();form.requestSubmit();}});
   root.addEventListener('pointermove',event=>{if(!['mouse','pen'].includes(event.pointerType)||phase!=='ready'||blocked()||!animated())return;const box=root.getBoundingClientRect();aim(Math.max(-1,Math.min(1,(event.clientX-box.left)/box.width*2-1))*6,Math.max(-1,Math.min(1,(event.clientY-box.top)/box.height*2-1))*4);},{passive:true});root.addEventListener('pointerleave',()=>aim());root.addEventListener('pointercancel',()=>aim());
-  for(const name of ['dragstart','contextmenu'])root.addEventListener(name,event=>{if(!event.target.closest('textarea,input'))event.preventDefault();});
-  document.addEventListener('keydown',event=>{if(transitionPaused||phase==='hidden'||document.querySelector('dialog[open]')||event.isComposing||event.key!=='Escape')return;event.preventDefault();event.stopImmediatePropagation();if(phase==='ready')close();},true);
+  for(const name of ['dragstart','contextmenu'])root.addEventListener(name,event=>{if(!event.target.closest('textarea,input,.chat-window-scroll'))event.preventDefault();});
+  document.addEventListener('keydown',event=>{if(transitionPaused||phase==='hidden'||document.querySelector('dialog[open]')||event.isComposing||event.key!=='Escape')return;event.preventDefault();event.stopImmediatePropagation();if(chatWindow.isOpen()){chatWindow.hide();window.InfiniteTTS?.stop?.();return;}if(phase==='ready')close();},true);
+  for(const name of ['infinite:systemleaving','infinite:systemclosed','infinite:saveactive'])window.addEventListener(name,()=>{setThinking(false);chatWindow.stop();chatWindow.hide();});
+  window.addEventListener('infinite:chatcancelled',()=>{++messageSerial;sending=false;setThinking(false);chatWindow.stop();syncComposer();});
   const observer=new MutationObserver(syncMotion);for(const dialog of document.querySelectorAll('dialog'))observer.observe(dialog,{attributes:true,attributeFilter:['open']});
   window.addEventListener('infinite:ttsstate',event=>{
     if(event.detail?.kind!=='reply'||event.detail.phase!=='error')return;

@@ -12,6 +12,18 @@ function setup(data=new Map()){
   return {api:context.window.InfiniteSaves,data,events,handlers,failWrite(){failWrite=true;}};
 }
 const deity={id:'hongzhuang',name:'红妆'};
+
+test('personal profiles are isolated, bounded and restored without arbitrary fields',()=>{
+  const x=setup(),a=x.api.create({name:'甲',deity}),b=x.api.create({name:'乙',deity});
+  x.api.update(a.id,{profile:{displayName:' 春晓 ',title:'旅人',bio:'句\n子',apiKey:'DO-NOT-SAVE',portrait:'javascript:bad()'}});
+  const reloaded=setup(x.data);assert.equal(reloaded.api.get(a.id).profile.displayName,'春晓');assert.equal(reloaded.api.get(a.id).profile.bio,'句 子');assert.equal(reloaded.api.get(b.id).profile,undefined);
+  assert.ok(!x.data.get('infinite.saves.v1').includes('DO-NOT-SAVE'));assert.ok(!x.data.get('infinite.saves.v1').includes('javascript'));
+  x.api.update(a.id,{profile:{bio:'🌸'.repeat(200)}});assert.equal(Array.from(x.api.get(a.id).profile.bio).length,180);assert.equal(x.api.get(a.id).profile.title,'旅人');
+});
+test('deletion emits a portrait-cleanup event only after persistence succeeds',()=>{
+  const x=setup(),a=x.api.create({name:'甲',deity});x.api.remove(a.id);assert.ok(x.events.some(e=>e.type==='infinite:savedeleted'&&e.detail.id===a.id));
+  const y=setup(),b=y.api.create({name:'乙',deity});y.failWrite();assert.throws(()=>y.api.remove(b.id));assert.ok(!y.events.some(e=>e.type==='infinite:savedeleted'));
+});
 test('same named journeys remain distinct and survive a browser reload',()=>{
   const a=setup(),one=a.api.create({name:'红线',deity}),two=a.api.create({name:'红线',deity});
   assert.notEqual(one.id,two.id);a.api.activate(one.id);a.api.appendMessagePair(one.id,'记住甲','甲的回答');a.api.update(two.id,{progress:{selected:'inventory'}});
@@ -63,7 +75,7 @@ test('deleting the current save clears active state before list-change notificat
   const x=setup(),save=x.api.create({name:'当前旅程',deity});x.api.activate(save.id);const start=x.events.length;
   assert.equal(x.api.remove(save.id),true);assert.equal(x.api.active(),null);assert.equal(x.api.list().length,0);
   const changes=x.events.slice(start);
-  assert.deepEqual(changes.map(event=>event.type),['infinite:saveactive','infinite:saveschange']);
+  assert.deepEqual(changes.map(event=>event.type),['infinite:saveactive','infinite:saveschange','infinite:savedeleted']);
   assert.equal(changes[0].detail.id,null);assert.equal(changes[1].detail.id,null);assert.equal(changes[1].detail.count,0);
   assert.equal(setup(x.data).api.list().length,0);
 });
