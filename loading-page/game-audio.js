@@ -38,6 +38,14 @@
     'system-ui-select': {bus: 'effects', gain: 2.54, interval: 80, vary: .015},
     'system-ui-back': {bus: 'effects', gain: 2.4, interval: 100, vary: 0},
     'system-ui-send': {bus: 'effects', gain: 2.54, interval: 140, vary: 0},
+    // Liquid-contract gestures are authored independently of paper and jade UI.
+    'covenant-enter': {bus: 'effects', gain: 1.3, interval: 180, vary: 0},
+    'covenant-leave': {bus: 'effects', gain: 1.3, interval: 150, vary: 0},
+    'covenant-focus': {bus: 'effects', gain: 1.1, interval: 220, vary: 0},
+    'covenant-branch': {bus: 'effects', gain: 1.3, interval: 90, vary: 0},
+    'covenant-detail-open': {bus: 'effects', gain: 1.3, interval: 100, vary: 0},
+    'covenant-detail-close': {bus: 'effects', gain: 1.3, interval: 100, vary: 0},
+    'covenant-unlock': {bus: 'effects', gain: 1.35, interval: 250, vary: 0},
     // The world map has its own mineral gestures, never aliases of the title tide.
     'world-tectonic-rise': {bus: 'effects', gain: .95, interval: 250, vary: 0},
     'world-tectonic-fold': {bus: 'effects', gain: .9, interval: 250, vary: 0},

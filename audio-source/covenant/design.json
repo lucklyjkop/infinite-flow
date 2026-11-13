@@ -1,0 +1,136 @@
+{
+  "created": "2026-11-13",
+  "authoring": "Original curved membrane and damped liquid-cavity synthesis; no recordings, paper, noise layers or existing cue reuse.",
+  "sampleRate": 48000,
+  "channels": 2,
+  "preview": "output/audio-design/covenant/covenant-preview.wav",
+  "truePeakMeasurement": "4x polyphase oversampling of decoded delivery Opus; dBFS.",
+  "assets": [
+    {
+      "name": "covenant-enter",
+      "file": "covenant-enter.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "Low fluid mass opens with a single broad swell and two soft inner cavities.",
+      "loop": false,
+      "duration": 0.76,
+      "bytes": 10212,
+      "peakDbfs": -17.54,
+      "truePeakDbfs": -17.54,
+      "rmsDbfs": -27.0,
+      "boundaryStep": 0.0,
+      "seed": 6111301,
+      "sha256": "173aa4d28789a763afae9cb7893340e519d1024b7db536a80fd156df2ccbac2b",
+      "masterSha256": "c47ab69d0b3a5d7bfe5e0287f37f1068c2f469f9a7a9a3bf7d801406d7b26933"
+    },
+    {
+      "name": "covenant-leave",
+      "file": "covenant-leave.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "Independent low inward settling for leaving the covenant; not reversed opening audio.",
+      "loop": false,
+      "duration": 0.4,
+      "bytes": 5455,
+      "peakDbfs": -19.74,
+      "truePeakDbfs": -19.73,
+      "rmsDbfs": -29.05,
+      "boundaryStep": 0.0,
+      "seed": 6111302,
+      "sha256": "a29ca4c52b77d75896178d39ae31f726484d3dd01f5fe1d6e7dc60a4cb4462f8",
+      "masterSha256": "9394190b26b2ab749850119669aa9c929790cbdb92d9c490c3dd19511a504ac3"
+    },
+    {
+      "name": "covenant-focus",
+      "file": "covenant-focus.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "A quiet rounded liquid tension touch for hover; no hard transient.",
+      "loop": false,
+      "duration": 0.14,
+      "bytes": 2182,
+      "peakDbfs": -26.37,
+      "truePeakDbfs": -26.37,
+      "rmsDbfs": -35.92,
+      "boundaryStep": 0.0,
+      "seed": 6111303,
+      "sha256": "1886161db0d8d92f3d3fa4c971fe31eed17b01b654d6fdd8d4662bb9377d6890",
+      "masterSha256": "b8b818acd9e0958f9bb0bd20bf94d131742f5db179b787767f31ac3d34175416"
+    },
+    {
+      "name": "covenant-branch",
+      "file": "covenant-branch.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "Short lateral membrane roll and a subdued cavity release for branch changes.",
+      "loop": false,
+      "duration": 0.36,
+      "bytes": 4904,
+      "peakDbfs": -19.66,
+      "truePeakDbfs": -19.65,
+      "rmsDbfs": -29.1,
+      "boundaryStep": 0.0,
+      "seed": 6111304,
+      "sha256": "a4491b3ccf05cf06b9888c95a2c4843f338be99b5114c3eb52742b7d9fe6fece",
+      "masterSha256": "77db21f365140beaf6a83249433df39eb5e131b62eb8ac623be8d1ee453f227a"
+    },
+    {
+      "name": "covenant-detail-open",
+      "file": "covenant-detail-open.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "Viscous membrane unfurling with gently rising body and tiny wet resonances.",
+      "loop": false,
+      "duration": 0.62,
+      "bytes": 8778,
+      "peakDbfs": -17.21,
+      "truePeakDbfs": -17.21,
+      "rmsDbfs": -26.43,
+      "boundaryStep": 0.0,
+      "seed": 6111305,
+      "sha256": "b3b08f033ea784e555d6ed194db0f824b1e936a0fdbc16b9cf0ab77c77113b95",
+      "masterSha256": "cdfed1c786cfceef44e463817dd640c7dfb385c684f6e91ca161e588bc6bb9b6"
+    },
+    {
+      "name": "covenant-detail-close",
+      "file": "covenant-detail-close.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "A distinct, shorter inward liquid fold for dismissing details.",
+      "loop": false,
+      "duration": 0.34,
+      "bytes": 4912,
+      "peakDbfs": -18.77,
+      "truePeakDbfs": -18.76,
+      "rmsDbfs": -28.43,
+      "boundaryStep": 0.0,
+      "seed": 6111306,
+      "sha256": "9ed3a94f35ec1b7afb9f630321b56237b5bbcc9351a137444a0ef4b21a45a236",
+      "masterSha256": "dcd49d325b10c8bb6e25847e8937cafe701adf0c0439b18477efeb897e85b9d9"
+    },
+    {
+      "name": "covenant-unlock",
+      "file": "covenant-unlock.ogg",
+      "source": [
+        "Original procedural synthesis / scripts/build-covenant-audio.py"
+      ],
+      "design": "Deep seal release with a restrained warm inharmonic glimmer and soft tail.",
+      "loop": false,
+      "duration": 0.94,
+      "bytes": 12373,
+      "peakDbfs": -15.62,
+      "truePeakDbfs": -15.61,
+      "rmsDbfs": -25.05,
+      "boundaryStep": 0.0,
+      "seed": 6111307,
+      "sha256": "a9826ab877b9ac692a15ae3125e5c18dde02244cb016a351bf31de968d343f1f",
+      "masterSha256": "2318906083206ea58a4cfeee18b367de21c13d79e45ac575d799230bb0476c0b"
+    }
+  ]
+}

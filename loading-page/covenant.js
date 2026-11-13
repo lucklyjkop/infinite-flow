@@ -22,11 +22,10 @@
         <nav class="covenant-branches" aria-label="契约分支"><button type="button" data-covenant-branch="all" class="covenant-overview" aria-pressed="true">总览</button>${branches.map(([id,name])=>`<button type="button" data-covenant-branch="${id}" aria-pressed="false"><span class="covenant-icon" data-icon="${id}" aria-hidden="true"></span><span>${name}</span></button>`).join('')}</nav>
       </section>
       <section id="covenant-detail" class="covenant-ability covenant-detail" aria-labelledby="covenant-ability-name" hidden>
-        <button type="button" class="covenant-detail-close" aria-label="关闭契印详情"><img src="assets/world-detail/view-flower.png" alt="" draggable="false"><span aria-hidden="true">×</span></button>
         <div class="covenant-detail-orbit" aria-hidden="true"><i></i><i></i><span><img src="assets/world-detail/view-flower.png" alt="" draggable="false"></span></div>
         <div class="covenant-ability-content">
           <div class="covenant-detail-eyebrow"><span class="covenant-ability-icon covenant-icon" data-icon="root" aria-hidden="true"></span><p class="covenant-ability-type"></p><span class="covenant-detail-status" tabindex="-1" role="status"></span></div>
-          <h2 id="covenant-ability-name"></h2>
+          <h2 id="covenant-ability-name" tabindex="-1"></h2>
           <div class="covenant-detail-rule" aria-hidden="true"><span>✧</span></div>
           <p class="covenant-ability-copy"></p>
           <dl class="covenant-detail-metrics"><div><dt class="covenant-detail-metric-label"></dt><dd class="covenant-detail-metric-value"></dd></div><div><dt>持有契约点</dt><dd class="covenant-detail-balance"></dd></div></dl>
@@ -41,17 +40,24 @@
   const canvas=root.querySelector('canvas'),ability=root.querySelector('.covenant-ability'),body=root.querySelector('.covenant-body');
   const fields={icon:root.querySelector('.covenant-ability-icon'),type:root.querySelector('.covenant-ability-type'),name:root.querySelector('#covenant-ability-name'),copy:root.querySelector('.covenant-ability-copy'),condition:root.querySelector('.covenant-ability-condition'),unlock:root.querySelector('.covenant-unlock'),feedback:root.querySelector('.covenant-feedback')};
   const detailFields={status:root.querySelector('.covenant-detail-status'),metricLabel:root.querySelector('.covenant-detail-metric-label'),metricValue:root.querySelector('.covenant-detail-metric-value'),balance:root.querySelector('.covenant-detail-balance'),growth:root.querySelector('.covenant-detail-growth'),chain:root.querySelector('.covenant-detail-chain'),parent:root.querySelector('.covenant-detail-parent'),parentStatus:root.querySelector('.covenant-detail-parent-status')};
-  const detailClose=root.querySelector('.covenant-detail-close'),nodeLayer=root.querySelector('.covenant-nodes'),branchNav=root.querySelector('.covenant-branches'),backLabel=root.querySelector('.covenant-back-label');
+  const nodeLayer=root.querySelector('.covenant-nodes'),branchNav=root.querySelector('.covenant-branches'),backLabel=root.querySelector('.covenant-back-label');
   const nodeButtons=new Map([...root.querySelectorAll('[data-covenant-node]')].map(button=>[button.dataset.covenantNode,button]));
   const branchButtons=[...root.querySelectorAll('[data-covenant-branch]')];
   const nodePoses=new Map();
   function readState(){try{return progress.getState();}catch(failure){return {saveId:null,earned:0,spent:0,balance:0,unlocked:['root'],tasks:[],error:failure.userMessage||'未能读取契约存档，请重试。'};}}
   let phase='hidden',selected='root',branch=null,state=readState(),opener=null,serial=0,preloadJob=null,closeJob=null,animation=null,panelAnimation=null,lastCue=0,lastHover=null,lastSceneHover=null,focusAfterOpen=false;
   let detailId=null,detailPhase='hidden',detailOrigin=null,detailSerial=0,detailJob=null;
+  let outsidePress=null,lastActionCue=0;
   const motion=()=>!media.matches&&window.InfiniteSettings?.getState?.().motion!==false;
-  function cue(name){if(!document.hidden)window.dispatchEvent(new CustomEvent('infinite:soundcue',{detail:{name,group:'covenant-ui'}}));}
+  function stopCue(group,fade=.055){window.dispatchEvent(new CustomEvent('infinite:soundstop',{detail:{group,fade}}));}
+  function cue(name){
+    if(document.hidden)return;
+    const focus=name==='covenant-focus',group=focus?'covenant-focus':'covenant-action';
+    if(!focus){lastActionCue=performance.now();stopCue('covenant-focus',.035);stopCue('covenant-action');}
+    window.dispatchEvent(new CustomEvent('infinite:soundcue',{detail:{name,group,variation:false}}));
+  }
   function status(id){const node=byId.get(id);return state.unlocked.includes(id)?'unlocked':state.unlocked.includes(node.parent)?'available':'locked';}
-  function hover(id){const now=performance.now();if(!id||id===lastHover||now-lastCue<180||phase!=='ready')return;lastHover=id;lastCue=now;cue('system-ui-focus');}
+  function hover(id){const now=performance.now();if(!id||id===lastHover||now-lastCue<220||now-lastActionCue<220||phase!=='ready')return;lastHover=id;lastCue=now;cue('covenant-focus');}
   function layout(nodes){
     for(const node of nodes){
       const button=nodeButtons.get(node.id);if(!button)continue;
@@ -96,7 +102,7 @@
     if(phase!=='ready'||!byId.has(id))return;
     if(!detailId&&detailPhase==='hidden'&&selected===id&&branch===byId.get(id).branch)return;
     closeDetail({immediate:true,focus:false});
-    selected=id;branch=byId.get(id).branch;fields.feedback.textContent='';cue('ui-select');refresh();
+    selected=id;branch=byId.get(id).branch;fields.feedback.textContent='';cue('covenant-branch');refresh();
   }
   function detailMode(active){
     nodeLayer.inert=active;branchNav.inert=active;
@@ -108,7 +114,7 @@
     const token=++detailSerial;panelAnimation?.cancel();
     if(!detailId)detailOrigin={selected,branch,focus:nodeButtons.get(id)};
     detailId=selected=id;detailPhase='opening';fields.feedback.textContent='';ability.hidden=false;
-    refresh();focusAfterOpen=true;detailClose.focus({preventScroll:true});focusAfterOpen=false;detailMode(true);cue('ui-select-open');
+    refresh();focusAfterOpen=true;fields.name.focus({preventScroll:true});focusAfterOpen=false;detailMode(true);cue('covenant-detail-open');
     if(motion()&&!document.hidden){
       panelAnimation=ability.animate([{opacity:0,transform:'translateX(22px)'},{opacity:1,transform:'translateX(0)'}],{duration:460,delay:60,easing:'cubic-bezier(.16,.8,.2,1)',fill:'backwards'});
       detailJob=panelAnimation.finished.catch(()=>{}).then(()=>{if(token===detailSerial){detailPhase='ready';panelAnimation=null;}return true;});
@@ -118,13 +124,14 @@
   function closeDetail({immediate=false,focus=true}={}){
     if(detailPhase==='hidden')return Promise.resolve(false);
     if(detailPhase==='closing'&&!immediate)return detailJob;
-    const token=++detailSerial;panelAnimation?.cancel();panelAnimation=null;
+    const token=++detailSerial;panelAnimation?.cancel();panelAnimation=null;outsidePress=null;
     detailId=null;detailPhase='closing';
     if(detailOrigin){selected=detailOrigin.selected;branch=detailOrigin.branch;}
     root.dataset.detail='closing';refresh();
     const finish=()=>{if(token!==detailSerial)return false;ability.hidden=true;detailMode(false);detailPhase='hidden';panelAnimation=null;const target=detailOrigin?.focus;detailOrigin=null;if(focus&&root.open){focusAfterOpen=true;(target&&!target.hidden?target:root.querySelector('.covenant-back')).focus({preventScroll:true});focusAfterOpen=false;}return true;};
+    if(!immediate)cue('covenant-detail-close');
     if(immediate||!motion()||document.hidden){finish();return Promise.resolve(true);}
-    cue('ui-back');panelAnimation=ability.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(14px)'}],{duration:260,easing:'ease-in',fill:'forwards'});
+    panelAnimation=ability.animate([{opacity:1,transform:'translateX(0)'},{opacity:0,transform:'translateX(14px)'}],{duration:260,easing:'ease-in',fill:'forwards'});
     const current=panelAnimation;detailJob=current.finished.then(()=>{const value=finish();current.cancel();return value;},()=>false);return detailJob;
   }
   function preload(){
@@ -147,7 +154,7 @@
     if(state.error){phase='hidden';window.dispatchEvent(new CustomEvent('infinite:covenanterror',{detail:{message:state.error}}));return false;}
     selected='root';branch=null;fields.feedback.textContent='';lastHover=null;lastCue=0;lastSceneHover=null;scene.setState({hovered:null});root.dataset.phase='opening';root.classList.toggle('motion-off',!motion());
     window.InfiniteSystemSpace.setTransitioning(true);opener?.setAttribute('aria-expanded','true');
-    root.showModal();document.getElementById('world')?.classList.add('covenant-covered');phase='opening';refresh();scene.resize();scene.start();cue('ui-select-open');
+    root.showModal();document.getElementById('world')?.classList.add('covenant-covered');phase='opening';refresh();scene.resize();scene.start();cue('covenant-enter');
     const duration=motion()&&!document.hidden?680:0;
     if(duration){animation=body.animate([{opacity:0},{opacity:1}],{duration,easing:'cubic-bezier(.16,.7,.2,1)'});await animation.finished.catch(()=>{});}
     if(token!==serial)return false;
@@ -159,18 +166,33 @@
     if(phase==='closing'&&!immediate)return closeJob||Promise.resolve(false);
     closeDetail({immediate:true,focus:false});++serial;animation?.cancel();panelAnimation?.cancel();animation=panelAnimation=null;
     if(phase==='preparing'){phase='hidden';opener?.removeAttribute('aria-busy');return Promise.resolve(true);}
-    phase='closing';root.dataset.phase='closing';cue('ui-back');
-    const finish=()=>{scene.stop();root.close();document.getElementById('world')?.classList.remove('covenant-covered');phase='hidden';root.dataset.phase='hidden';animation?.cancel();animation=null;opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');window.InfiniteSystemSpace?.setTransitioning(false);if(focus&&window.InfiniteSystemSpace?.getState().phase==='ready')opener?.focus({preventScroll:true});window.dispatchEvent(new CustomEvent('infinite:soundstop',{detail:{group:'covenant-ui',fade:.1}}));};
+    phase='closing';root.dataset.phase='closing';if(!immediate)cue('covenant-leave');
+    const finish=()=>{scene.stop();root.close();document.getElementById('world')?.classList.remove('covenant-covered');phase='hidden';root.dataset.phase='hidden';animation?.cancel();animation=null;opener?.setAttribute('aria-expanded','false');opener?.removeAttribute('aria-busy');window.InfiniteSystemSpace?.setTransitioning(false);if(focus&&window.InfiniteSystemSpace?.getState().phase==='ready')opener?.focus({preventScroll:true});stopCue('covenant-action',.1);stopCue('covenant-focus',.04);};
     if(immediate||!motion()||document.hidden){finish();return Promise.resolve(true);}
     const token=serial;
     animation=body.animate([{opacity:1,transform:'scale(1)'},{opacity:0,transform:'scale(.965)'}],{duration:300,easing:'ease-in',fill:'forwards'});
     closeJob=animation.finished.then(()=>{if(token===serial)finish();return true;},()=>false);return closeJob;
   }
   root.querySelector('.covenant-back').addEventListener('click',()=>detailPhase!=='hidden'?closeDetail():close());
-  detailClose.addEventListener('click',()=>closeDetail());
   detailFields.parent.addEventListener('click',()=>openDetail(detailFields.parent.dataset.parentId));
   root.addEventListener('cancel',event=>{event.preventDefault();if(detailPhase!=='hidden')closeDetail();else close();});
   root.addEventListener('click',event=>{const node=event.target.closest('[data-covenant-node]'),branchButton=event.target.closest('[data-covenant-branch]'),detailBranch=event.target.closest('[data-detail-branch]');if(node)openDetail(node.dataset.covenantNode);else if(branchButton)chooseBranch(branchButton.dataset.covenantBranch==='all'?'root':branchButton.dataset.covenantBranch);else if(detailBranch)chooseBranch(detailBranch.dataset.detailBranch);});
+  function isDetailOutside(event){
+    if(!detailId||!['opening','ready'].includes(detailPhase)||event.target.closest('.covenant-ability-content,.covenant-header button,.covenant-points'))return false;
+    const pose=scene.getState().layout.find(node=>node.id===detailId),box=canvas.getBoundingClientRect();
+    // Treat the whole fluid sculpture as content, including its moving openings.
+    return !pose||Math.hypot(event.clientX-box.left-pose.x,event.clientY-box.top-pose.y)>pose.r*1.25;
+  }
+  root.addEventListener('pointerdown',event=>{
+    outsidePress=event.isPrimary&&event.button===0&&isDetailOutside(event)?{id:detailId,pointerId:event.pointerId,x:event.clientX,y:event.clientY,scroll:root.scrollTop}:null;
+  },{passive:true});
+  root.addEventListener('pointermove',event=>{if(outsidePress&&Math.hypot(event.clientX-outsidePress.x,event.clientY-outsidePress.y)>8)outsidePress=null;},{passive:true});
+  root.addEventListener('pointercancel',()=>{outsidePress=null;},{passive:true});
+  root.addEventListener('scroll',()=>{outsidePress=null;},{passive:true});
+  root.addEventListener('click',event=>{
+    const press=outsidePress;outsidePress=null;
+    if(event.button===0&&press&&press.id===detailId&&press.scroll===root.scrollTop&&isDetailOutside(event))closeDetail();
+  });
   root.addEventListener('pointerover',event=>{const button=event.target.closest('button');if(button&&!button.disabled)hover(button.dataset.covenantNode||button.dataset.covenantBranch||button.className);});
   root.addEventListener('pointerover',event=>{const node=event.target.closest('[data-covenant-node]');sceneHover(node?.dataset.covenantNode||null);});
   root.addEventListener('pointerleave',()=>sceneHover(null));
@@ -185,7 +207,7 @@
   });
   fields.unlock.addEventListener('click',()=>{
     if(phase!=='ready'||!detailId||fields.unlock.disabled||fields.unlock.hidden)return;
-    try{progress.unlock(detailId);fields.feedback.textContent='';cue('ui-select');focusAfterOpen=true;detailFields.status.focus({preventScroll:true});focusAfterOpen=false;if(motion())detailFields.status.animate([{opacity:.3},{opacity:1}],{duration:850,easing:'ease-out'});}
+    try{progress.unlock(detailId);fields.feedback.textContent='';cue('covenant-unlock');focusAfterOpen=true;detailFields.status.focus({preventScroll:true});focusAfterOpen=false;if(motion())detailFields.status.animate([{opacity:.3},{opacity:1}],{duration:850,easing:'ease-out'});}
     catch(failure){fields.feedback.textContent=failure.userMessage||'未能保存契约，请重试。';refresh();}
   });
   root.addEventListener('contextmenu',event=>event.preventDefault());root.addEventListener('dragstart',event=>event.preventDefault());

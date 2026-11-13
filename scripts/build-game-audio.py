@@ -150,3 +150,8 @@ print(json.dumps({'independentWorldCues':len(world_records), 'bytes':sum(x['byte
 system_builder = runpy.run_path(str(ROOT / 'scripts/build-system-ui-audio.py'))
 system_records = system_builder['build'](ffmpeg=FF)
 print(json.dumps({'independentSystemUICues':len(system_records), 'bytes':sum(x['bytes'] for x in system_records)}))
+
+# Preserve the liquid-contract gestures in complete sound-bank rebuilds.
+covenant_builder = runpy.run_path(str(ROOT / 'scripts/build-covenant-audio.py'))
+covenant_records = covenant_builder['build'](ffmpeg=FF)
+print(json.dumps({'independentCovenantCues':len(covenant_records), 'bytes':sum(x['bytes'] for x in covenant_records)}))

@@ -26,3 +26,9 @@
 世界节点的 `world-node-focus`、`world-node-select` 以及系统空间的 `system-ui-focus`、`system-ui-select`、`system-ui-back`、`system-ui-send` 使用本项目原创的玉石／轻金属阻尼共振。节点选中带一层低石质触点，系统激活声更轻，关闭声更低，发送声为克制的上行双触点。它们不使用上表纸张录音，也不含噪声、纤维或摩擦层。
 
 [世界地图合成脚本](../../../scripts/build-world-map-audio.py)与[系统界面合成脚本](../../../scripts/build-system-ui-audio.py)保留固定种子和制作参数，支持 `--only` 单独更新指定音效。完整声音库重建也会包含这些条目。设计、峰值与哈希分别记录在 [世界地图](../../../audio-source/world-map/design.json)和[系统界面](../../../audio-source/system-ui/design.json)中；试听母带仅写入忽略目录 `output/audio-design/`。此次只替换两个世界节点文件并新增四个系统界面文件，展开、收拢、主神、标题和纸艺设置的声音未重编码。
+
+## 主神契约的流体声音
+
+七条 `covenant-*` 音效由[独立合成脚本](../../../scripts/build-covenant-audio.py)原创制作，不使用纸张、骰子、玉石 UI 录音或现有音效波形。它们分别对应进入、离开、悬停、切换分支、详情展开、详情收拢与解锁，以连续液膜共振、低频压力和少量柔和空腔音表达黑色流体材质。各动作具有独立波形；快速操作时交叉淡出，避免尾音堆叠。
+
+[设计记录](../../../audio-source/covenant/design.json)包含种子、响度、真峰值和哈希；[制作说明](../../../audio-source/covenant/README.md)记录复现步骤。本组共约 49 KB，不新增 BGM。原有音效未重编码。

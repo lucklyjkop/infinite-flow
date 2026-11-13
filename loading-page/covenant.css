@@ -73,10 +73,6 @@
 .covenant-ability.covenant-detail{inset:0;z-index:2;width:auto;aspect-ratio:auto;filter:none;animation:none;pointer-events:none}
 .covenant-detail[hidden]{display:none}
 .covenant-detail .covenant-ability-content{inset:auto;left:55%;top:46%;width:40%;max-width:580px;transform:translateY(-50%);pointer-events:auto;text-align:left}
-.covenant-detail-close{position:absolute;right:0;top:0;width:48px;height:48px;padding:7px;pointer-events:auto;transition:transform 300ms,filter 300ms;z-index:2}
-.covenant-detail-close img{width:100%;height:100%;object-fit:contain;opacity:.58;filter:saturate(.65)}
-.covenant-detail-close span{position:absolute;inset:0;display:grid;place-items:center;font:25px/1 serif;color:#f5d9ae}
-.covenant-detail-close:hover{transform:rotate(90deg);filter:brightness(1.4)}
 .covenant-detail-orbit{position:absolute;left:29%;top:44%;width:min(43vw,65vh,590px);aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(ellipse,#a77a4a09 0%,#96534105 45%,transparent 69%);pointer-events:none}
 .covenant-detail-orbit i{position:absolute;inset:0;border:1px solid #cfa67a15;border-left-color:#cfa67a50;border-right-color:#cfa67a30;border-radius:50%;transform:rotate(-32deg)}
 .covenant-detail-orbit i+i{inset:6%;border-color:transparent;border-bottom-color:#b35b4338;transform:rotate(22deg)}
@@ -89,7 +85,7 @@
 .covenant-detail-status::before{content:"";display:inline-block;vertical-align:2px;width:4px;height:4px;border:1px solid currentColor;transform:rotate(45deg);margin-right:9px}
 .covenant-detail[data-status="unlocked"] .covenant-detail-status::before{background:#b25c45;box-shadow:0 0 10px #b2704340}
 .covenant-detail[data-status="locked"] .covenant-detail-status{color:#878884}
-.covenant-detail h2{font-size:clamp(35px,3.8vw,62px);font-weight:400;line-height:1.25;letter-spacing:.18em;margin:0 0 24px;color:#edd9b9;white-space:normal;text-shadow:0 2px 16px #ccb18712}
+.covenant-detail h2{font-size:clamp(35px,3.8vw,62px);font-weight:400;line-height:1.25;letter-spacing:.18em;margin:0 0 24px;color:#edd9b9;white-space:normal;text-shadow:0 2px 16px #ccb18712;outline:0}
 .covenant-detail-rule{height:1px;width:100%;position:relative;background:linear-gradient(90deg,#aa735c9c,#b89a7348 45%,transparent);margin-bottom:26px}
 .covenant-detail-rule span{position:absolute;left:0;top:50%;transform:translateY(-50%);background:#101413;color:#bd8d67;font-size:16px;padding-right:10px}
 .covenant-detail .covenant-ability-copy{font-size:16px;line-height:1.9;letter-spacing:.06em;max-width:none;color:#c1b9a9;margin:0 0 30px}
@@ -128,7 +124,6 @@
   .covenant-detail .covenant-ability-copy{font-size:14px;margin-bottom:18px}
   .covenant-detail-metrics{margin-bottom:14px}
   .covenant-detail-growth button{min-height:46px;font-size:15px}
-  .covenant-detail-close{top:-4px}
 }
 @media (max-width:700px){
   .covenant-back>span.covenant-back-label{font:inherit;padding:0;vertical-align:0}
@@ -136,7 +131,6 @@
   .covenant-detail .covenant-ability-content{position:relative;inset:auto;transform:none;width:100%;max-width:none;padding:0 13px 30px}
   .covenant-detail-orbit{left:50%;top:-188px;width:270px}
   .covenant-detail-orbit>span{bottom:4px;font-size:16px}
-  .covenant-detail-close{top:-340px;right:0;width:42px;height:42px}
   .covenant-detail-eyebrow{margin-bottom:10px}
   .covenant-detail h2{font-size:35px;margin-bottom:20px}
   .covenant-detail .covenant-ability-copy{font-size:15px;margin-bottom:24px}
@@ -149,7 +143,6 @@
   .covenant-detail .covenant-ability-content{top:47%;left:54%;width:42%}
   .covenant-detail h2{font-size:28px;margin-bottom:12px}
   .covenant-detail-eyebrow{min-height:24px;margin-bottom:2px;padding-right:42px}
-  .covenant-detail-close{width:38px;height:38px;top:-3px}
   .covenant-detail .covenant-ability-icon{width:26px}
   .covenant-detail-rule{margin-bottom:12px}
   .covenant-detail .covenant-ability-copy{font-size:12px;margin-bottom:13px}
