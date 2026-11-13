@@ -33,7 +33,6 @@
           <div class="world-detail-traits" aria-label="世界特性"><span></span><span></span><span></span></div>
           <p id="world-detail-description" class="world-detail-description"></p>
           <div class="world-detail-objective"><span>探索目标</span><p></p></div>
-          <footer class="world-detail-actions"><button type="button" class="world-detail-dismiss" data-world-detail-close>返回地图</button></footer>
         </div>
       </div>
     </dialog>`;

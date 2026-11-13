@@ -1,11 +1,8 @@
 /* Each dossier view owns its full composition; only the blossom navigation is shared. */
-.world-detail-multi-layout { position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr auto;gap:16px;align-items:stretch; }
+.world-detail-multi-layout { position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr;align-items:stretch; }
 .world-detail-multi-layout .world-detail-view-stack { min-height:420px; }
 .world-detail-multi-layout .world-detail-pane { align-self:stretch; }
 #world-detail-view-details { display:grid;grid-template-columns:36.5% minmax(0,1fr);gap:8%;align-items:center; }
-.world-detail-multi-layout .world-detail-actions { margin:0 0 0 44.5%; }
-#world-level-detail[data-detail-view="tasks"] .world-detail-actions { margin-left:33%; }
-#world-level-detail[data-detail-view="intel"] .world-detail-actions { margin-left:0;justify-content:center; }
 .world-detail-view-surface { position:fixed;inset:0;z-index:0;box-sizing:border-box;pointer-events:none;translate:0 var(--detail-scroll,0px); }
 .world-view-heading { display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:10px 0 28px; }
 .world-view-eyebrow { font-size:12px;letter-spacing:.22em;margin:0 0 9px;color:#b7966c; }
@@ -37,7 +34,6 @@
 #world-detail-view-tasks .world-detail-task-state::before { display:none; }
 #world-detail-view-tasks .world-detail-task-state[data-status="completed"] { color:#657641;border-color:#65764188; }
 #world-detail-view-tasks .world-detail-task-state[data-status="locked"] { color:#8b8176;border-color:#8b817666; }
-#world-level-detail[data-detail-view="tasks"] .world-detail-dismiss { color:#5c4130;background-image:url('assets/settings-folio/action-secondary.webp');background-size:contain; }
 #world-level-detail[data-detail-view="tasks"] .world-detail-view-trigger { color:#79513b; }
 
 /* Intelligence: a blue atlas board, with scenery at its center and linked clues. */
@@ -78,7 +74,6 @@
   .world-detail-multi-layout { gap:18px; }
   .world-detail-multi-layout .world-detail-view-stack { min-height:0; }
   #world-detail-view-details { grid-template-columns:minmax(0,1fr);gap:14px; }
-  #world-level-detail .world-detail-multi-layout .world-detail-actions { margin:0;justify-content:center; }
   .world-view-heading { margin-top:12px; }
   .world-view-eyebrow { font-size:10px; }
   .world-quest-body { grid-template-columns:minmax(0,1fr);gap:18px; }

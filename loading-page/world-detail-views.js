@@ -5,7 +5,6 @@
   if (!dialog) return;
   const layout = dialog.querySelector('.world-detail-layout');
   const copy = dialog.querySelector('.world-detail-copy');
-  const actions = copy.querySelector('.world-detail-actions');
   const labels = {details:'详情', tasks:'任务', intel:'世界情报'};
   const ids = Object.keys(labels), reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const stack = document.createElement('div'); stack.className = 'world-detail-view-stack';
@@ -24,7 +23,7 @@
   panels.get('tasks').querySelector('.world-quest-objective-slot').append(objective);
   const taskState = panels.get('tasks').querySelector('.world-detail-task-state');
   panels.get('intel').innerHTML = '<header class="world-view-heading world-intel-heading"><div><p class="world-view-eyebrow" data-view-world></p><h2 id="world-intel-heading">世界情报</h2></div><dl class="world-detail-intel-meta"><div><dt>所属卷</dt><dd data-intel-chapter></dd></div><div><dt>地点</dt><dd data-intel-place></dd></div></dl></header><div class="world-intel-board"><svg class="world-intel-links" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"><path d="M240 80 C340 80 370 210 510 218 M510 218 C660 218 690 135 810 135 M510 218 C445 220 460 340 310 340"/><circle cx="510" cy="218" r="5"/></svg><div class="world-intel-orbit" aria-hidden="true"></div><div class="world-view-scenery world-intel-scenery" aria-hidden="true"></div><p class="world-intel-caption" data-view-world></p><ol class="world-detail-intel-list" aria-label="已知特征"><li></li><li></li><li></li></ol></div>';
-  layout.append(stack, actions);
+  layout.append(stack);
   layout.classList.add('world-detail-multi-layout');
   const switcher = document.createElement('div'); switcher.className = 'world-detail-view-switcher'; switcher.dataset.expanded = 'false';
   switcher.innerHTML = '<div id="world-detail-view-options" class="world-detail-view-options" role="tablist" aria-label="关卡视图" aria-orientation="vertical" aria-hidden="true" inert>' + ids.map((id,index) => '<button type="button" role="tab" id="world-detail-tab-' + id + '" data-detail-view="' + id + '" aria-label="' + labels[id] + '" aria-controls="world-detail-view-' + id + '" style="--view-order:' + index + '"><span class="world-detail-petal-label">' + (id === 'intel' ? '世界<br>情报' : labels[id]) + '</span></button>').join('') + '</div><button type="button" class="world-detail-view-trigger" aria-controls="world-detail-view-options" aria-expanded="false" title="切换视图"><span class="world-detail-view-current">详情</span><img src="assets/world-detail/view-flower.png" width="52" height="52" alt="" draggable="false"></button>';
